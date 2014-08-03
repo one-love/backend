@@ -1,0 +1,7 @@
+*.pyc
+*.sqlite3
+media/
+.idea/
+.ropeproject
+/static/
+local_settings.py
