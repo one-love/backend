@@ -24,6 +24,9 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # Application definition
 
@@ -36,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'bootstrap',
+    'provision',
 )
 
 MIDDLEWARE_CLASSES = (

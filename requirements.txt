@@ -1,4 +1,5 @@
+ansible
 django
 gunicorn
-pika
 south
+celery
