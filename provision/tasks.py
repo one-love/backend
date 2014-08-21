@@ -28,8 +28,9 @@ def clone_or_pull(repo_url):
 
 
 def play(config):
-    inv = inventory.Inventory(config['inventory'])
-    inv.set_playbook_basedir(os.path.dirname(config['playbook']))
+    inventory_path = repo_name(config['inventory'])
+    inv = inventory.Inventory(inventory_path)
+    inv.set_playbook_basedir(os.path.dirname(inventory_path))
     stats = ansible.callbacks.AggregateStats()
     playbook_cb = ansible.callbacks.PlaybookCallbacks(
         verbose=ansible.utils.VERBOSITY,
@@ -55,4 +56,5 @@ def play(config):
 def provision(config):
     os.chdir('/var/repos')
     clone_or_pull(config['repo'])
+    os.chdir('/var/repos/' + repo_name(config['repo']))
     return play(config)
