@@ -54,6 +54,7 @@ def play(config):
 
 @shared_task
 def provision(config):
+    os.environ['HOME'] = '/tmp'
     os.chdir('/var/repos')
     clone_or_pull(config['repo'])
     os.chdir('/var/repos/' + repo_name(config['repo']))
