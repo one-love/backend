@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'south',
     'bootstrap',
+    'emailauth',
     'provision',
 )
 
@@ -61,8 +62,10 @@ WSGI_APPLICATION = 'onelove.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'onelove',
+        'USER': 'onelove',
+        'HOST': 'localhost',
     }
 }
 
@@ -87,3 +90,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/var/static'
 
 MEDIA_URL = '/media/'
+
+AUTH_USER_MODEL = 'emailauth.CustomUser'

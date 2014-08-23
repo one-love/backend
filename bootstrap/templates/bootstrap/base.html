@@ -39,16 +39,12 @@
                 <button type="submit" class="btn btn-success">Sign out</button>
             {% else %}
                 <div class="form-group">
-                    {% if user_form.email.errors %}
-                        {{ user_form.email.errors }}
-                    {% endif %}
-                    <input id="id_email" name="email" type="email" placeholder="Email" class="form-control">
+                    <input id="id_username" name="username" type="email" placeholder="Email" class="form-control" />
+                    {{ user_form.username.errors }}
                 </div>
                 <div class="form-group">
-                    {% if user_form.password.errors %}
-                        {{ user_form.password.errors }}
-                    {% endif %}
-                    <input id="id_password" name="password" type="password" placeholder="Password" class="form-control">
+                    <input id="id_password" name="password" type="password" placeholder="Password" class="form-control" />
+                    {{ user_form.password.errors }}
                 </div>
                 <button type="submit" class="btn btn-success">Sign in</button>
             {% endif %}
