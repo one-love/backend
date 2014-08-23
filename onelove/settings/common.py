@@ -92,3 +92,5 @@ STATIC_ROOT = '/var/static'
 MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'emailauth.CustomUser'
+
+LOGIN_URL = '/'
