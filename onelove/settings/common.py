@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'bootstrap',
     'emailauth',
     'provision',
+    'fleets',
 )
 
 MIDDLEWARE_CLASSES = (
