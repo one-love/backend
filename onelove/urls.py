@@ -7,12 +7,12 @@ urlpatterns = patterns(
     '',
     url(
         r'^$',
-        'bootstrap.views.home',
+        'onelove.views.home',
         name='home'
     ),
     url(
-        r'^logout/$',
-        'bootstrap.views.logout',
+        r'^logout/',
+        'onelove.views.logout',
         name='logout'
     ),
     url(

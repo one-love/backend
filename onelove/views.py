@@ -1,15 +1,14 @@
 from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
-
-from emailauth.auth import logout_if_loged_in
 
 
 def home(request):
     context = RequestContext(request)
     next = '/'
+    template = 'bootstrap/home.html'
     if request.method == 'POST':
         user_form = AuthenticationForm(data=request.POST)
         if user_form.is_valid():
@@ -25,14 +24,14 @@ def home(request):
                     return redirect(next)
     else:
         if request.user.is_authenticated():
-            return redirect(reverse('provision_inventory'))
+            template = 'bootstrap/inventory.html'
         if 'next' in request.GET:
             next = request.GET['next']
 
         user_form = AuthenticationForm()
 
     return render_to_response(
-        'bootstrap/home.html',
+        template,
         {
             'user_form': user_form,
             'next': next,
