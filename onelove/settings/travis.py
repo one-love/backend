@@ -8,4 +8,4 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = /tmp
+STATIC_ROOT = '/tmp/'
