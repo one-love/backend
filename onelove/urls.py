@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, include, url
+from django.contrib import admin
 
 from home.views import HomeView
 
-from django.contrib import admin
+
 admin.autodiscover()
 
 urlpatterns = patterns(
@@ -20,9 +21,5 @@ urlpatterns = patterns(
     url(
         r'^admin/',
         include(admin.site.urls)
-    ),
-    url(
-        r'^provision/',
-        include('provision.urls')
     ),
 )
