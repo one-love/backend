@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import FormView
+from fleets.models import Fleet
 
 
 class HomeView(FormView):
@@ -21,6 +22,8 @@ class HomeView(FormView):
         context = super(HomeView, self).get_context_data(**kwargs)
         if 'next' in self.request.GET:
             context['next'] = self.request.GET['next']
+        if self.request.user.is_authenticated():
+            context['fleet_list'] = Fleet.objects.filter(user=self.request.user)
         return context
 
     def form_valid(self, form):

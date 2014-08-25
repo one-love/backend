@@ -1,20 +1,11 @@
-<div class="page-header">
-    <h1>One Love</h1>
-</div>
 <div class="row">
-    <div class="col-sm-6 col-md-4">
-        <div class="thumbnail">
-            <a class="btn btn-default center-block" href="">Fleet</a>
+    {% for fleet in fleet_list %}
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+                <a class="btn btn-default center-block" href="">{{ fleet.name }}</a>
+            </div>
         </div>
-    </div>
-    <div class="col-sm-6 col-md-4">
-        <div class="thumbnail">
-            <a class="btn btn-default center-block" href="">Monitoring</a>
-        </div>
-    </div>
-    <div class="col-sm-6 col-md-4">
-        <div class="thumbnail">
-            <a class="btn btn-default center-block" href="">Help</a>
-        </div>
-    </div>
+    {% empty %}
+        No fleet
+    {% endfor %}
 </div>
