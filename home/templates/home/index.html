@@ -1,0 +1,11 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% include 'home/inventory.html' %}
+    {% else %}
+        {% include 'home/home.html' %}
+    {% endif %}
+{% endblock %}

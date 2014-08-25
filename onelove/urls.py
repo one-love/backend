@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, include, url
 
+from home.views import HomeView
+
 from django.contrib import admin
 admin.autodiscover()
 
@@ -7,12 +9,12 @@ urlpatterns = patterns(
     '',
     url(
         r'^$',
-        'onelove.views.home',
+        HomeView.as_view(),
         name='home'
     ),
     url(
         r'^logout/',
-        'onelove.views.logout',
+        'home.views.logout',
         name='logout'
     ),
     url(

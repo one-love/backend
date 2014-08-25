@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'emailauth',
     'provision',
     'fleets',
+    'home',
 )
 
 MIDDLEWARE_CLASSES = (
