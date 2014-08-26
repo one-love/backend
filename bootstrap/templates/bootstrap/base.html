@@ -48,8 +48,8 @@
                                 <input id="id_password" name="password" type="password" placeholder="Password" class="form-control" />
                                 {{ user_form.password.errors }}
                             </div>
-                            <input type="hidden" name="next" value="{{ next }}" />
-                            <button type="submit" class="btn btn-success">Sign in</button>
+                            <input id="id_next" type="hidden" name="next" value="{{ next }}" />
+                            <button id="login" type="button" class="btn btn-success">Sign in</button>
                         </form>
                     {% endif %}
                 </div>
@@ -63,6 +63,22 @@
         <script src="/static/js/bootstrap.min.js"></script>
         {% if not user.is_authenticated %}
             <script src="/static/js/jquery.cookie.js"></script>
+            <script>
+                $('#login').click(function() {
+                    $.post(
+                        "/",
+                        {
+                            username: $("#id_username").val(),
+                            password: $("#id_password").val(),
+                            csrfmiddlewaretoken: $.cookie("csrftoken"),
+                            next: $("#id_next").val()
+                        },
+                        function(data, status) {
+                            alert("Status: " + status);
+                        }
+                    );
+                });
+            </script>
         {% endif %}
     </body>
 </html>
