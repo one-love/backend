@@ -71,12 +71,18 @@
                             username: $("#id_username").val(),
                             password: $("#id_password").val(),
                             csrfmiddlewaretoken: $.cookie("csrftoken"),
-                            next: $("#id_next").val()
-                        },
-                        function(data, status) {
-                            alert("Status: " + status);
+                            next: $("#id_next").val(),
                         }
-                    );
+                    )
+                    .done(function(){
+                        window.location = '/';
+                    })
+                    .fail(function(response) {
+                        if (response) {
+                            var json = JSON.parse(response.responseText);
+                            alert("Response: " + json.__all__);
+                        }
+                    });
                 });
             </script>
         {% endif %}
