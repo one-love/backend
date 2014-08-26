@@ -29,7 +29,7 @@ $('#login').click(function(e) {
                     .addClass("red-border");
             }
             else {
-                failure = "<p>" + json[field] + "</p>";
+                failure = "<p class=login_failed>" + json[field] + "</p>";
             }
         }
 
@@ -40,3 +40,7 @@ $('#login').click(function(e) {
     });
 });
 
+
+$(".login_failed").click(function(e) {
+    $(this).hide();
+});
