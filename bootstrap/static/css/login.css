@@ -1,0 +1,14 @@
+div#login_failed {
+    display: none;
+    position: absolute;
+    right: 200px;
+    width: 300px;
+    background: gray;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.red-border {
+    border: 3px solid #f51c40;
+    border-color: red;
+}

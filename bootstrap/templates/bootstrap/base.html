@@ -12,6 +12,7 @@
 
         <link href="/static/css/bootstrap.min.css" rel="stylesheet">
         <link href="/static/css/starter-template.css" rel="stylesheet">
+        <link href="/static/css/login.css" rel="stylesheet">
 
         <!--[if lt IE 9]><script src="/static/js/ie8-responsive-file-warning.js"></script><![endif]-->
         <script src="/static/js/ie-emulation-modes-warning.js"></script>
@@ -55,6 +56,8 @@
                 </div>
             </div>
         </div>
+        <div id="login_failed">
+        </div>
 
         <div class="container">
             {% block content %}{% endblock %}
@@ -63,28 +66,7 @@
         <script src="/static/js/bootstrap.min.js"></script>
         {% if not user.is_authenticated %}
             <script src="/static/js/jquery.cookie.js"></script>
-            <script>
-                $('#login').click(function() {
-                    $.post(
-                        "/",
-                        {
-                            username: $("#id_username").val(),
-                            password: $("#id_password").val(),
-                            csrfmiddlewaretoken: $.cookie("csrftoken"),
-                            next: $("#id_next").val(),
-                        }
-                    )
-                    .done(function(){
-                        window.location = '/';
-                    })
-                    .fail(function(response) {
-                        if (response) {
-                            var json = JSON.parse(response.responseText);
-                            alert("Response: " + json.__all__);
-                        }
-                    });
-                });
-            </script>
+            <script src="/static/js/login.js"></script>
         {% endif %}
     </body>
 </html>
