@@ -15,22 +15,27 @@ $('#login').click(function(e) {
     .fail(function(response) {
         $("input#id_username").removeClass("red-border");
         $("input#id_password").removeClass("red-border");
-        var json = JSON.parse(response.responseText);
         var failure = null;
-        for (var field in json) {
-            if (field == "username") {
-                $("input#id_username")
-                    .attr("placeholder", json[field])
-                    .addClass("red-border");
+        if (response) {
+            var json = JSON.parse(response.responseText);
+            for (var field in json) {
+                if (field == "username") {
+                    $("input#id_username")
+                        .attr("placeholder", json[field])
+                        .addClass("red-border");
+                }
+                else if (field == "password") {
+                    $("input#id_password")
+                        .attr("placeholder", json[field])
+                        .addClass("red-border");
+                }
+                else {
+                    failure = "<p class=login_failed>" + json[field] + "</p>";
+                }
             }
-            else if (field == "password") {
-                $("input#id_password")
-                    .attr("placeholder", json[field])
-                    .addClass("red-border");
-            }
-            else {
-                failure = "<p class=login_failed>" + json[field] + "</p>";
-            }
+        }
+        else {
+            failure = "<p class=login_failed>Probably server connection problem!</p>";
         }
 
         if (failure) {
