@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from django.views.generic import CreateView
 
-# Create your views here.
+from fleets.models import Fleet
+
+
+class FleetCreateView(CreateView):
+    template_name = 'fleets/create.html'
+    model = Fleet

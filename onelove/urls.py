@@ -22,4 +22,8 @@ urlpatterns = patterns(
         r'^admin/',
         include(admin.site.urls)
     ),
+    url(
+        r'^fleet/',
+        include('fleets.urls'),
+    ),
 )

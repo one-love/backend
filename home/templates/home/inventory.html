@@ -12,6 +12,8 @@
         <br/>
     </div>
     <div class="row text-center">
+        <div class="col-sm-6 col-md-1">
+        </div>
         <div class="col-sm-6 col-md-4">
             <div class="thumbnail">
                 <div class="caption">
@@ -22,10 +24,12 @@
                         fleet is, choose this option.
                     </p>
                 </div>
-                <p><a href="#" class="btn btn-primary center-block" role="button">Create Fleet</a></p>
+                <p><a href="{% url 'fleet_create' %}" class="btn btn-primary center-block" role="button">Go!</a></p>
             </div>
         </div>
-        <div class="col-sm-6 col-md-4">
+        <div class="col-sm-6 col-md-2">
+            <br/>
+            <br/>
             <h1>OR</h1>
         </div>
         <div class="col-sm-6 col-md-4">
@@ -38,8 +42,10 @@
                         choose this option.
                     </p>
                 </div>
-                <p><a href="#" class="btn btn-primary center-block" role="button">Import Fleet</a></p>
+                <p><a href="#" class="btn btn-primary center-block" role="button">Go!</a></p>
             </div>
+        </div>
+        <div class="col-sm-6 col-md-1">
         </div>
     </div>
 {% endfor %}
