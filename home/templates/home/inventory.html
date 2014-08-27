@@ -1,11 +1,45 @@
-<div class="row">
-    {% for fleet in fleet_list %}
+{% for fleet in fleet_list %}
+    <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+            <a class="btn btn-default center-block" href="">{{ fleet.name }}</a>
+        </div>
+    </div>
+{% empty %}
+    <div class="text-center">
+        <h1>Welcome to One Love! You still have no fleet, so we'll guide you through</h1>
+        <br/>
+        <br/>
+        <br/>
+    </div>
+    <div class="row text-center">
         <div class="col-sm-6 col-md-4">
             <div class="thumbnail">
-                <a class="btn btn-default center-block" href="">{{ fleet.name }}</a>
+                <div class="caption">
+                    <h3>Create Fleet</h3>
+                    <p>
+                        Run a wizard for configuring and creating your fleet.
+                        If you don't own any servers or have no idea what the
+                        fleet is, choose this option.
+                    </p>
+                </div>
+                <p><a href="#" class="btn btn-primary center-block" role="button">Create Fleet</a></p>
             </div>
         </div>
-    {% empty %}
-        No fleet
-    {% endfor %}
-</div>
+        <div class="col-sm-6 col-md-4">
+            <h1>OR</h1>
+        </div>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+                <div class="caption">
+                    <h3>Import Fleet</h3>
+                    <p>
+                        Run a wizard for importing your fleet. If you already
+                        have the servers you wish to manage with One Love,
+                        choose this option.
+                    </p>
+                </div>
+                <p><a href="#" class="btn btn-primary center-block" role="button">Import Fleet</a></p>
+            </div>
+        </div>
+    </div>
+{% endfor %}
