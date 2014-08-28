@@ -1,6 +1,7 @@
 'use strict';
 
-$('#login').click(function() {
+$('#login').click(function(e) {
+    e.preventDefault();
     $.post(
         '/',
         {
@@ -52,7 +53,7 @@ $('.login_failed').click(function() {
 });
 
 
-var IsEmail = function(email) {
+function IsEmail(email) {
   var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   return regex.test(email);
-};
+}
