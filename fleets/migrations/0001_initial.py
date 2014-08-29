@@ -8,12 +8,13 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'FleetType'
-        db.create_table(u'fleets_fleettype', (
+        # Adding model 'Application'
+        db.create_table(u'fleets_application', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=256)),
+            ('repo', self.gf('django.db.models.fields.CharField')(max_length=256)),
         ))
-        db.send_create_signal(u'fleets', ['FleetType'])
+        db.send_create_signal(u'fleets', ['Application'])
 
         # Adding model 'Hosting'
         db.create_table(u'fleets_hosting', (
@@ -27,17 +28,16 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=256)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['emailauth.CustomUser'])),
-            ('type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.FleetType'])),
-            ('hosting', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.Hosting'])),
-            ('repo', self.gf('django.db.models.fields.CharField')(max_length=256)),
+            ('app', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.Application'], null=True, blank=True)),
+            ('hosting', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.Hosting'], null=True, blank=True)),
             ('url', self.gf('django.db.models.fields.CharField')(max_length=2048)),
         ))
         db.send_create_signal(u'fleets', ['Fleet'])
 
 
     def backwards(self, orm):
-        # Deleting model 'FleetType'
-        db.delete_table(u'fleets_fleettype')
+        # Deleting model 'Application'
+        db.delete_table(u'fleets_application')
 
         # Deleting model 'Hosting'
         db.delete_table(u'fleets_hosting')
@@ -82,20 +82,20 @@ class Migration(SchemaMigration):
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"})
         },
-        u'fleets.fleet': {
-            'Meta': {'object_name': 'Fleet'},
-            'hosting': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.Hosting']"}),
+        u'fleets.application': {
+            'Meta': {'object_name': 'Application'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'repo': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.FleetType']"}),
+            'repo': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+        },
+        u'fleets.fleet': {
+            'Meta': {'object_name': 'Fleet'},
+            'app': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.Application']", 'null': 'True', 'blank': 'True'}),
+            'hosting': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.Hosting']", 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '2048'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['emailauth.CustomUser']"})
-        },
-        u'fleets.fleettype': {
-            'Meta': {'object_name': 'FleetType'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
         },
         u'fleets.hosting': {
             'Meta': {'object_name': 'Hosting'},

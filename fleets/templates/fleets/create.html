@@ -4,8 +4,11 @@
 
 {% block content %}
 <div class="starter-template">
-    <h1>Create Fleet</h1>
-    <p class="lead">Form to choose Fleet template</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Create" />
+    </form>
 </div>
 {% endblock %}
 

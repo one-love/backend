@@ -6,7 +6,7 @@ urlpatterns = patterns(
     '',
     url(
         r'^create/',
-        views.FleetCreateView.as_view(),
+        views.FleetCreate.as_view(),
         name='fleet_create',
     ),
 )
