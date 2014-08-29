@@ -8,8 +8,8 @@
 <div class="starter-template">
     <form action="" method="post">
         {% csrf_token %}
-        {% render_field form.name placeholder="Name of the Fleet" %}
-        {% render_field form.url placeholder="URL of the Fleet" %}
+        {% render_field form.name %}
+        {% render_field form.url %}
         {% render_field form.hosting %}
         {% render_field form.app %}
         <input type="submit" value="Update" />
