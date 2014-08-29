@@ -11,26 +11,29 @@ class Migration(SchemaMigration):
         # Adding model 'Application'
         db.create_table(u'fleets_application', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=256)),
-            ('repo', self.gf('django.db.models.fields.CharField')(max_length=256)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
+            ('repo', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=256)),
         ))
         db.send_create_signal(u'fleets', ['Application'])
 
         # Adding model 'Hosting'
         db.create_table(u'fleets_hosting', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=256)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=256)),
         ))
         db.send_create_signal(u'fleets', ['Hosting'])
 
         # Adding model 'Fleet'
         db.create_table(u'fleets_fleet', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=256)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['emailauth.CustomUser'])),
             ('app', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.Application'], null=True, blank=True)),
             ('hosting', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.Hosting'], null=True, blank=True)),
-            ('url', self.gf('django.db.models.fields.CharField')(max_length=2048)),
+            ('url', self.gf('django.db.models.fields.CharField')(unique=True, max_length=2048)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=256)),
         ))
         db.send_create_signal(u'fleets', ['Fleet'])
 
@@ -85,22 +88,25 @@ class Migration(SchemaMigration):
         u'fleets.application': {
             'Meta': {'object_name': 'Application'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'repo': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),
+            'repo': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '256'})
         },
         u'fleets.fleet': {
             'Meta': {'object_name': 'Fleet'},
             'app': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.Application']", 'null': 'True', 'blank': 'True'}),
             'hosting': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.Hosting']", 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            'url': ('django.db.models.fields.CharField', [], {'max_length': '2048'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '256'}),
+            'url': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '2048'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['emailauth.CustomUser']"})
         },
         u'fleets.hosting': {
             'Meta': {'object_name': 'Hosting'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '256'})
         }
     }
 

@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'south',
+    'widget_tweaks',
+    'rest_framework',
     'bootstrap',
     'emailauth',
     'provision',

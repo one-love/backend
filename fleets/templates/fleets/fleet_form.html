@@ -1,12 +1,15 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}Provision{% endblock %}
+{% load widget_tweaks %}
+
+{% block title %}Create Fleet{% endblock %}
 
 {% block content %}
 <div class="starter-template">
     <form action="" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% render_field form.name placeholder="Name of the Fleet" %}
+        {% render_field form.url placeholder="URL of the Fleet" %}
         <input type="submit" value="Create" />
     </form>
 </div>
