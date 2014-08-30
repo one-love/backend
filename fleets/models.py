@@ -5,9 +5,9 @@ from django.template.defaultfilters import slugify
 
 class Fleet(models.Model):
     name = models.CharField(max_length=256, unique=True)
+    url = models.CharField(max_length=2048, unique=True)
     slug = models.SlugField(max_length=256)
     user = models.ForeignKey(get_user_model())
-    url = models.CharField(max_length=2048, unique=True)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -20,8 +20,8 @@ class Fleet(models.Model):
 
 class Application(models.Model):
     name = models.CharField(max_length=256, unique=True)
-    slug = models.SlugField(max_length=256)
     repo = models.CharField(max_length=256, unique=True)
+    slug = models.SlugField(max_length=256)
     fleet = models.ForeignKey(Fleet)
 
     def save(self, *args, **kwargs):

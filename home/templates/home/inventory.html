@@ -1,7 +1,7 @@
 {% for fleet in fleet_list %}
     <div class="col-sm-6 col-md-4">
         <div class="thumbnail">
-            <a class="btn btn-default center-block" href="">{{ fleet.name }}</a>
+            <a class="btn btn-default center-block" href="{% url 'fleet_detail' fleet.slug %}">{{ fleet.name }}</a>
         </div>
     </div>
 {% empty %}
