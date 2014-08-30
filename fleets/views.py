@@ -1,5 +1,5 @@
-from django.views.generic import CreateView, DetailView, UpdateView
 from django.core.urlresolvers import reverse
+from django.views.generic import CreateView, UpdateView
 
 from fleets.models import Fleet
 
@@ -19,5 +19,5 @@ class FleetCreate(CreateView):
 
 class FleetDetail(UpdateView):
     model = Fleet
-    fields = ['name', 'url', 'hosting', 'app']
+    fields = ['name', 'url']
     template_name_suffix = '_detail'

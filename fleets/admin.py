@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Fleet, Application, Hosting
+from .models import Fleet, Application, AmazonProvider
 
 
 admin.site.register(Fleet)
 admin.site.register(Application)
-admin.site.register(Hosting)
+admin.site.register(AmazonProvider)
