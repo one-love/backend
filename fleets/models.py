@@ -22,7 +22,7 @@ class Application(models.Model):
     name = models.CharField(max_length=256, unique=True)
     repo = models.CharField(max_length=256, unique=True)
     slug = models.SlugField(max_length=256)
-    fleet = models.ForeignKey(Fleet)
+    fleet = models.ForeignKey(Fleet, related_name='applications')
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -38,7 +38,7 @@ class AmazonProvider(models.Model):
     slug = models.SlugField(max_length=256)
     access_key = models.CharField(max_length=256)
     security_key = models.CharField(max_length=256)
-    fleet = models.ForeignKey(Fleet)
+    fleet = models.ForeignKey(Fleet, related_name='amazon_providers')
 
     def save(self, *args, **kwargs):
         if not self.id:

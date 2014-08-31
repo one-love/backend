@@ -3,12 +3,23 @@ from fleets.models import Fleet, Application, AmazonProvider
 
 
 class FleetSerializer(serializers.ModelSerializer):
+    applications = serializers.PrimaryKeyRelatedField(
+        many=True,
+        read_only=True
+    )
+    amazon_providers = serializers.PrimaryKeyRelatedField(
+        many=True,
+        read_only=True
+    )
+
     class Meta:
         model = Fleet
         fields = (
             'id',
             'name',
             'url',
+            'applications',
+            'amazon_providers',
         )
 
 
