@@ -8,54 +8,44 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'Fleet'
+        db.create_table(u'fleets_fleet', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
+            ('url', self.gf('django.db.models.fields.CharField')(unique=True, max_length=2048)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=256)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['emailauth.CustomUser'])),
+        ))
+        db.send_create_signal(u'fleets', ['Fleet'])
+
         # Adding model 'Application'
         db.create_table(u'fleets_application', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
             ('repo', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
             ('slug', self.gf('django.db.models.fields.SlugField')(max_length=256)),
+            ('fleet', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.Fleet'])),
         ))
         db.send_create_signal(u'fleets', ['Application'])
 
-        # Adding model 'Fleet'
-        db.create_table(u'fleets_fleet', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['emailauth.CustomUser'])),
-            ('app', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.Application'], null=True, blank=True)),
-            ('url', self.gf('django.db.models.fields.CharField')(unique=True, max_length=2048)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=256)),
-        ))
-        db.send_create_signal(u'fleets', ['Fleet'])
-
-        # Adding model 'BaseProvider'
-        db.create_table(u'fleets_baseprovider', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('polymorphic_ctype', self.gf('django.db.models.fields.related.ForeignKey')(related_name=u'polymorphic_fleets.baseprovider_set', null=True, to=orm['contenttypes.ContentType'])),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=256)),
-            ('fleet', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.Fleet'])),
-        ))
-        db.send_create_signal(u'fleets', ['BaseProvider'])
-
         # Adding model 'AmazonProvider'
         db.create_table(u'fleets_amazonprovider', (
-            (u'baseprovider_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['fleets.BaseProvider'], unique=True, primary_key=True)),
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=256)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=256)),
             ('access_key', self.gf('django.db.models.fields.CharField')(max_length=256)),
             ('security_key', self.gf('django.db.models.fields.CharField')(max_length=256)),
+            ('fleet', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['fleets.Fleet'])),
         ))
         db.send_create_signal(u'fleets', ['AmazonProvider'])
 
 
     def backwards(self, orm):
-        # Deleting model 'Application'
-        db.delete_table(u'fleets_application')
-
         # Deleting model 'Fleet'
         db.delete_table(u'fleets_fleet')
 
-        # Deleting model 'BaseProvider'
-        db.delete_table(u'fleets_baseprovider')
+        # Deleting model 'Application'
+        db.delete_table(u'fleets_application')
 
         # Deleting model 'AmazonProvider'
         db.delete_table(u'fleets_amazonprovider')
@@ -98,29 +88,24 @@ class Migration(SchemaMigration):
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"})
         },
         u'fleets.amazonprovider': {
-            'Meta': {'object_name': 'AmazonProvider', '_ormbases': [u'fleets.BaseProvider']},
+            'Meta': {'object_name': 'AmazonProvider'},
             'access_key': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
-            u'baseprovider_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['fleets.BaseProvider']", 'unique': 'True', 'primary_key': 'True'}),
-            'security_key': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+            'fleet': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.Fleet']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),
+            'security_key': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '256'})
         },
         u'fleets.application': {
             'Meta': {'object_name': 'Application'},
+            'fleet': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.Fleet']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),
             'repo': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '256'})
         },
-        u'fleets.baseprovider': {
-            'Meta': {'object_name': 'BaseProvider'},
-            'fleet': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.Fleet']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),
-            'polymorphic_ctype': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'polymorphic_fleets.baseprovider_set'", 'null': 'True', 'to': u"orm['contenttypes.ContentType']"}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '256'})
-        },
         u'fleets.fleet': {
             'Meta': {'object_name': 'Fleet'},
-            'app': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['fleets.Application']", 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '256'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '256'}),

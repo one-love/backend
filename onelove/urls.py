@@ -10,6 +10,8 @@ admin.autodiscover()
 
 router = routers.DefaultRouter()
 router.register(r'fleets', views.FleetViewSet)
+router.register(r'applications', views.ApplicationViewSet)
+router.register(r'amazonproviders', views.AmazonProviderViewSet)
 
 urlpatterns = patterns(
     '',
