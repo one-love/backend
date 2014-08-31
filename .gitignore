@@ -4,5 +4,6 @@ media/
 .idea/
 .ropeproject
 /static/
+vendor/
 local_settings.py
 onelove/settings/__init__.py
