@@ -98,3 +98,8 @@ MEDIA_URL = '/media/'
 AUTH_USER_MODEL = 'emailauth.CustomUser'
 
 LOGIN_URL = '/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'PAGINATE_BY': 10
+}

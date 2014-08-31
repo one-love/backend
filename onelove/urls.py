@@ -1,10 +1,15 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from rest_framework import routers
 
+from api import views
 from home.views import HomeView
 
 
 admin.autodiscover()
+
+router = routers.DefaultRouter()
+router.register(r'fleets', views.FleetViewSet)
 
 urlpatterns = patterns(
     '',
@@ -25,5 +30,16 @@ urlpatterns = patterns(
     url(
         r'^fleet/',
         include('fleets.urls'),
+    ),
+    url(
+        r'^api/v1/',
+        include(router.urls)
+    ),
+    url(
+        r'^api-auth/',
+        include(
+            'rest_framework.urls',
+            namespace='rest_framework'
+        )
     ),
 )
