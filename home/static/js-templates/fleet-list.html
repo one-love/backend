@@ -1,5 +1,6 @@
-{{ fleetList }}
-<ul>
-    <li ng-repeat="fleet in fleetList">
-        <h2>{{ fleet.name }}</h2>
-</ul>
+<div class="col-sm-6 col-md-4" ng-repeat="fleet in fleetList">
+    <div class="thumbnail">
+        <a class="btn btn-default center-block" href="" ui-sref="fleet">{{ fleet.name }}</a>
+    </div>
+</div>
+

@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'south',
     'widget_tweaks',
     'rest_framework',
+    'rest_framework.authtoken',
     'bootstrap',
     'emailauth',
     'provision',

@@ -9,9 +9,9 @@ from home.views import HomeView
 admin.autodiscover()
 
 router = routers.DefaultRouter()
-router.register(r'fleets', views.FleetViewSet)
-router.register(r'applications', views.ApplicationViewSet)
-router.register(r'amazonproviders', views.AmazonProviderViewSet)
+router.register(r'fleet', views.FleetViewSet)
+router.register(r'application', views.ApplicationViewSet)
+router.register(r'amazonprovider', views.AmazonProviderViewSet)
 
 urlpatterns = patterns(
     '',
@@ -28,10 +28,6 @@ urlpatterns = patterns(
     url(
         r'^admin/',
         include(admin.site.urls)
-    ),
-    url(
-        r'^fleet/',
-        include('fleets.urls'),
     ),
     url(
         r'^api/v1/',

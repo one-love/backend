@@ -6,3 +6,4 @@ south
 celery
 psycopg2
 django-widget-tweaks
+djangular
