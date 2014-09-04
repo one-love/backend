@@ -1,36 +1,10 @@
 from django.conf.urls import patterns, include, url
-from django.contrib import admin
+from tastypie.api import Api
+from .api import FleetResource
 
-from home.views import HomeView
+v1_api = Api(api_name='v1')
+v1_api.register(FleetResource())
 
-
-admin.autodiscover()
-
-urlpatterns = patterns(
-    '',
-    url(
-        r'^$',
-        HomeView.as_view(),
-        name='home'
-    ),
-    url(
-        r'^logout/',
-        'home.views.logout',
-        name='logout'
-    ),
-    url(
-        r'^admin/',
-        include(admin.site.urls)
-    ),
-    url(
-        r'^api/v1/',
-        include('api.urls')
-    ),
-    url(
-        r'^api-auth/',
-        include(
-            'rest_framework.urls',
-            namespace='rest_framework'
-        )
-    ),
-)
+urlpatterns = patterns('',
+    (r'^', include(v1_api.urls)),
+                       )

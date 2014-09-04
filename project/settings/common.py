@@ -40,14 +40,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'tastypie_mongoengine',
     'widget_tweaks',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'rest_framework_mongoengine',
-    'bootstrap',
-    'provision',
-    'home',
-    'fleets',
+    'onelove',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -59,9 +54,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'onelove.urls'
+ROOT_URLCONF = 'project.urls'
 
-WSGI_APPLICATION = 'onelove.wsgi.application'
+WSGI_APPLICATION = 'project.wsgi.application'
 
 
 # Database
@@ -106,10 +101,5 @@ AUTH_USER_MODEL = 'mongo_auth.MongoUser'
 SESSION_ENGINE = 'mongoengine.django.sessions'
 SESSION_SERIALIZER = 'mongoengine.django.sessions.BSONSerializer'
 
-_MONGODB_HOST = 'localhost'
-_MONGODB_NAME = 'onelove'
-_MONGODB_DATABASE_HOST = \
-    'mongodb://%s/%s' \
-    % (_MONGODB_HOST, _MONGODB_NAME)
-
-mongoengine.connect(_MONGODB_NAME, host=_MONGODB_DATABASE_HOST)
+MONGO_DATABASE_NAME = 'onelove'
+mongoengine.connect(MONGO_DATABASE_NAME)

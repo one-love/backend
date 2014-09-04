@@ -1,8 +1,8 @@
 ansible
 celery
 django
-djangorestframework
-django-rest-framework-mongoengine
+django-tastypie
+django-tastypie-mongoengine
 django-widget-tweaks
 gunicorn
 mongoengine
