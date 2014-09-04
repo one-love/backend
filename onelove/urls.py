@@ -1,17 +1,10 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from rest_framework import routers
 
-from api import views
 from home.views import HomeView
 
 
 admin.autodiscover()
-
-router = routers.DefaultRouter()
-router.register(r'fleet', views.FleetViewSet)
-router.register(r'application', views.ApplicationViewSet)
-router.register(r'amazonprovider', views.AmazonProviderViewSet)
 
 urlpatterns = patterns(
     '',
@@ -31,7 +24,7 @@ urlpatterns = patterns(
     ),
     url(
         r'^api/v1/',
-        include(router.urls)
+        include('api.urls')
     ),
     url(
         r'^api-auth/',

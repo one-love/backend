@@ -1,16 +1,27 @@
 from rest_framework import viewsets
+from rest_framework import generics
+
 
 from . import serializers
-from fleets.models import Fleet, Application, AmazonProvider
+from fleets.models import Fleet, Application, Provider
+
+
+class FleetList(generics.ListCreateAPIView):
+    model = Fleet
+    serializer_class = serializers.FleetSerializer
+
+    def get_queryset(self):
+        return Fleet.objects
+
+
+class FleetDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Fleet
+    serializer_class = serializers.FleetSerializer
 
 
 class FleetViewSet(viewsets.ModelViewSet):
     model = Fleet
     serializer_class = serializers.FleetSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        return Fleet.objects.filter(user=user)
 
     def pre_save(self, obj):
         obj.user = self.request.user
@@ -20,19 +31,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     model = Application
     serializer_class = serializers.ApplicationSerializer
 
-    def get_queryset(self):
-        user = self.request.user
-        fleets = Fleet.objects.filter(user=user)
-        fleet_ids = [f.id for f in fleets]
-        return self.model.objects.filter(fleet__in=fleet_ids)
 
-
-class AmazonProviderViewSet(viewsets.ModelViewSet):
-    model = AmazonProvider
-    serializer_class = serializers.AmazonProviderSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        fleets = Fleet.objects.filter(user=user)
-        fleet_ids = [f.id for f in fleets]
-        return self.model.objects.filter(fleet__in=fleet_ids)
+class ProviderViewSet(viewsets.ModelViewSet):
+    model = Provider
+    serializer_class = serializers.ProviderSerializer
