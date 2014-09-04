@@ -1,21 +1,19 @@
 import json
 
 from django.contrib.auth import login, logout as django_logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import FormView
 
-from .tasks import provision
 from .models import Fleet
 
 
 class HomeView(FormView):
-    template_name = 'home/index.html'
+    template_name = 'onelove/index.html'
     form_class = AuthenticationForm
     success_url = '/'
 
