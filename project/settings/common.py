@@ -92,9 +92,7 @@ MEDIA_URL = '/media/'
 
 LOGIN_URL = '/'
 
-REST_FRAMEWORK = {
-    'PAGINATE_BY': 10
-}
+TASTYPIE_FULL_DEBUG = True
 
 AUTH_USER_MODEL = 'mongo_auth.MongoUser'
 
