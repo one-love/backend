@@ -1,9 +1,8 @@
 ansible
+celery
 django
 djangorestframework
-gunicorn
-south
-celery
-psycopg2
+django-rest-framework-mongoengine
 django-widget-tweaks
-djangular
+gunicorn
+mongoengine

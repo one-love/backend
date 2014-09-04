@@ -8,6 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
+import mongoengine
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -31,21 +33,19 @@ CELERY_RESULT_SERIALIZER = 'json'
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
     'django.contrib.auth',
+    'mongoengine.django.mongo_auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'south',
     'widget_tweaks',
     'rest_framework',
     'rest_framework.authtoken',
     'bootstrap',
-    'emailauth',
     'provision',
-    'fleets',
     'home',
+    'fleets',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -67,10 +67,7 @@ WSGI_APPLICATION = 'onelove.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'onelove',
-        'USER': 'onelove',
-        'HOST': 'localhost',
+        'ENGINE': 'django.db.backends.dummy',
     }
 }
 
@@ -96,10 +93,21 @@ STATIC_ROOT = '/var/static'
 
 MEDIA_URL = '/media/'
 
-AUTH_USER_MODEL = 'emailauth.CustomUser'
-
 LOGIN_URL = '/'
 
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
+
+AUTH_USER_MODEL = 'mongo_auth.MongoUser'
+
+SESSION_ENGINE = 'mongoengine.django.sessions'
+SESSION_SERIALIZER = 'mongoengine.django.sessions.BSONSerializer'
+
+_MONGODB_HOST = 'localhost'
+_MONGODB_NAME = 'onelove'
+_MONGODB_DATABASE_HOST = \
+    'mongodb://%s/%s' \
+    % (_MONGODB_HOST, _MONGODB_NAME)
+
+mongoengine.connect(_MONGODB_NAME, host=_MONGODB_DATABASE_HOST)
