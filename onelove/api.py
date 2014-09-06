@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from tastypie.authorization import Authorization
 from tastypie_mongoengine import resources, fields
 
-from .models import Fleet, Application, Provider
+from .documents import Fleet, Application, Provider
 
 
 class UserResource(resources.MongoEngineResource):

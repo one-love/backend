@@ -9,7 +9,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import FormView
 
-from .models import Fleet
+from .documents import Fleet
 
 
 class HomeView(FormView):
