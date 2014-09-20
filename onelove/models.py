@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.core.mail import send_mail
 from django.db import models
@@ -6,6 +5,7 @@ from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 
 class UserManager(BaseUserManager):
@@ -106,7 +106,7 @@ class Fleet(models.Model):
     name = models.CharField(max_length=256, unique=True)
     url = models.CharField(max_length=2048, unique=True)
     slug = models.SlugField(max_length=256)
-    user = models.ForeignKey(get_user_model())
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     def save(self, *args, **kwargs):
         if not self.id:
