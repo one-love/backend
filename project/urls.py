@@ -18,8 +18,4 @@ urlpatterns = patterns(
         'onelove.views.logout',
         name='logout'
     ),
-    url(
-        r'^api/',
-        include('onelove.urls')
-    )
 )
