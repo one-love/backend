@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import FormView
+from .models import Fleet
 
 
 class HomeView(FormView):
