@@ -8,8 +8,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-import mongoengine
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -33,15 +31,15 @@ CELERY_RESULT_SERIALIZER = 'json'
 # Application definition
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
-    'mongoengine.django.mongo_auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
-    'tastypie_mongoengine',
     'widget_tweaks',
+    'rest_framework',
+    'rest_framework.authtoken',
     'onelove',
 )
 
@@ -64,7 +62,10 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.dummy',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'onelove',
+        'USER': 'onelove',
+        'HOST': 'localhost',
     }
 }
 
@@ -90,14 +91,10 @@ STATIC_ROOT = '/var/static'
 
 MEDIA_URL = '/media/'
 
+AUTH_USER_MODEL = 'onelove.User'
+
 LOGIN_URL = '/'
 
-TASTYPIE_FULL_DEBUG = True
-
-AUTH_USER_MODEL = 'mongo_auth.MongoUser'
-
-SESSION_ENGINE = 'mongoengine.django.sessions'
-SESSION_SERIALIZER = 'mongoengine.django.sessions.BSONSerializer'
-
-MONGO_DATABASE_NAME = 'onelove'
-mongoengine.connect(MONGO_DATABASE_NAME)
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 10
+}

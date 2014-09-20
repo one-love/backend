@@ -9,8 +9,6 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import FormView
 
-from .documents import Fleet
-
 
 class HomeView(FormView):
     template_name = 'onelove/index.html'

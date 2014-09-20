@@ -1,8 +1,6 @@
 ansible
 celery
 django
-django-tastypie
-django-tastypie-mongoengine
+djangorestframework
 django-widget-tweaks
-gunicorn
-mongoengine
+psycopg2
