@@ -1,11 +1,12 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, \
+    BaseUserManager
 from django.core.mail import send_mail
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
 
 
 class UserManager(BaseUserManager):
