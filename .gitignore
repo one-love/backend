@@ -6,4 +6,4 @@ media/
 /static/
 vendor/
 local_settings.py
-onelove/settings/__init__.py
+project/settings/__init__.py
