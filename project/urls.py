@@ -21,5 +21,9 @@ urlpatterns = patterns(
     url(
         r'^api/',
         include('onelove.api.urls'),
-    )
+    ),
+    url(
+        r'^admin/',
+        include(admin.site.urls)
+    ),
 )
