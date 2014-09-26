@@ -22,7 +22,6 @@ urlpatterns = patterns(
         r'^api/',
         include(
             'onelove.api.urls',
-            namespace='api',
         )
     ),
     url(

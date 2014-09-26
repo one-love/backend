@@ -15,7 +15,6 @@ urlpatterns = patterns(
         r'^v1/',
         include(
             router.urls,
-            namespace='v1',
         ),
     ),
     url(
