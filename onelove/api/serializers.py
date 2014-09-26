@@ -11,13 +11,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
 class ProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Provider
-        fields = ('id', 'name', 'access_key', 'security_key', 'fleet')
 
 
 class FleetSerializer(serializers.ModelSerializer):
-    applications = ApplicationSerializer(many=True)
-    providers = ProviderSerializer(many=True)
+    applications = ApplicationSerializer(many=True, read_only=True)
+    providers = ProviderSerializer(many=True, read_only=True)
 
     class Meta:
         model = models.Fleet
-        fields = ('id', 'name', 'url', 'user', 'applications', 'providers')

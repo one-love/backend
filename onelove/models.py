@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, \
     BaseUserManager
 from django.core.mail import send_mail
 from django.db import models
-from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
@@ -106,13 +105,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Fleet(models.Model):
     name = models.CharField(max_length=256, unique=True)
     url = models.CharField(max_length=2048, unique=True)
-    slug = models.SlugField(max_length=256)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.slug = slugify(self.name)
-        super(Fleet, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
@@ -121,13 +114,7 @@ class Fleet(models.Model):
 class Application(models.Model):
     name = models.CharField(max_length=256, unique=True)
     repo = models.CharField(max_length=256, unique=True)
-    slug = models.SlugField(max_length=256)
     fleet = models.ForeignKey(Fleet, related_name='applications')
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.slug = slugify(self.name)
-        super(Application, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
@@ -135,15 +122,9 @@ class Application(models.Model):
 
 class Provider(models.Model):
     name = models.CharField(max_length=256, unique=True)
-    slug = models.SlugField(max_length=256)
     access_key = models.CharField(max_length=256)
     security_key = models.CharField(max_length=256)
     fleet = models.ForeignKey(Fleet, related_name='providers')
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.slug = slugify(self.name)
-        super(Provider, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
