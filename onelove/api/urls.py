@@ -24,4 +24,9 @@ urlpatterns = patterns(
             namespace='rest_framework',
         ),
     ),
+    url(
+        r'^v1/auth/',
+        'rest_framework.authtoken.views.obtain_auth_token',
+        name='login',
+    )
 )

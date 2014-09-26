@@ -3,7 +3,14 @@ from django.test import TestCase, Client
 
 
 class APITest(TestCase):
-    def test_v1_application_endpoint(self):
+    def test_v1_authentication(self):
         client = Client()
-        response = client.get(reverse('application-list'))
+        data = {
+            'username': 'admin@example.com',
+            'password': 'Sekrit',
+        }
+        response = client.post(
+            path=reverse('login'),
+            data=data,
+        )
         self.assertEqual(response.status_code, 200)
