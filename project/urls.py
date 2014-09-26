@@ -20,7 +20,10 @@ urlpatterns = patterns(
     ),
     url(
         r'^api/',
-        include('onelove.api.urls'),
+        include(
+            'onelove.api.urls',
+            namespace='api',
+        )
     ),
     url(
         r'^admin/',

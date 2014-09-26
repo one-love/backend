@@ -6,6 +6,7 @@ script:
   - pip install -r requirements.txt
   - cp project/settings/__init__.py.template project/settings/__init__.py
   - python manage.py collectstatic --noinput
+  - python manage.py test
 
 notifications:
   irc:
