@@ -1,4 +1,4 @@
-div#login_failed {
+.login_failed {
     display: none;
     position: absolute;
     right: 200px;
@@ -11,4 +11,8 @@ div#login_failed {
 .red-border {
     border: 3px solid #f51c40;
     border-color: red;
+}
+
+.button--large {
+  height: 34px;
 }
