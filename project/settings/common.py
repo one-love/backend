@@ -95,7 +95,6 @@ AUTH_USER_MODEL = 'onelove.User'
 LOGIN_URL = '/'
 
 REST_FRAMEWORK = {
-    'PAGINATE_BY': 10,
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
