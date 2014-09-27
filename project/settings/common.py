@@ -95,5 +95,13 @@ AUTH_USER_MODEL = 'onelove.User'
 LOGIN_URL = '/'
 
 REST_FRAMEWORK = {
-    'PAGINATE_BY': 10
+    'PAGINATE_BY': 10,
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
 }

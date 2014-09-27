@@ -2,5 +2,4 @@ ansible
 celery
 django
 djangorestframework
-django-widget-tweaks
 psycopg2
