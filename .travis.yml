@@ -3,7 +3,7 @@ python:
   - 2.7
 
 install:
-  - pip install -r requirements.txt
+  - pip install -r requirements_common.txt
   - pip install coveralls
 script:
   - cp project/settings/__init__.py.template project/settings/__init__.py
