@@ -19,3 +19,10 @@ class FleetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Fleet
+
+
+class UserSerializer(serializers.ModelSerializer):
+    fleets = FleetSerializer(many=True)
+
+    class Meta:
+        model = models.User

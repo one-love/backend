@@ -15,3 +15,8 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 class FleetViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.FleetSerializer
     queryset = serializer_class.Meta.model.objects.all()
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.UserSerializer
+    queryset = serializer_class.Meta.model.objects.all()

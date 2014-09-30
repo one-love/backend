@@ -105,7 +105,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Fleet(models.Model):
     name = models.CharField(max_length=256, unique=True)
     url = models.CharField(max_length=2048, unique=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='fleets')
 
     def __unicode__(self):
         return self.name
