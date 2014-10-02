@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .. import models
+from . import models
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
@@ -19,3 +19,10 @@ class FleetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Fleet
+
+
+class UserSerializer(serializers.ModelSerializer):
+    fleets = FleetSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.User

@@ -9,7 +9,7 @@ urlpatterns = patterns(
     url(
         r'^api/',
         include(
-            'onelove.api.urls',
+            'onelove.urls',
         )
     ),
     url(

@@ -59,7 +59,7 @@ class APITest(APITestCase):
         data = {
             'name': u'fleet',
             'url': u'http://onelove.org/',
-            'user': 1,
+            'users': [],
         }
         response = self.client.post(
             path=reverse(endpoint),
@@ -85,8 +85,7 @@ class APITest(APITestCase):
         user
         """
         endpoint = 'application-list'
-        user = User.objects.create()
-        fleet = Fleet.objects.create(user=user)
+        fleet = Fleet.objects.create()
         data = {
             'name': u'application',
             'repo': u'https://github.com/one-love/wordpress.git',
@@ -114,8 +113,7 @@ class APITest(APITestCase):
         user
         """
         endpoint = 'provider-list'
-        user = User.objects.create()
-        fleet = Fleet.objects.create(user=user)
+        fleet = Fleet.objects.create()
         data = {
             'name': u'provider',
             'access_key': u'sdfvsdvdsf',
