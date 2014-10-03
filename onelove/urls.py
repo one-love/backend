@@ -6,7 +6,8 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'users', views.UserViewSet)
-router.register(r'fleets', views.FleetViewSet)
+router.register(r'groups', views.GroupViewSet)
+router.register(r'fleets', views.FleetViewSet, base_name='fleet')
 router.register(r'applications', views.ApplicationViewSet)
 router.register(r'providers', views.ProviderViewSet)
 
