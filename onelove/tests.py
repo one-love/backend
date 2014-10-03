@@ -38,6 +38,18 @@ class APITest(APITestCase):
         response = self.client.get(path=reverse(endpoint))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_v1_get_users(self):
+        """
+        GET on 'user-list' URL with anonymous and authenticated user
+        """
+        endpoint = 'user-list'
+        response = self.client.get(path=reverse(endpoint))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.client.get(path=reverse(endpoint))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_v1_get_applications(self):
         """
         GET on 'application-list' URL with anonymous and authenticated
@@ -88,6 +100,35 @@ class APITest(APITestCase):
 
         data['id'] = response.data['id']
         data['fleets'] = []
+        self.assertEqual(dict(response.data), data)
+
+    def test_v1_post_users(self):
+        """
+        POST on 'user-list' URL with anonymous and authenticated user
+        """
+        endpoint = 'user-list'
+        data = {
+            'email': u'some@example.com',
+        }
+        response = self.client.post(
+            path=reverse(endpoint),
+            data=data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.client.post(
+            path=reverse(endpoint),
+            data=data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        data['id'] = response.data['id']
+        data['first_name'] = response.data['first_name']
+        data['last_name'] = response.data['last_name']
+        data['groups'] = response.data['groups']
+        data['is_active'] = response.data['is_active']
+        data['user_permissions'] = response.data['user_permissions']
         self.assertEqual(dict(response.data), data)
 
     def test_v1_post_fleets(self):

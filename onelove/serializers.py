@@ -26,6 +26,15 @@ class FleetSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
+        fields = (
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'is_active',
+            'groups',
+            'user_permissions',
+        )
 
 
 class GroupSerializer(serializers.ModelSerializer):
