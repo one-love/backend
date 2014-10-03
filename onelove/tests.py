@@ -26,6 +26,18 @@ class APITest(APITestCase):
         response = self.client.get(path=reverse(endpoint))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_v1_get_groups(self):
+        """
+        GET on 'group-list' URL with anonymous and authenticated user
+        """
+        endpoint = 'group-list'
+        response = self.client.get(path=reverse(endpoint))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.client.get(path=reverse(endpoint))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_v1_get_applications(self):
         """
         GET on 'application-list' URL with anonymous and authenticated
@@ -51,6 +63,32 @@ class APITest(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         response = self.client.get(path=reverse(endpoint))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_v1_post_groups(self):
+        """
+        POST on 'group-list' URL with anonymous and authenticated user
+        """
+        endpoint = 'group-list'
+        data = {
+            'name': u'group',
+            'permissions': [],
+        }
+        response = self.client.post(
+            path=reverse(endpoint),
+            data=data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.client.post(
+            path=reverse(endpoint),
+            data=data,
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        data['id'] = response.data['id']
+        data['fleets'] = []
+        self.assertEqual(dict(response.data), data)
 
     def test_v1_post_fleets(self):
         """
