@@ -1,4 +1,6 @@
+from django.contrib.auth.models import Group
 from rest_framework import serializers
+
 from . import models
 
 
@@ -22,7 +24,12 @@ class FleetSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+
+
+class GroupSerializer(serializers.ModelSerializer):
     fleets = FleetSerializer(many=True, read_only=True)
 
     class Meta:
-        model = models.User
+        model = Group

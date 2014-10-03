@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+
 from . import serializers
 
 
@@ -14,9 +15,21 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 
 class FleetViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.FleetSerializer
-    queryset = serializer_class.Meta.model.objects.all()
+
+    def get_queryset(self):
+        user = self.request.user
+        groups = user.groups.all()
+        queryset = self.serializer_class.Meta.model.objects.filter(
+            group__in=groups
+        )
+        return queryset
 
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
+    queryset = serializer_class.Meta.model.objects.all()
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.GroupSerializer
     queryset = serializer_class.Meta.model.objects.all()

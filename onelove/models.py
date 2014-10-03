@@ -1,6 +1,5 @@
-from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, \
-    BaseUserManager
+    BaseUserManager, Group
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
@@ -105,9 +104,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Fleet(models.Model):
     name = models.CharField(max_length=256, unique=True)
     url = models.CharField(max_length=2048, unique=True)
-    users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name='fleets'
+    group = models.ForeignKey(
+        Group,
+        related_name='fleets',
     )
 
     def __unicode__(self):
