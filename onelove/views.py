@@ -17,10 +17,8 @@ class FleetViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.FleetSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        groups = user.groups.all()
         queryset = self.serializer_class.Meta.model.objects.filter(
-            group__in=groups
+            group__in=self.request.user.groups.all()
         )
         return queryset
 
