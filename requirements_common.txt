@@ -1,3 +1,4 @@
+ansible
 celery
 django
 djangorestframework
