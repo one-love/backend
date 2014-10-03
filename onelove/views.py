@@ -1,6 +1,14 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 
 from . import serializers
+from .tasks import provision
+
+
+class ProvisionViewSet(viewsets.GenericViewSet):
+    def create(self, request, *args, **kwargs):
+        application = self.kwargs['application']
 
 
 class ProviderViewSet(viewsets.ModelViewSet):
@@ -21,6 +29,16 @@ class FleetViewSet(viewsets.ModelViewSet):
             group__in=self.request.user.groups.all()
         )
         return queryset
+
+    @detail_route(methods=['POST'])
+    def provision(self, request, pk):
+        result = provision.delay()
+        return Response(
+            {
+                'result': result.id
+            },
+            status=status.HTTP_201_CREATED
+        )
 
 
 class UserViewSet(viewsets.ModelViewSet):
