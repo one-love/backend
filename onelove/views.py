@@ -27,6 +27,13 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
     queryset = serializer_class.Meta.model.objects.all()
 
+    def pre_save(self, obj):
+        """
+        Handle user password
+        """
+        if 'password' in self.request._data:
+            obj.set_password(obj.password)
+
 
 class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.GroupSerializer
