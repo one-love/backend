@@ -26,6 +26,7 @@ class FleetSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
+        write_only_fields = ('password',)
         fields = (
             'id',
             'email',
