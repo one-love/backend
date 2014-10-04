@@ -6,11 +6,6 @@ from . import serializers
 from .tasks import provision
 
 
-class ProvisionViewSet(viewsets.GenericViewSet):
-    def create(self, request, *args, **kwargs):
-        application = self.kwargs['application']
-
-
 class ProviderViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ProviderSerializer
     queryset = serializer_class.Meta.model.objects.all()
@@ -32,12 +27,19 @@ class FleetViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['POST'])
     def provision(self, request, pk):
-        result = provision.delay()
+        config = {
+            'repo': 'https://github.com/one-love/ansible-wordpress',
+            'inventory': 'provision/vagrant',
+            'playbook': 'provision/site.yml',
+            'remote_pass': 'vagrant',
+        }
+        result = provision.delay(config)
+
         return Response(
             {
                 'result': result.id
             },
-            status=status.HTTP_201_CREATED
+            status=status.HTTP_201_CREATED,
         )
 
 

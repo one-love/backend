@@ -8,4 +8,12 @@ DATABASES = {
     }
 }
 
+INSTALLED_APPS += (
+    'django_nose',
+)
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = [
+    '--with-coverage',
+]
+
 STATIC_ROOT = '/tmp/'

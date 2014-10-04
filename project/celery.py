@@ -7,7 +7,7 @@ from celery import Celery
 from django.conf import settings
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'onelove.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 
 app = Celery('onelove', backend='amqp', broker='amqp://')
 
