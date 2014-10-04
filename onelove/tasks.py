@@ -28,7 +28,7 @@ def clone_or_pull(repo_url):
 
 
 def play(config):
-    inventory_path = repo_name(config['inventory'])
+    inventory_path = config['inventory']
     inv = inventory.Inventory(inventory_path)
     inv.set_playbook_basedir(os.path.dirname(inventory_path))
     stats = ansible.callbacks.AggregateStats()

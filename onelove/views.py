@@ -1,6 +1,9 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 
 from . import serializers
+from .tasks import provision
 
 
 class ProviderViewSet(viewsets.ModelViewSet):
@@ -21,6 +24,23 @@ class FleetViewSet(viewsets.ModelViewSet):
             group__in=self.request.user.groups.all()
         )
         return queryset
+
+    @detail_route(methods=['POST'])
+    def provision(self, request, pk):
+        config = {
+            'repo': 'https://github.com/one-love/ansible-wordpress',
+            'inventory': 'provision/vagrant',
+            'playbook': 'provision/site.yml',
+            'remote_pass': 'vagrant',
+        }
+        result = provision.delay(config)
+
+        return Response(
+            {
+                'result': result.id
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class UserViewSet(viewsets.ModelViewSet):

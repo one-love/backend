@@ -1,7 +1,5 @@
 [report]
 omit =
-    onelove/tasks.py
     onelove/urls.py
-    onelove/views.py
     onelove/__init__.py
-    onelove/api/__init__.py
+    onelove/tests.py
