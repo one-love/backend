@@ -2,3 +2,4 @@
 omit =
     onelove/urls.py
     onelove/__init__.py
+    onelove/tests.py
