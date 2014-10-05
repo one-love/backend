@@ -198,7 +198,8 @@ class APITest(APITestCase):
         group = Group.objects.create(name='wordpress')
         fleet = Fleet.objects.create(group=group)
         data = {
-            'name': u'provider',
+            'name': u'aws',
+            'type': u'awsprovider',
             'access_key': u'sdfvsdvdsf',
             'security_key': u'vsdfvdsfgrvvfsdfvd',
             'fleet': fleet.id,
