@@ -3,3 +3,4 @@ celery
 django
 djangorestframework
 django-cors-headers
+django-model-utils
