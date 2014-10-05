@@ -43,3 +43,19 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
+
+
+class SSHProviderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SSHProvider
+
+
+class AWSProviderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.AWSProvider
+
+
+class SSHHostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SSHHost
+

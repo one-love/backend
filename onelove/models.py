@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.http import urlquote
 from django.utils.translation import ugettext_lazy as _
+from model_utils.managers import InheritanceManager
 
 
 class UserManager(BaseUserManager):
@@ -124,9 +125,38 @@ class Application(models.Model):
 
 class Provider(models.Model):
     name = models.CharField(max_length=256, unique=True)
-    access_key = models.CharField(max_length=256)
-    security_key = models.CharField(max_length=256)
     fleet = models.ForeignKey(Fleet, related_name='providers')
+    objects = InheritanceManager()
+    type = models.CharField(
+        max_length=64,
+        choices=(
+            ('awsprovider', 'Amazon Web Services'),
+            ('sshprovider', 'SSH'),
+        )
+    )
 
     def __unicode__(self):
         return self.name
+
+
+class AWSProvider(Provider):
+    access_key = models.CharField(max_length=256)
+    security_key = models.CharField(max_length=256)
+
+    def get_hosts(self):
+        return []
+
+
+class SSHProvider(Provider):
+    ssh_key = models.CharField(max_length=256)
+
+    def get_hosts(self):
+        return self.hosts.all()
+
+
+class SSHHost(models.Model):
+    ssh_provider = models.ForeignKey(SSHProvider, related_name='hosts')
+    ip = models.CharField(max_length=16)
+
+    def __unicode__(self):
+        return self.ip
