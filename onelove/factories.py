@@ -38,6 +38,7 @@ class ApplicationFactory(factory.DjangoModelFactory):
 
     name = 'onelove'
     repo = 'https://github.com/one-love/ansible-one-love'
+    playbook = 'provision/site.yml'
     fleet = factory.SubFactory(FleetFactory)
 
 
