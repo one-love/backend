@@ -51,6 +51,7 @@ class AWSProviderFactory(factory.DjangoModelFactory):
     type = 'awsprovider'
     access_key = 'access_key'
     security_key = 'security_key'
+    ssh_user = 'vagrant'
     ssh_key = 'dsvfd'
 
 
@@ -61,6 +62,7 @@ class SSHProviderFactory(factory.DjangoModelFactory):
     name = 'sshprovider'
     fleet = factory.SubFactory(FleetFactory)
     type = 'sshprovider'
+    ssh_user = 'vagrant'
     ssh_key = 'ssh_key'
 
 

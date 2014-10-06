@@ -87,16 +87,19 @@ class FleetViewSet(viewsets.ModelViewSet):
                 for host in provider.get_hosts():
                     hosts_string += \
                         str(host.ip) + \
-                        ' ansible_ssh_user' + \
+                        ' ansible_ssh_user=' + \
                         provider.ssh_user + '\n'
                 tmp, tmp_path = tempfile.mkstemp()
                 os.write(tmp, hosts_string)
                 os.close(tmp)
+                inventory, inventory_path = tempfile.mkstemp()
+                os.write(inventory, provider.ssh_key)
+                os.close(inventory)
                 config = {
                     'repo': application.repo,
                     'inventory': tmp_path,
                     'playbook': application.playbook,
-                    'ssh_key': provider.ssh_key,
+                    'private_key_file': inventory_path,
                 }
                 results.append(tasks.provision.delay(config).id)
         return Response(

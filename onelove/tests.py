@@ -262,6 +262,7 @@ class APIv1Test(APITestCase):
             'type': u'awsprovider',
             'access_key': u'sdfvsdvdsf',
             'security_key': u'vsdfvdsfgrvvfsdfvd',
+            'ssh_user': u'vagrant',
             'ssh_key': u'dsvdsvfd',
             'fleet': fleet.id,
         }
@@ -283,6 +284,7 @@ class APIv1Test(APITestCase):
         data = {
             'name': u'ssh',
             'type': u'sshprovider',
+            'ssh_user': u'vagrant',
             'ssh_key': u'dsvdsvfd',
             'fleet': fleet.id,
         }

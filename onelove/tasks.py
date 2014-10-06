@@ -46,7 +46,7 @@ def play(config):
         callbacks=playbook_cb,
         runner_callbacks=runner_cb,
         stats=stats,
-        remote_pass=config['remote_pass'],
+        private_key_file=config['private_key_file'],
     )
 
     return pb.run()
