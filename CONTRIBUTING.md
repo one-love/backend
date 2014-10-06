@@ -90,7 +90,7 @@ per tab.
 
 __Python:__
 
-One Love API uses PEP8 compatible coding style, plus some extras. For example,
+One Love API uses [PEP8](http://legacy.python.org/dev/peps/pep-0008/) compatible coding style, plus some extras. For example,
 if arguments of function/class call excede 80 characters, every argument has
 its own line
 
