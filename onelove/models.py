@@ -127,6 +127,8 @@ class Application(models.Model):
 class Provider(models.Model):
     name = models.CharField(max_length=256, unique=True)
     fleet = models.ForeignKey(Fleet, related_name='providers')
+    ssh_user = models.CharField(max_length=64)
+    ssh_key = models.TextField()
     objects = InheritanceManager()
     type = models.CharField(
         max_length=64,
@@ -149,8 +151,6 @@ class AWSProvider(Provider):
 
 
 class SSHProvider(Provider):
-    ssh_key = models.CharField(max_length=256)
-
     def get_hosts(self):
         return self.hosts.all()
 
