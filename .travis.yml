@@ -8,9 +8,7 @@ install:
 script:
   - cp project/settings/__init__.py.template project/settings/__init__.py
   - python manage.py collectstatic --noinput
-  - coverage run --source=onelove manage.py test
-after_success:
-  coveralls
+  - python manage.py test
 
 notifications:
   irc:
