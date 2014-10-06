@@ -117,6 +117,7 @@ class Fleet(models.Model):
 class Application(models.Model):
     name = models.CharField(max_length=256, unique=True)
     repo = models.CharField(max_length=256, unique=True)
+    playbook = models.CharField(max_length=256)
     fleet = models.ForeignKey(Fleet, related_name='applications')
 
     def __unicode__(self):

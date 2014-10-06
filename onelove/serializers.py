@@ -7,7 +7,7 @@ from . import models
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Application
-        fields = ('id', 'name', 'repo', 'fleet')
+        fields = ('id', 'name', 'repo', 'playbook', 'fleet')
 
 
 class ProviderSerializer(serializers.ModelSerializer):

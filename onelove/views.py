@@ -5,7 +5,9 @@ from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 
 from . import serializers, tasks
-from .models import Provider
+from . import models
+import tempfile
+import os
 
 
 class ProviderViewSet(viewsets.ModelViewSet):
@@ -15,7 +17,7 @@ class ProviderViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['GET', 'POST'])
     def hosts(self, request, pk):
         if request.method == 'POST':
-            provider = Provider.objects.get_subclass(pk=pk)
+            provider = models.Provider.objects.get_subclass(pk=pk)
             if provider.type != 'sshprovider':
                 raise ParseError(
                     detail="Only SSH Provider has ability to add hosts by hand"
@@ -28,8 +30,8 @@ class ProviderViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
-            provider = Provider.objects.get_subclass(pk=pk)
-        except Provider.DoesNotExist:
+            provider = models.Provider.objects.get_subclass(pk=pk)
+        except models.Provider.DoesNotExist:
             raise Http404
 
         return Response(
@@ -74,17 +76,29 @@ class FleetViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['POST'])
     def provision(self, request, pk):
-        config = {
-            'repo': 'https://github.com/one-love/ansible-wordpress',
-            'inventory': 'provision/vagrant',
-            'playbook': 'provision/site.yml',
-            'remote_pass': 'vagrant',
-        }
-        result = tasks.provision.delay(config)
+        results = []
+        hosts_string = ''
 
+        fleet = models.Fleet.objects.get(pk=pk)
+        for provider in fleet.providers.all().select_subclasses():
+            for host in provider.get_hosts():
+                hosts_string += str(host.ip) + '\n'
+
+
+        for application in fleet.applications.all():
+            tmp, tmp_path = tempfile.mkstemp()
+            os.write(tmp, hosts_string)
+            os.close(tmp)
+            config = {
+                'repo': application.repo,
+                'inventory': tmp_path,
+                'playbook': application.playbook,
+                'remote_pass': 'vagrant',
+            }
+            results.append(tasks.provision.delay(config).id)
         return Response(
             {
-                'result': result.id
+                'result': results
             },
             status=status.HTTP_201_CREATED,
         )
