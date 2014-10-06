@@ -185,6 +185,7 @@ class APIv1Test(APITestCase):
         data = {
             'name': u'application',
             'repo': u'https://github.com/one-love/wordpress.git',
+            'playbook': u'provision/site.yml',
             'fleet': fleet.id,
         }
         response = self.client.post(

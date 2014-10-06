@@ -58,4 +58,6 @@ def provision(config):
     os.chdir('/var/repos')
     clone_or_pull(config['repo'])
     os.chdir('/var/repos/' + repo_name(config['repo']))
-    return play(config)
+    result = play(config)
+    os.remove(config['inventory'])
+    return result
