@@ -51,6 +51,7 @@ class ModelTest(TestCase):
         ssh_host.save()
         get_sshhost = models.SSHHost.objects.get(pk=ssh_host.pk)
         self.assertEqual(ssh_host, get_sshhost)
+
     def test_sshprovider(self):
         fleet = factories.FleetFactory()
         provider = models.AWSProvider(
@@ -261,6 +262,7 @@ class APIv1Test(APITestCase):
             'type': u'awsprovider',
             'access_key': u'sdfvsdvdsf',
             'security_key': u'vsdfvdsfgrvvfsdfvd',
+            'ssh_key': u'dsvdsvfd',
             'fleet': fleet.id,
         }
         response = self.client.post(

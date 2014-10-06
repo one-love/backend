@@ -28,7 +28,10 @@ class ProviderViewSet(viewsets.ModelViewSet):
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
         try:
             provider = models.Provider.objects.get_subclass(pk=pk)
         except models.Provider.DoesNotExist:
@@ -77,25 +80,25 @@ class FleetViewSet(viewsets.ModelViewSet):
     @detail_route(methods=['POST'])
     def provision(self, request, pk):
         results = []
-        hosts_string = ''
-
         fleet = models.Fleet.objects.get(pk=pk)
-        for provider in fleet.providers.all().select_subclasses():
-            for host in provider.get_hosts():
-                hosts_string += str(host.ip) + '\n'
-
-
         for application in fleet.applications.all():
-            tmp, tmp_path = tempfile.mkstemp()
-            os.write(tmp, hosts_string)
-            os.close(tmp)
-            config = {
-                'repo': application.repo,
-                'inventory': tmp_path,
-                'playbook': application.playbook,
-                'remote_pass': 'vagrant',
-            }
-            results.append(tasks.provision.delay(config).id)
+            hosts_string = ''
+            for provider in fleet.providers.all().select_subclasses():
+                for host in provider.get_hosts():
+                    hosts_string += \
+                        str(host.ip) + \
+                        ' ansible_ssh_user' + \
+                        provider.ssh_user + '\n'
+                tmp, tmp_path = tempfile.mkstemp()
+                os.write(tmp, hosts_string)
+                os.close(tmp)
+                config = {
+                    'repo': application.repo,
+                    'inventory': tmp_path,
+                    'playbook': application.playbook,
+                    'ssh_key': provider.ssh_key,
+                }
+                results.append(tasks.provision.delay(config).id)
         return Response(
             {
                 'result': results
