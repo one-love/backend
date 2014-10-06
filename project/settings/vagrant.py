@@ -8,5 +8,6 @@ INSTALLED_APPS += (
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
-    '--verbosity=3',
+    '--with-coverage',
+    '--cover-package=onelove',
 ]

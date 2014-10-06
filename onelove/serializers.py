@@ -58,4 +58,3 @@ class AWSProviderSerializer(serializers.ModelSerializer):
 class SSHHostSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SSHHost
-
