@@ -9,6 +9,8 @@ script:
   - cp project/settings/__init__.py.template project/settings/__init__.py
   - python manage.py collectstatic --noinput
   - python manage.py test
+after_success:
+  coveralls
 
 notifications:
   irc:
