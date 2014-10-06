@@ -3,7 +3,6 @@ from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
 from django.core.urlresolvers import reverse
 from . import models, factories
-from django.contrib.auth.models import Group
 from django.test import TestCase
 
 
@@ -195,7 +194,7 @@ class APIv1Test(APITestCase):
         POST on 'fleet-list' URL with anonymous and authenticated user
         """
         endpoint = 'fleet-list'
-        group = Group.objects.create(name='wordpress')
+        group = factories.GroupFactory()
         data = {
             'name': u'fleet',
             'url': u'http://onelove.org/',
@@ -225,8 +224,7 @@ class APIv1Test(APITestCase):
         user
         """
         endpoint = 'application-list'
-        group = Group.objects.create(name='wordpress')
-        fleet = models.Fleet.objects.create(group=group)
+        fleet = factories.FleetFactory()
         data = {
             'name': u'application',
             'repo': u'https://github.com/one-love/wordpress.git',
@@ -254,8 +252,7 @@ class APIv1Test(APITestCase):
         user
         """
         endpoint = 'provider-list'
-        group = Group.objects.create(name='wordpress')
-        fleet = models.Fleet.objects.create(group=group)
+        fleet = factories.FleetFactory()
         data = {
             'name': u'aws',
             'type': u'awsprovider',
