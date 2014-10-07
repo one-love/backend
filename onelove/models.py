@@ -9,7 +9,6 @@ from model_utils.managers import InheritanceManager
 
 
 class UserManager(BaseUserManager):
-
     def _create_user(
         self,
         email,
@@ -36,12 +35,10 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, password=None, **extra_fields):
-        return self._create_user(email, password, False, False,
-                                 **extra_fields)
+        return self._create_user(email, password, False, False, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
-        return self._create_user(email, password, True, True,
-                                 **extra_fields)
+        return self._create_user(email, password, True, True, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -51,7 +48,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     Email and password are required. Other fields are optional.
     """
-    email = models.EmailField(_('email address'), max_length=254, unique=True)
+    email = models.EmailField(
+        _('email address'),
+        max_length=254,
+        blank=False,
+        null=False,
+        unique=True
+    )
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     is_staff = models.BooleanField(
@@ -103,8 +106,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Fleet(models.Model):
-    name = models.CharField(max_length=256, unique=True)
-    url = models.CharField(max_length=2048, unique=True)
+    name = models.CharField(
+        max_length=256,
+        unique=True
+    )
+    url = models.CharField(
+        max_length=2048,
+        unique=True,
+    )
     group = models.ForeignKey(
         Group,
         related_name='fleets',

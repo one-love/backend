@@ -4,6 +4,7 @@ from rest_framework.authtoken.models import Token
 from django.core.urlresolvers import reverse
 from . import models, factories
 from django.test import TestCase
+from nose.tools import raises
 
 
 class ModelTest(TestCase):
@@ -59,8 +60,6 @@ class ModelTest(TestCase):
         get_sshhost = models.SSHHost.objects.get(pk=ssh_host.pk)
         self.assertEqual(ssh_host, get_sshhost)
         self.assertEqual(ssh_host.__unicode__(), get_sshhost.__unicode__())
-        self.assertEqual(ssh_host.ssh_provider, get_sshhost.ssh_provider)
-        self.assertEqual(ssh_host.ip, get_sshhost.ip)
 
     def test_sshprovider(self):
         fleet = factories.FleetFactory()
@@ -86,6 +85,27 @@ class ModelTest(TestCase):
         self.assertEqual(user.get_absolute_url(), get_user.get_absolute_url())
         self.assertEqual(user.get_full_name(), get_user.get_full_name())
         self.assertEqual(user.get_short_name(), get_user.get_short_name())
+
+    @raises(ValueError)
+    def test_user_none_email_fail(self):
+        user = models.User.objects.create_user(email=None)
+        user.save()
+
+    def test_user_create_superuser(self):
+        user = models.User.objects.create_superuser(
+            email='one@love.com',
+            password='password'
+        )
+        user.save()
+
+    def test_user_email(self):
+        user = models.User(email='one@love.com')
+        user.save()
+        user.email_user(
+            subject='subject',
+            message='message',
+            from_email='norely@love.com'
+        )
 
     def test_user_manager(self):
         user = models.User.objects.create(email='one@love.com')
