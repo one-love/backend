@@ -91,6 +91,13 @@ class ModelTest(TestCase):
         user = models.User.objects.create_user(email=None)
         user.save()
 
+    def test_user_create_superuser(self):
+        user = models.User.objects.create_superuser(
+            email='one@love.com',
+            password='password'
+        )
+        user.save()
+
     def test_user_email(self):
         user = models.User(email='one@love.com')
         user.save()
