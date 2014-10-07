@@ -5,10 +5,9 @@ python:
 install:
   - pip install -r requirements_common.txt
   - pip install -r requirements_test.txt
-script:
   - cp project/settings/__init__.py.template project/settings/__init__.py
-  - python manage.py collectstatic --noinput
-  - python manage.py test
+script:
+  - ./manage.py test
 after_success:
   coveralls
 
