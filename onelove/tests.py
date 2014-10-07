@@ -19,6 +19,10 @@ class ModelTest(TestCase):
             name=application.name
         )
         self.assertEqual(application, get_application)
+        self.assertEqual(
+            application.__unicode__(),
+            get_application.__unicode__()
+        )
 
     def test_awsprovider(self):
         fleet = factories.FleetFactory()
@@ -30,6 +34,8 @@ class ModelTest(TestCase):
         provider.save()
         get_provider = models.Provider.objects.get_subclass(name=provider.name)
         self.assertEqual(provider, get_provider)
+        self.assertEqual(provider.__unicode__(), get_provider.__unicode__())
+        self.assertEqual(provider.get_hosts(), get_provider.get_hosts())
 
     def test_fleet(self):
         group = factories.GroupFactory()
@@ -41,6 +47,7 @@ class ModelTest(TestCase):
         fleet.save()
         get_fleet = models.Fleet.objects.get(name=fleet.name)
         self.assertEqual(fleet, get_fleet)
+        self.assertEqual(fleet.__unicode__(), get_fleet.__unicode__())
 
     def test_sshhost(self):
         ssh_provider = factories.SSHProviderFactory()
@@ -51,6 +58,9 @@ class ModelTest(TestCase):
         ssh_host.save()
         get_sshhost = models.SSHHost.objects.get(pk=ssh_host.pk)
         self.assertEqual(ssh_host, get_sshhost)
+        self.assertEqual(ssh_host.__unicode__(), get_sshhost.__unicode__())
+        self.assertEqual(ssh_host.ssh_provider, get_sshhost.ssh_provider)
+        self.assertEqual(ssh_host.ip, get_sshhost.ip)
 
     def test_sshprovider(self):
         fleet = factories.FleetFactory()
@@ -62,6 +72,8 @@ class ModelTest(TestCase):
         provider.save()
         get_provider = models.Provider.objects.get_subclass(name=provider.name)
         self.assertEqual(provider, get_provider)
+        self.assertEqual(provider.__unicode__(), get_provider.__unicode__())
+        self.assertEqual(provider.get_hosts(), get_provider.get_hosts())
 
     def test_user(self):
         user = models.User(
@@ -70,6 +82,10 @@ class ModelTest(TestCase):
         user.save()
         get_user = models.User.objects.get(email=user.email)
         self.assertEqual(user, get_user)
+        self.assertEqual(user.__unicode__(), get_user.__unicode__())
+        self.assertEqual(user.get_absolute_url(), get_user.get_absolute_url())
+        self.assertEqual(user.get_full_name(), get_user.get_full_name())
+        self.assertEqual(user.get_short_name(), get_user.get_short_name())
 
     def test_user_manager(self):
         user = models.User.objects.create(email='one@love.com')
