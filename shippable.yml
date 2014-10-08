@@ -14,7 +14,7 @@ before_script:
 
 script:
   - coverage run --branch --source=onelove manage.py test
-  - coverage xml -o shippable/codecoverage/coverage.xml manage.py test
+  - coverage xml -o shippable/codecoverage/coverage.xml manage.py
 
 after_script:
   - coveralls
