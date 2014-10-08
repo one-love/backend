@@ -1,3 +1,6 @@
+[run]
+source=onelove
+
 [report]
 omit =
     onelove/urls.py
