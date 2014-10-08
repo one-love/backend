@@ -8,8 +8,13 @@ install:
   - pip install -r requirements_test.txt
   - cp project/settings/__init__.py.template project/settings/__init__.py
 
+before_script:
+  - mkdir -p shippable/testresults
+  - mkdir -p shippable/codecoverage
+
 script:
-  - coverage run --source=onelove manage.py test
+  - coverage run --branch --source=onelove manage.py test
+  - coverage xml -o shippable/codecoverage/coverage.xml manage.py
 
 after_script:
   - coveralls
