@@ -13,8 +13,11 @@ before_script:
   - mkdir -p shippable/codecoverage
 
 script:
-  - coverage run --branch --source=onelove manage.py test
-  - coverage xml -o shippable/codecoverage/coverage.xml manage.py
+  - coverage run --branch manage.py test
+  - coverage xml -o shippable/codecoverage/coverage.xml
 
 after_script:
-  - coveralls
+  - coveralls --verbose
+  - ls -lR
+  - cat shippable/codecoverage/coverage.xml
+  - cat shippable/testresults/nosetests.xml
