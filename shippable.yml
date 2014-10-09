@@ -15,9 +15,3 @@ before_script:
 script:
   - coverage run --branch manage.py test
   - coverage xml -o shippable/codecoverage/coverage.xml
-
-after_script:
-  - coveralls --verbose
-  - ls -lR
-  - cat shippable/codecoverage/coverage.xml
-  - cat shippable/testresults/nosetests.xml
