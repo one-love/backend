@@ -1,8 +1,7 @@
 One Love REST API
 =================
 
-[![Build Status](https://travis-ci.org/one-love/api.svg?branch=master)](https://travis-ci.org/one-love/api)
-[![Coverage Status](https://coveralls.io/repos/one-love/api/badge.png?branch=master)](https://coveralls.io/r/one-love/api?branch=master)
+[![Build Status](https://api.shippable.com/projects/5435679e7a7fb11eaa64b69d/badge?branchName=master)](https://app.shippable.com/projects/5435679e7a7fb11eaa64b69d/builds/latest)
 
 This is Django based API part of [One Love](https://one-love.github.io/) project.
 
