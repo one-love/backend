@@ -75,6 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         )
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    ssh_key = models.TextField(_('private SSH key'), blank=True, null=True)
 
     objects = UserManager()
 
@@ -138,7 +139,6 @@ class Provider(models.Model):
     name = models.CharField(max_length=256, unique=True)
     fleet = models.ForeignKey(Fleet, related_name='providers')
     ssh_user = models.CharField(max_length=64)
-    ssh_key = models.TextField()
     objects = InheritanceManager()
     type = models.CharField(
         max_length=64,
