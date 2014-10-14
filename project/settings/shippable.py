@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from .common import *
 
 DATABASES['NAME'] = 'onelove'
+DATABASES['HOST'] = 'localhost'
 
 INSTALLED_APPS += (
     'django_nose',
