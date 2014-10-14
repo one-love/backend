@@ -11,6 +11,7 @@ install:
 before_script:
   - mkdir -p shippable/testresults
   - mkdir -p shippable/codecoverage
+  - psql -c 'create database onelove;' -U postgres
 
 script:
   - coverage run --branch manage.py test
