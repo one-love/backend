@@ -6,3 +6,4 @@ django-cors-headers
 django-model-utils
 django-uuidfield
 factory_boy
+psycopg2
