@@ -4,13 +4,14 @@ python:
   - 2.7
 
 install:
-  - pip install -r requirements_common.txt
+  - pip install -r requirements.txt
   - pip install -r requirements_test.txt
   - cp project/settings/__init__.py.template project/settings/__init__.py
 
 before_script:
   - mkdir -p shippable/testresults
   - mkdir -p shippable/codecoverage
+  - psql -c 'create database onelove;' -U postgres
 
 script:
   - coverage run --branch manage.py test
