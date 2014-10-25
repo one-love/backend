@@ -28,7 +28,7 @@ Commits should be atomic - the smaller they are, the better it gets.
 
 __Commit messages:__
 
-Start your commit message with capital letter and end with period (`.`).
+Start your commit message with capital letter.
 First line should be commit description, no longer than 65 characters.
 If you work on one of the issues, include issue number in your commit summary.
 If what you have to say about the commit exceeds 65 characters, insert blank
