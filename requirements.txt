@@ -1,4 +1,3 @@
-ansible
 celery
 django
 djangorestframework
@@ -7,3 +6,4 @@ django-model-utils
 django-uuidfield
 factory_boy
 psycopg2
+uwsgi

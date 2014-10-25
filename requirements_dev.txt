@@ -1,3 +1,0 @@
-django-debug-toolbar
-django-extensions
-ipython

@@ -68,7 +68,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'HOST': 'db_1',
+        'HOST': 'db',
     }
 }
 
@@ -90,9 +90,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/static'
+STATIC_ROOT = '/static'
 
 MEDIA_URL = '/media/'
+MEDIA_ROOT = '/media'
 
 AUTH_USER_MODEL = 'onelove.User'
 
