@@ -3,8 +3,6 @@ from __future__ import absolute_import
 import os
 import subprocess
 
-import ansible
-from ansible import inventory, playbook
 from celery import shared_task
 
 
@@ -27,37 +25,3 @@ def clone_or_pull(repo_url):
     return process.returncode
 
 
-def play(config):
-    inventory_path = config['inventory']
-    inv = inventory.Inventory(inventory_path)
-    inv.set_playbook_basedir(os.path.dirname(inventory_path))
-    stats = ansible.callbacks.AggregateStats()
-    playbook_cb = ansible.callbacks.PlaybookCallbacks(
-        verbose=ansible.utils.VERBOSITY,
-    )
-    runner_cb = ansible.callbacks.PlaybookRunnerCallbacks(
-        stats,
-        verbose=ansible.utils.VERBOSITY,
-    )
-
-    pb = playbook.PlayBook(
-        playbook=config['playbook'],
-        inventory=inv,
-        callbacks=playbook_cb,
-        runner_callbacks=runner_cb,
-        stats=stats,
-        private_key_file=config['private_key_file'],
-    )
-
-    return pb.run()
-
-
-@shared_task
-def provision(config):
-    os.environ['HOME'] = '/tmp'
-    os.chdir('/var/repos')
-    clone_or_pull(config['repo'])
-    os.chdir('/var/repos/' + repo_name(config['repo']))
-    result = play(config)
-    os.remove(config['inventory'])
-    return result
