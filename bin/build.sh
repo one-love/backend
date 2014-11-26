@@ -17,7 +17,6 @@ REMOVE_PACKAGES="\
     python-pip \
 "
 
-rm -r /app/bin
 # Upgrade all packages and install needed ones
 apt-get -y update
 apt-get -y upgrade

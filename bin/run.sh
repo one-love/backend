@@ -2,7 +2,7 @@
 
 set -e
 
-export COMMAND="consul-template -config /app/consul/api.conf"
+export COMMAND="/opt/bin/consul-template -config /app/consul/api.conf"
 
 echo -n "Waiting for initial config "
 until $COMMAND -once; do
