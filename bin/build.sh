@@ -19,14 +19,14 @@ REMOVE_PACKAGES="\
 
 rm -r /app/bin
 # Upgrade all packages and install needed ones
-apt-get -yqq update
-apt-get -yqq upgrade
-apt-get install -yqq ${INSTALL_PACKAGES}
+apt-get -y update
+apt-get -y upgrade
+apt-get install -y ${INSTALL_PACKAGES}
 
 # Install Python packages
 pip install -r /app/requirements.txt
 
 # Cleanup to save space
-apt-get purge -yqq ${REMOVE_PACKAGES}
-apt-get autoremove -yqq --purge
-apt-get clean -yqq
+apt-get purge -y ${REMOVE_PACKAGES}
+apt-get autoremove -y --purge
+apt-get clean -y
