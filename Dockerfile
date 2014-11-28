@@ -9,4 +9,4 @@ RUN /app/bin/build.sh
 CMD /app/bin/run.sh
 
 VOLUME /static /media
-EXPOSE 9000
+EXPOSE 8000 9000
