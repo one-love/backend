@@ -11,9 +11,9 @@ until $COMMAND -once; do
 done
 echo " done"
 
-uwsgi --ini /app/uwsgi.ini
 python /app/manage.py migrate --noinput
 python /app/manage.py collectstatic --noinput
+uwsgi --ini /app/uwsgi.ini $@
 
 $COMMAND &
 sleep 1
