@@ -27,6 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
         write_only_fields = ('password',)
+        depth = 1
         fields = (
             'id',
             'email',
@@ -58,3 +59,19 @@ class AWSProviderSerializer(serializers.ModelSerializer):
 class SSHHostSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SSHHost
+
+
+class MeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        write_only_fields = ('password',)
+        depth = 1
+        fields = (
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'is_active',
+            'groups',
+            'user_permissions',
+        )
