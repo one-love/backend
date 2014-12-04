@@ -1,6 +1,7 @@
 celery
 django
 djangorestframework
+djangorestframework-jwt
 django-cors-headers
 django-model-utils
 django-uuidfield
