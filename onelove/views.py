@@ -2,8 +2,8 @@ import os
 import tempfile
 
 from django.http import Http404
-from rest_framework import viewsets, status, generics
-from rest_framework.decorators import detail_route
+from rest_framework import viewsets, status
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 
@@ -119,6 +119,12 @@ class ProviderViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class MeViewSet(viewsets.GenericViewSet):
+    def detail(self, request):
+        serializer = serializers.UserSerializer(request.user)
+        return Response(serializer.data)
+
+
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
     queryset = serializer_class.Meta.model.objects.all()
@@ -130,14 +136,8 @@ class UserViewSet(viewsets.ModelViewSet):
         if 'password' in self.request._data:
             obj.set_password(obj.password)
 
-
-class MeView(generics.RetrieveAPIView):
-    serializer_class = serializers.MeSerializer
-
-    def get_queryset(self):
-        queryset = self.serializer_class.Meta.model.objects.get(pk=self.request.user.pk)
-        return queryset
-
-    def get_object(self):
-        self.kwargs['pk'] = self.request.user.pk
-        return super(MeView, self).get_object()
+    @list_route(methods=['get'])
+    def me(self, request):
+        return MeViewSet.as_view({
+            'get': 'detail'
+        })(request)
