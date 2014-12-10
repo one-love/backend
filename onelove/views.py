@@ -137,7 +137,7 @@ class UserViewSet(viewsets.ModelViewSet):
             obj.set_password(obj.password)
 
     @list_route(methods=['get'])
-    def me(self, request, pk=None):
+    def me(self, request):
         return MeViewSet.as_view({
             'get': 'detail'
         })(request)
