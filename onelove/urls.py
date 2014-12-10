@@ -20,20 +20,15 @@ urlpatterns = patterns(
         ),
     ),
     url(
+        r'^v1/auth/',
+        'rest_framework_jwt.views.obtain_jwt_token',
+        name='login',
+    ),
+    url(
         r'^$',
         include(
             'rest_framework.urls',
             namespace='rest_framework',
         ),
-    ),
-    url(
-        r'^v1/me/',
-        views.MeView.as_view(),
-        name='me',
-    ),
-    url(
-        r'^v1/auth/',
-        'rest_framework_jwt.views.obtain_jwt_token',
-        name='login',
     ),
 )
