@@ -67,7 +67,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'onelove',
-        'USER': 'super',
+        'USER': 'onelove',
         'HOST': 'master.postgres.service.consul',
     }
 }
