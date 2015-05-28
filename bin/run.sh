@@ -1,16 +1,9 @@
 #!/bin/bash
 
-export COMMAND="consul-template -config /app/consul/api.conf"
+/app/bin/restart.sh $@
 
-echo -n "Waiting for initial config "
-until $COMMAND -once; do
-    echo -n "."
-    sleep 3
+while true; do
+    consul-template -config /app/consul/api.conf
+    $COMMAND
+    sleep 1
 done
-echo " done"
-
-/app/bin/restat.sh $@
-
-$COMMAND &
-sleep 1
-tail -f /var/log/uwsgi.log
