@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 export COMMAND="consul-template -config /app/consul/api.conf"
 
 echo -n "Waiting for initial config "
@@ -11,10 +9,7 @@ until $COMMAND -once; do
 done
 echo " done"
 
-python /app/manage.py migrate --noinput
-python /app/manage.py loaddata initial
-python /app/manage.py collectstatic --noinput
-uwsgi --ini /app/uwsgi.ini $@
+/app/bin/restat.sh $@
 
 $COMMAND &
 sleep 1
