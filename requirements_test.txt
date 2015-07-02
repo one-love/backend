@@ -1,3 +1,0 @@
-coveralls
-nose
-django-nose
