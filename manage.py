@@ -1,20 +1,18 @@
-from flask import Flask
+import os
 from flask.ext.script import Manager, Server
+from flask import redirect, url_for
+from app import create_app
 
-app = Flask(__name__)
 
+app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 manager.add_command("runserver", Server(host="0.0.0.0", use_reloader=True))
 
 
 @app.route('/')
 def index():
-    return '<h1>Hello World!</h1>'
+    return redirect(url_for('servers'))
 
-
-@app.route('/user/<name>')
-def user(name):
-    return '<h1>Hello, %s!</h1>' % name
 
 if __name__ == '__main__':
     manager.run()
