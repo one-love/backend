@@ -1,11 +1,18 @@
-#!/usr/bin/env python
 import os
-import sys
+from flask.ext.script import Manager, Server
+from flask import redirect, url_for
+from app import create_app
 
 
-if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
+app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+manager = Manager(app)
+manager.add_command("runserver", Server(host="0.0.0.0", use_reloader=True))
 
-    from django.core.management import execute_from_command_line
 
-    execute_from_command_line(sys.argv)
+@app.route('/')
+def index():
+    return redirect(url_for('servers'))
+
+
+if __name__ == '__main__':
+    manager.run()

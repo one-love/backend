@@ -1,12 +1,5 @@
-FROM debian:jessie
-MAINTAINER Goran Mekić <meka@lugons.org>
+FROM python:2-onbuild
+MAINTAINER Zoran Olujić <olujicz@gmail.com>
 
-ENV DEBIAN_FRONTEND noninteractive
-
-ADD . /app
-RUN /app/bin/build.sh
-
-ENTRYPOINT ["/app/bin/run.sh"]
-
-VOLUME /static /media
-EXPOSE 8000 9000
+CMD [ "python", "./manage.py", "runserver" ]
+EXPOSE 5000
