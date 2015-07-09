@@ -1,6 +1,4 @@
-flask
 flask-script
 flask-restful
 flask-mongoengine
-pymongo==2.8
 flask-restful-swagger
