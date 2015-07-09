@@ -30,4 +30,4 @@ configs = {
     'testing': TestConfig,
     'prod': ProdConfig,
     'default': DevConfig
-    }
+}
