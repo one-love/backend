@@ -2,3 +2,4 @@ flask-script
 flask-restful
 flask-mongoengine
 flask-restful-swagger
+uwsgi
