@@ -1,7 +1,7 @@
-# from . import models
 from flask import abort
-from flask.ext.restful import Api, Resource, reqparse, fields, marshal
-from flask_restful_swagger import swagger
+from flask.ext.restful import Resource, reqparse, fields, marshal
+from models import Server
+from . import api
 
 
 servers = [
@@ -85,7 +85,6 @@ class ServerAPI(Resource):
         return {'result': True}
 
 
-api = swagger.docs(Api(), apiVersion='0.1')
 
 api.add_resource(ServerListAPI, '/api/v1.0/servers', endpoint='servers')
 api.add_resource(ServerAPI, '/api/v1.0/servers/<int:id>', endpoint='server')
