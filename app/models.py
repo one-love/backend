@@ -1,4 +1,7 @@
-from . import db
+from flask.ext.mongoengine import MongoEngine
+
+
+db = MongoEngine()
 
 
 class Server(db.Document):
@@ -6,4 +9,4 @@ class Server(db.Document):
 
     name = db.StringField(max_length=512)
     description = db.StringField(max_length=512)
-    live = db.BoolField()
+    live = db.BooleanField()

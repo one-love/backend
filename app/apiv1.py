@@ -1,23 +1,11 @@
 from flask import abort
-from flask.ext.restful import Resource, reqparse, fields, marshal
+from flask.ext.restful import Api, Resource, reqparse, fields, marshal
+from flask_restful_swagger import swagger
+
 from models import Server
-from . import api
 
 
-servers = [
-    {
-        'id': 1,
-        'name': u'Application',
-        'description': u'Some cool web application',
-        'live': False
-    },
-    {
-        'id': 2,
-        'name': u'Database',
-        'description': u'Some database for our cool application',
-        'live': True
-    }
-]
+api = swagger.docs(Api(), apiVersion='0.1')
 
 server_fields = {
     'name': fields.String,
@@ -38,7 +26,7 @@ class ServerListAPI(Resource):
         super(ServerListAPI, self).__init__()
 
     def get(self):
-        return {'servers': [marshal(server, server_fields) for server in servers]}
+        return {'servers': [{'name': server.name, 'description': server.description, 'live': server.live} for server in Server.objects.all()]}
 
     def post(self):
         args = self.reqparse.parse_args()
@@ -83,7 +71,6 @@ class ServerAPI(Resource):
             abort(404)
         servers.remove(server[0])
         return {'result': True}
-
 
 
 api.add_resource(ServerListAPI, '/api/v1.0/servers', endpoint='servers')
