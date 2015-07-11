@@ -1,7 +1,9 @@
+#!/usr/bin/env python
+
 import os
+from app import create_app
 from flask.ext.script import Manager, Server
 from flask import redirect, url_for
-from app import create_app
 
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
