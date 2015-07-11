@@ -1,12 +1,8 @@
-from flask import Flask
 from config import configs
-from flask.ext.mongoengine import MongoEngine
-from flask_restful_swagger import swagger
-from flask.ext.restful import Api
+from flask import Flask
 
-
-db = MongoEngine()
-api = swagger.docs(Api(), apiVersion='0.1')
+from apiv1 import api
+from models import db
 
 
 def create_app(config_name):
