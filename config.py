@@ -9,6 +9,8 @@ class BaseConfig:
     # MARSHMALLOW_DATEFORMAT = 'rfc'
     MONGODB_HOST = os.environ.get('MONGODB_PORT_27017_TCP_ADDR')
     MONGODB_DB = 'onelove'
+    BROKER_URL = 'amqp://guest@%s//' % os.environ.get('RABBITMQ_PORT_5672_TCP_ADDR')
+    CELERY_RESULT_BACKEND = 'rpc://'
 
     @staticmethod
     def init_app(app):

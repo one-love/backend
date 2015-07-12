@@ -1,6 +1,7 @@
 from celery import Celery
+from config import BaseConfig
 
-celery = Celery('tasks', backend='rpc://', broker='amqp://guest@172.17.0.6//')
+celery = Celery('onelove')
 
 
 @celery.task
