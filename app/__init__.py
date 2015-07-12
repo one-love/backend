@@ -3,6 +3,7 @@ from flask import Flask
 
 from apiv1 import api
 from models import db
+from provisioner import celery
 
 
 def create_app(config_name):
@@ -12,5 +13,6 @@ def create_app(config_name):
 
     api.init_app(app)
     db.init_app(app)
+    celery.conf.update(app.config)
 
     return app
