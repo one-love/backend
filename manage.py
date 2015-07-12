@@ -12,7 +12,14 @@ app = Flask(__name__)
 init_app(app, config)
 celery.set_default()
 manager = Manager(app)
-manager.add_command("runserver", Server(host="0.0.0.0", use_reloader=True))
+manager.add_command(
+    "runserver",
+    Server(
+        host="0.0.0.0",
+        use_reloader=True,
+        use_debugger=True
+    )
+)
 
 
 @manager.app.route('/')

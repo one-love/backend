@@ -1,5 +1,5 @@
 from celery import Celery
-from config import BaseConfig
+
 
 celery = Celery('onelove')
 
