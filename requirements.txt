@@ -1,3 +1,4 @@
+celery
 flask-script
 flask-restful
 flask-mongoengine
