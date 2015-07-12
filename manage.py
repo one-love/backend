@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from flask import redirect, url_for
 
-from init import manager
+from init import manager, app
 from app import celery
 
 
