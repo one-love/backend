@@ -1,0 +1,13 @@
+class BaseConfig:
+    SECRET_KEY = {{ key "onelove/secret_key" }}
+    MONGODB_DB = 'onelove'
+    CELERY_RESULT_BACKEND = 'rpc://'
+
+    {{ range service "mongo" }}MONGODB_HOST = '{{.Address}}'
+    MONGODB_PORT = {{.Port}}{{ end }}
+
+    {{ range service "rabbitmq" }}BROKER_URL = 'amqp://guest@{{.Address}}//'{{ end }}
+
+    @staticmethod
+    def init_app(app):
+        pass
