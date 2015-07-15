@@ -1,5 +1,5 @@
 class BaseConfig:
-    SECRET_KEY = {{ key "onelove/secret_key" }}
+    SECRET_KEY = '{{ key "onelove/secret_key" }}'
     MONGODB_DB = 'onelove'
     CELERY_RESULT_BACKEND = 'rpc://'
 
