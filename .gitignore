@@ -6,5 +6,4 @@ media/
 .ropeproject
 /static/
 vendor/
-local_settings.py
-project/settings/__init__.py
+local_config.py

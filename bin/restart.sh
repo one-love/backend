@@ -5,7 +5,7 @@ if [ -s /run/celery.pid ]; then
     kill -SIGHUP $CELERY_PID
 else
     export C_FORCE_ROOT=yes
-    celery -A manage.celery worker --logfile /var/log/celery.log --detach --workdir=/usr/src/app --log-level=INFO --pidfile=/run/celery.pid
+    celery -A manage.celery worker --logfile /var/log/celery.log --detach --workdir=/usr/src/app --loglevel=INFO --pidfile=/run/celery.pid
 fi
 
 if [ -s /run/uwsgi.pid ]; then
