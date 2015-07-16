@@ -4,12 +4,15 @@ import os
 from flask import redirect, url_for, Flask
 from flask.ext.script import Manager, Server
 
-from onelove import init_app, celery
+from onelove import OneLove
+from config import configs
 
 
-config = os.getenv('FLASK_CONFIG') or 'default'
+config_name = os.getenv('FLASK_CONFIG') or 'default'
 app = Flask(__name__)
-init_app(app, config)
+app.config.from_object(configs[config_name])
+onelove = OneLove(app)
+celery = onelove.celery
 celery.set_default()
 manager = Manager(app)
 manager.add_command(

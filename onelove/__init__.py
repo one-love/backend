@@ -1,14 +1,30 @@
-from config import configs
+from celery import Celery
+from flask.ext.mongoengine import MongoEngine
+from flask.ext.restful import Api
+from flask_restful_swagger import swagger
 
-from apiv1 import api
-from models import db
-from provisioner import celery
 
+class OneLove(object):
+    api = None
+    celery = Celery('onelove')
+    db = MongoEngine()
 
-def init_app(app, config_name):
-    app.config.from_object(configs[config_name])
-    configs[config_name].init_app(app)
+    def __init__(self, app=None):
+        self.app = app
+        if app is not None:
+            self.init_app(app)
 
-    api.init_app(app)
-    db.init_app(app)
-    celery.conf.update(app.config)
+    def init_app(self, app):
+        self.app = app
+        OneLove.api = swagger.docs(Api(self.app), apiVersion='1.0')
+        OneLove.celery.conf.update(app.config)
+        OneLove.celery.set_default()
+        OneLove.celery.set_current()
+        OneLove.db.init_app(app)
+        from apiv1 import ServerListAPI
+        OneLove.api.add_resource(
+            ServerListAPI,
+            '/api/v1.0/servers',
+            endpoint='servers'
+        )
+
