@@ -21,10 +21,5 @@ class OneLove(object):
         OneLove.celery.set_default()
         OneLove.celery.set_current()
         OneLove.db.init_app(app)
-        from apiv1 import ServerListAPI
-        OneLove.api.add_resource(
-            ServerListAPI,
-            '/api/v1.0/servers',
-            endpoint='servers'
-        )
-
+        import resources
+        resources.init(OneLove.api)
