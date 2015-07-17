@@ -12,8 +12,6 @@ config_name = os.getenv('FLASK_CONFIG') or 'default'
 app = Flask(__name__)
 app.config.from_object(configs[config_name])
 onelove = OneLove(app)
-celery = onelove.celery
-celery.set_default()
 manager = Manager(app)
 manager.add_command(
     "runserver",
@@ -23,6 +21,8 @@ manager.add_command(
         use_debugger=True
     )
 )
+
+from celery import current_app as celery
 
 
 @manager.app.route('/')
