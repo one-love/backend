@@ -1,15 +1,12 @@
-from celery import Celery
+from celery import current_app
 
 
-celery = Celery('onelove')
-
-
-@celery.task
+@current_app.task
 def add(x, y):
     return x + y
 
 
-@celery.task
+@current_app.task
 def current_path():
     import os
     return os.path.curdir

@@ -1,12 +1,10 @@
-from flask.ext.mongoengine import MongoEngine
+from flask.ext.mongoengine import Document
+from mongoengine.fields import StringField, BooleanField
 
 
-db = MongoEngine()
-
-
-class Server(db.Document):
+class Server(Document):
     __tablename__ = 'servers'
 
-    name = db.StringField(max_length=512)
-    description = db.StringField(max_length=512)
-    live = db.BooleanField()
+    name = StringField(max_length=512)
+    description = StringField(max_length=512)
+    live = BooleanField()
