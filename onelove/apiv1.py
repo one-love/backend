@@ -1,4 +1,4 @@
-from flask.ext.restful import Resource, reqparse, fields
+from flask.ext.restful import Resource, reqparse, fields, marshal_with
 
 from models import Server
 from provisioner import add
@@ -8,8 +8,6 @@ server_fields = {
     'name': fields.String,
     'description': fields.String,
     'live': fields.Boolean,
-    'result': fields.Integer,
-    'uri': fields.Url('server')
 }
 
 
@@ -31,14 +29,6 @@ class ServerListAPI(Resource):
         )
         super(ServerListAPI, self).__init__()
 
+    @marshal_with(server_fields)
     def get(self):
-        result = add.delay(2, 5)
-        return {'servers': [
-            {
-                'name': server.name,
-                'description': server.description,
-                'live': server.live,
-                'result': result.get(timeout=1),
-            }
-            for server in Server.objects.all()
-        ]}
+        return [server for server in Server.objects.all()]
