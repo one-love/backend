@@ -21,5 +21,5 @@ class OneLove(object):
         OneLove.celery.set_default()
         OneLove.celery.set_current()
         OneLove.db.init_app(app)
-        import resources
-        resources.init(OneLove.api)
+        import urls
+        urls.init(OneLove.api)
