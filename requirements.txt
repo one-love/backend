@@ -1,6 +1,8 @@
 celery
-flask-script
-flask-restful
+flask-jwt
 flask-mongoengine
+flask-restful
 flask-restful-swagger
+flask-script
+simple-crypt
 uwsgi
