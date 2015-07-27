@@ -2,12 +2,14 @@ from celery import Celery
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.restful import Api
 from flask_restful_swagger import swagger
+from flask.ext.mail import Mail
 
 
 class OneLove(object):
     api = None
     celery = Celery('onelove')
     db = MongoEngine()
+    mail = Mail()
 
     def __init__(self, app=None):
         self.app = app
@@ -26,6 +28,7 @@ class OneLove(object):
         OneLove.celery.conf.update(app.config)
         OneLove.celery.set_default()
         OneLove.celery.set_current()
+        OneLove.mail.init_app(app)
         OneLove.db.init_app(app)
         import urls
         urls.init(OneLove.api)

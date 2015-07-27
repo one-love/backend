@@ -1,6 +1,7 @@
 from flask.ext.restful import Resource, reqparse, fields, marshal_with
 
 from ..models import User
+from ..email import send_email
 
 
 fields = {
@@ -27,6 +28,11 @@ class UserListAPI(Resource):
             email=args.get('email'),
             password=args.get('password'),
         )
+        send_email(user.email,
+                   'Confirm Your Account',
+                   'mail/confirm',
+                   user=user,
+                   )
         user.save()
         return user
 

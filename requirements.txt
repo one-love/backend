@@ -4,5 +4,6 @@ flask-mongoengine
 flask-restful
 flask-restful-swagger
 flask-script
+Flask-Mail
 simple-crypt
 uwsgi

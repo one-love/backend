@@ -1,0 +1,11 @@
+Dear {{ user.email }},
+
+Welcome to OneLove!
+
+To confirm your account please click on the following link:
+
+http://example.com/confirm
+
+Sincerely,
+
+The OneLove Team
