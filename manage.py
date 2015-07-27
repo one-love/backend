@@ -25,9 +25,9 @@ manager.add_command(
 from celery import current_app as celery
 
 
-@manager.app.route('/')
+@app.route('/')
 def index():
-    return redirect(url_for('servers'))
+    return redirect(url_for('api/clusters'))
 
 
 if __name__ == '__main__':
