@@ -4,9 +4,10 @@ from ..models import Application
 
 
 fields = {
-    'name': fields.String,
-    'galaxy_role': fields.String,
     'application_name': fields.String,
+    'galaxy_role': fields.String,
+    'id': fields.String,
+    'name': fields.String,
 }
 
 
