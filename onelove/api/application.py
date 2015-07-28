@@ -36,13 +36,16 @@ class ApplicationAPI(Resource):
         try:
             application = Application.objects.get(id=id)
         except Application.DoesNotExist:
-            return {'message': 'Application does not exist'}
+            abort(404, error='Application does not exist')
         return application
 
     @marshal_with(fields)
     def put(self, id):
+        try:
+            application = Application.objects.get(id=id)
+        except Application.DoesNotExist:
+            abort(404, error='Application does not exist')
         args = reqparse.parse_args()
-        application = Application.objects.get(id=id)
         application.name = args.get('name')
         application.save()
         return application
@@ -51,6 +54,6 @@ class ApplicationAPI(Resource):
         try:
             application = Application.objects.get(id=id)
         except Application.DoesNotExist:
-            return {'message': 'Application does not exist'}
+            abort(404, error='Application does not exist')
         application.delete()
         return {'message': 'deleted'}
