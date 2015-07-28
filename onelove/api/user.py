@@ -44,13 +44,16 @@ class UserAPI(Resource):
         try:
             user = User.objects.get(id=id)
         except User.DoesNotExist:
-            return {'message': 'User does not exist'}
+            abort(404, error='User does not exist')
         return user
 
     @marshal_with(fields)
     def put(self, id):
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            abort(404, error='User does not exist')
         args = reqparse.parse_args()
-        user = User.objects.get(id=id)
         user.email = args.get('email')
         user.save()
         return user
@@ -59,6 +62,6 @@ class UserAPI(Resource):
         try:
             user = User.objects.get(id=id)
         except User.DoesNotExist:
-            return {'message': 'User does not exist'}
+            abort(404, error='User does not exist')
         user.delete()
         return {'message': 'deleted'}
