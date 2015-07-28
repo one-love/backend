@@ -1,4 +1,4 @@
-from flask.ext.restful import Resource, reqparse, fields, marshal_with
+from flask.ext.restful import Resource, abort, reqparse, fields, marshal_with
 
 from ..models import User
 from ..email import send_email
@@ -58,10 +58,11 @@ class UserAPI(Resource):
         user.save()
         return user
 
+    @marshal_with(fields)
     def delete(self, id):
         try:
             user = User.objects.get(id=id)
         except User.DoesNotExist:
             abort(404, error='User does not exist')
         user.delete()
-        return {'message': 'deleted'}
+        return user

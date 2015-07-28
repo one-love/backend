@@ -1,4 +1,4 @@
-from flask.ext.restful import Resource, reqparse, fields, marshal_with
+from flask.ext.restful import Resource, abort, reqparse, fields, marshal_with
 
 from ..models import Application
 
@@ -50,10 +50,11 @@ class ApplicationAPI(Resource):
         application.save()
         return application
 
+    @marshal_with(fields)
     def delete(self, id):
         try:
             application = Application.objects.get(id=id)
         except Application.DoesNotExist:
             abort(404, error='Application does not exist')
         application.delete()
-        return {'message': 'deleted'}
+        return application
