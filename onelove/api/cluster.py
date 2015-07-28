@@ -5,6 +5,7 @@ import application
 
 
 fields = {
+    'id': fields.String,
     'name': fields.String,
     'applications': fields.List(fields.Nested(application.fields)),
 }

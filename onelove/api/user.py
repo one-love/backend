@@ -5,9 +5,10 @@ from ..email import send_email
 
 
 fields = {
-    'first_name': fields.String,
-    'last_name': fields.String,
     'email': fields.String,
+    'first_name': fields.String,
+    'id': fields.String,
+    'last_name': fields.String,
     'password': fields.String,
 }
 
