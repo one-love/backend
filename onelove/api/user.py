@@ -1,7 +1,8 @@
 from flask.ext.restful import Resource, abort, reqparse, fields, marshal_with
+from flask.ext.security.registerable import register_user
+from mongoengine.queryset import NotUniqueError
 
 from ..models import User
-from ..email import send_email
 
 
 fields = {
@@ -25,16 +26,15 @@ class UserListAPI(Resource):
     @marshal_with(fields)
     def post(self):
         args = reqparse.parse_args()
-        user = User(
-            email=args.get('email'),
-            password=args.get('password'),
-        )
-        send_email(user.email,
-                   'Confirm Your Account',
-                   'mail/confirm',
-                   user=user,
-                   )
-        user.save()
+        try:
+            user = register_user(
+                email=args.get('email'),
+                first_name=args.get('first_name'),
+                last_name=args.get('last_name'),
+                password=args.get('password'),
+            )
+        except NotUniqueError:
+            abort(409, error='User with that email exists')
         return user
 
 

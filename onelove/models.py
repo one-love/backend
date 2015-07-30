@@ -1,10 +1,14 @@
 from flask.ext.mongoengine import Document
 from mongoengine.fields import (
-    StringField,
+    BooleanField,
     EmailField,
+    ListField,
+    ReferenceField,
+    StringField,
     EmbeddedDocument,
     EmbeddedDocumentListField
 )
+from flask.ext.security import UserMixin, RoleMixin
 
 
 class Application(EmbeddedDocument):
@@ -38,11 +42,24 @@ class Cluster(Document):
         return '<Cluster %r>' % self.name
 
 
-class User(Document):
-    first_name = StringField(max_length=512)
-    last_name = StringField(max_length=512)
+class Role(Document, RoleMixin):
+    """
+    Role
+    """
+    name = StringField(max_length=255, unique=True)
+    description = StringField(max_length=255)
+
+
+class User(Document, UserMixin):
+    """
+    User
+    """
+    active = BooleanField(default=True)
     email = EmailField(unique=True)
-    password = StringField(max_length=512)
+    first_name = StringField(max_length=255)
+    last_name = StringField(max_length=255)
+    password = StringField(max_length=255)
+    roles = ListField(ReferenceField(Role), default=[])
 
     def __repr__(self):
         return '<user %r>' % self.email
