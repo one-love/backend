@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+
 class BaseConfig:
     SECRET_KEY = '{{ key "onelove/secret_key" }}'
     MONGODB_DB = 'onelove'
@@ -11,6 +14,8 @@ class BaseConfig:
     SECURITY_PASSWORD_HASH = 'sha512_crypt'
     SECURITY_PASSWORD_SALT = 'COmwUar8X1s4NrNN'
     SECURITY_SEND_REGISTER_EMAIL = False
+
+    JWT_EXPIRATION_DELTA = timedelta(days=1)
 
     @staticmethod
     def init_app(app):

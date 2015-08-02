@@ -1,7 +1,8 @@
-from flask.ext.restful import Resource, abort, reqparse, fields, marshal_with
+from flask.ext.restful import abort, reqparse, fields, marshal_with
 
-from ..models import Cluster
 import application
+from ..models import Cluster
+from resources import ProtectedResource
 
 
 fields = {
@@ -15,7 +16,7 @@ reqparse = reqparse.RequestParser()
 reqparse.add_argument('name', type=str, required=True, location='json')
 
 
-class ClusterListAPI(Resource):
+class ClusterListAPI(ProtectedResource):
     @marshal_with(fields)
     def get(self):
         return [cluster for cluster in Cluster.objects.all()]
@@ -30,7 +31,7 @@ class ClusterListAPI(Resource):
         return cluster
 
 
-class ClusterAPI(Resource):
+class ClusterAPI(ProtectedResource):
     @marshal_with(fields)
     def get(self, id):
         try:
@@ -60,7 +61,7 @@ class ClusterAPI(Resource):
         return cluster
 
 
-class ClusterApplicationListAPI(Resource):
+class ClusterApplicationListAPI(ProtectedResource):
     """
     List all applications beloging to a single cluster
     """

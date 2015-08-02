@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 
+from celery import current_app as celery
 from flask import redirect, url_for, Flask
 from flask.ext.script import Manager, Server
 
@@ -21,8 +22,6 @@ manager.add_command(
         use_debugger=True
     )
 )
-
-from celery import current_app as celery
 
 
 @app.route('/')
