@@ -1,6 +1,7 @@
-from flask.ext.restful import Resource, abort, reqparse, fields, marshal_with
+from flask.ext.restful import abort, reqparse, fields, marshal_with
 
 from ..models import Application
+from resources import ProtectedResource
 
 
 fields = {
@@ -15,7 +16,7 @@ reqparse = reqparse.RequestParser()
 reqparse.add_argument('name', type=str, required=True, location='json')
 
 
-class ApplicationListAPI(Resource):
+class ApplicationListAPI(ProtectedResource):
     @marshal_with(fields)
     def get(self):
         return [application for application in Application.objects.all()]
@@ -30,7 +31,7 @@ class ApplicationListAPI(Resource):
         return application
 
 
-class ApplicationAPI(Resource):
+class ApplicationAPI(ProtectedResource):
     @marshal_with(fields)
     def get(self, id):
         try:

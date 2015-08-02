@@ -1,8 +1,9 @@
-from flask.ext.restful import Resource, abort, reqparse, fields, marshal_with
+from flask.ext.restful import abort, reqparse, fields, marshal_with
 from flask.ext.security.registerable import register_user
 from mongoengine.queryset import NotUniqueError
 
 from ..models import User
+from resources import ProtectedResource
 
 
 fields = {
@@ -16,9 +17,12 @@ fields = {
 
 reqparse = reqparse.RequestParser()
 reqparse.add_argument('email', type=str, required=True, location='json')
+reqparse.add_argument('first_name', type=str, required=False, location='json')
+reqparse.add_argument('last_name', type=str, required=False, location='json')
+reqparse.add_argument('password', type=str, required=False, location='json')
 
 
-class UserListAPI(Resource):
+class UserListAPI(ProtectedResource):
     @marshal_with(fields)
     def get(self):
         return [user for user in User.objects.all()]
@@ -38,7 +42,7 @@ class UserListAPI(Resource):
         return user
 
 
-class UserAPI(Resource):
+class UserAPI(ProtectedResource):
     @marshal_with(fields)
     def get(self, id):
         try:
