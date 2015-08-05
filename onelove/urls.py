@@ -1,5 +1,10 @@
 from api.application import ApplicationListAPI, ApplicationAPI
-from api.cluster import ClusterListAPI, ClusterAPI, ClusterApplicationListAPI
+from api.cluster import (
+    ClusterListAPI,
+    ClusterAPI,
+    ClusterApplicationListAPI,
+    ClusterApplicationAPI,
+)
 from api.user import UserListAPI, UserAPI
 
 
@@ -28,6 +33,11 @@ def init(api):
         ClusterApplicationListAPI,
         '/clusters/<cluster_id>/applications',
         endpoint='api/cluster/applications'
+    )
+    api.add_resource(
+        ClusterApplicationAPI,
+        '/clusters/<cluster_id>/applications/<application_name>',
+        endpoint='api/cluster/application'
     )
     api.add_resource(
         UserListAPI,

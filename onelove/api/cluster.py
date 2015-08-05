@@ -65,6 +65,16 @@ class ClusterApplicationListAPI(ProtectedResource):
     """
     List all applications beloging to a single cluster
     """
+    def _find_app(self, cluster_id, application_name):
+        try:
+            cluster = Cluster.objects.get(id=cluster_id)
+        except Cluster.DoesNotExist:
+            abort(404, error='Cluster does not exist')
+        for app in cluster.applications:
+            if app.name == application_name:
+                return app
+        return None
+
     @marshal_with(application.fields)
     def get(self, cluster_id):
         try:
@@ -80,8 +90,45 @@ class ClusterApplicationListAPI(ProtectedResource):
         except Cluster.DoesNotExist:
             abort(404, error='Cluster does not exist')
         args = application.reqparse.parse_args()
-        app = application.Application()
-        app.name = args.get('name')
+        application_name = args.get('name')
+        app = self._find_app(cluster_id, application_name)
+        if app is not None:
+            abort(409, error='Application with that name already exists')
+        app = application.Application(name=application_name)
         cluster.applications.append(app)
         cluster.save()
         return cluster.applications
+
+
+class ClusterApplicationAPI(ProtectedResource):
+    """
+    Application with name :name belonging to :cluster
+    """
+    def _find_app(self, cluster_id, application_name):
+        try:
+            cluster = Cluster.objects.get(id=cluster_id)
+        except Cluster.DoesNotExist:
+            abort(404, error='Cluster does not exist')
+        for app in cluster.applications:
+            if app.name == application_name:
+                return app
+        abort(404, error='Application does not exist')
+
+    @marshal_with(application.fields)
+    def get(self, cluster_id, application_name):
+        return self._find_app(cluster_id, application_name)
+
+    @marshal_with(application.fields)
+    def put(self, cluster_id, application_name):
+        args = application.reqparse.parse_args()
+        app = self._find_app(cluster_id, application_name)
+        app.name = args.get('name')
+        app.save()
+        return app
+    @marshal_with(application.fields)
+    def delete(self, cluster_id, application_name):
+        app = self._find_app(cluster_id, application_name)
+        cluster = Cluster.objects.get(id=cluster_id)
+        cluster.applications.remove(app)
+        cluster.applications.save()
+        return app

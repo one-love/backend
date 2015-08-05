@@ -10,13 +10,12 @@ from flask_restful_swagger import swagger
 from models import User
 
 
-class Result(object):
-    def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
-
-
 class OneLove(object):
+    class Result(object):
+        def __init__(self, **kwargs):
+            for k, v in kwargs.items():
+                setattr(self, k, v)
+
     api = None
     celery = Celery('onelove')
     db = MongoEngine()
@@ -71,7 +70,7 @@ class OneLove(object):
             user = User.objects.get(email=username)
         except User.DoesNotExist:
             return None
-        result = Result(
+        result = OneLove.Result(
             id=str(user.id),
             email=user.email,
             first_name=user.first_name,

@@ -7,7 +7,6 @@ from resources import ProtectedResource
 fields = {
     'application_name': fields.String,
     'galaxy_role': fields.String,
-    'id': fields.String,
     'name': fields.String,
 }
 
