@@ -7,6 +7,5 @@ def add(x, y):
 
 
 @current_app.task
-def current_path():
-    import os
-    return os.path.curdir
+def provision(app):
+    return app

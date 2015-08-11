@@ -100,10 +100,7 @@ class ClusterApplicationListAPI(ProtectedResource):
         return cluster.applications
 
 
-class ClusterApplicationAPI(ProtectedResource):
-    """
-    Application with name :name belonging to :cluster
-    """
+class ClusterApplicationAbstractAPI(ProtectedResource):
     def _find_app(self, cluster_id, application_name):
         try:
             cluster = Cluster.objects.get(id=cluster_id)
@@ -114,6 +111,8 @@ class ClusterApplicationAPI(ProtectedResource):
                 return app
         abort(404, error='Application does not exist')
 
+
+class ClusterApplicationAPI(ClusterApplicationAbstractAPI):
     @marshal_with(application.fields)
     def get(self, cluster_id, application_name):
         return self._find_app(cluster_id, application_name)
@@ -125,6 +124,7 @@ class ClusterApplicationAPI(ProtectedResource):
         app.name = args.get('name')
         app.save()
         return app
+
     @marshal_with(application.fields)
     def delete(self, cluster_id, application_name):
         app = self._find_app(cluster_id, application_name)
@@ -132,3 +132,11 @@ class ClusterApplicationAPI(ProtectedResource):
         cluster.applications.remove(app)
         cluster.applications.save()
         return app
+
+
+class ClusterApplicationProvisionAPI(ClusterApplicationAbstractAPI):
+    def post(self, cluster_id, application_name):
+        from ..tasks import provision
+        app = self._find_app(cluster_id, application_name)
+        result = provision.delay(app)
+        return {'result': str(result.id)}

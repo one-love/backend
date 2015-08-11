@@ -7,7 +7,10 @@ from flask.ext.security.utils import verify_password
 from flask_jwt import JWT
 from flask_restful_swagger import swagger
 
-from models import User
+from models import User, Role
+
+
+current_app = None
 
 
 class OneLove(object):
@@ -25,11 +28,14 @@ class OneLove(object):
     jwt = JWT()
 
     def __init__(self, app=None):
+        global current_app
+        current_app = self
         self.app = app
         if self.app is not None:
             self.init_app(self.app)
 
     def init_app(self, app):
+        import tasks
         self.app = app
         OneLove.api = swagger.docs(
             Api(
@@ -46,7 +52,6 @@ class OneLove(object):
 
         OneLove.db.init_app(app)
 
-        from models import User, Role
         OneLove.user_datastore = MongoEngineUserDatastore(
             OneLove.db,
             User,
@@ -64,7 +69,6 @@ class OneLove(object):
 
     @jwt.authentication_handler
     def authenticate(username, password):
-        from models import User
         result = None
         try:
             user = User.objects.get(email=username)

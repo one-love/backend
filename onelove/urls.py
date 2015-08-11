@@ -4,7 +4,9 @@ from api.cluster import (
     ClusterAPI,
     ClusterApplicationListAPI,
     ClusterApplicationAPI,
+    ClusterApplicationProvisionAPI,
 )
+from api.task import TaskAPI
 from api.user import UserListAPI, UserAPI
 
 
@@ -38,6 +40,16 @@ def init(api):
         ClusterApplicationAPI,
         '/clusters/<cluster_id>/applications/<application_name>',
         endpoint='api/cluster/application'
+    )
+    api.add_resource(
+        ClusterApplicationProvisionAPI,
+        '/clusters/<cluster_id>/applications/<application_name>/provision',
+        endpoint='api/cluster/application/provision'
+    )
+    api.add_resource(
+        TaskAPI,
+        '/tasks/<id>',
+        endpoint='api/tasks'
     )
     api.add_resource(
         UserListAPI,
