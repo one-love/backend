@@ -6,4 +6,4 @@ RUN wget https://github.com/hashicorp/consul-template/releases/download/v0.10.0/
     mv consul-template_*/consul-template /usr/bin && \
     rm -rf consul-template*
 CMD ["bin/start.sh"]
-EXPOSE 5000 9000
+EXPOSE 5000 5555 9000
