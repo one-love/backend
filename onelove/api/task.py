@@ -1,12 +1,19 @@
 from flask.ext.restful import fields, marshal_with
 
 from resources import ProtectedResource
+from ..models import Task
 
 
 fields = {
     'id': fields.String,
-    'status': fields.String,
+    'celery_id': fields.String,
 }
+
+
+class TaskListAPI(ProtectedResource):
+    @marshal_with(fields)
+    def get(self):
+        return [task for task in Task.objects.all()]
 
 
 class TaskAPI(ProtectedResource):
