@@ -63,3 +63,8 @@ class User(Document, UserMixin):
 
     def __repr__(self):
         return '<user %r>' % self.email
+
+
+class Task(Document):
+    status = StringField(max_length=63)
+    celery_id = StringField(max_length=255)

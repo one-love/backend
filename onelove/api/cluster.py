@@ -137,6 +137,5 @@ class ClusterApplicationAPI(ClusterApplicationAbstractAPI):
 class ClusterApplicationProvisionAPI(ClusterApplicationAbstractAPI):
     def post(self, cluster_id, application_name):
         from ..tasks import provision
-        app = self._find_app(cluster_id, application_name)
-        result = provision.delay(app)
-        return {'result': str(result.id)}
+        result = provision.delay(cluster_id, application_name)
+        return {'result': str(result)}
