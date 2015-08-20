@@ -1,3 +1,4 @@
+ansible
 celery
 flask-jwt
 flask-mongoengine
