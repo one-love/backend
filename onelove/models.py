@@ -33,6 +33,19 @@ class ProviderAWS(Provider):
     access_key = StringField(max_length=512)
 
 
+class HostSSH(EmbeddedDocument):
+    ip = StringField(max_length=128)
+    hostname = StringField(max_length=256)
+
+    def __repr__(self):
+        return '<Host %r>' % self.hostname
+
+
+class ProviderSSH(Provider):
+    private_key = StringField(max_length=4096)
+    hosts = EmbeddedDocumentListField(HostSSH)
+
+
 class Cluster(Document):
     name = StringField(max_length=512)
     applications = EmbeddedDocumentListField(Application)
