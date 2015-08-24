@@ -41,7 +41,6 @@ class ClusterMixin(object):
             cluster = Cluster.objects.get(id=cluster_id)
         except Cluster.DoesNotExist:
             abort(404, error='Cluster does not exist')
-        import ipdb; ipdb.set_trace()
         for prov in cluster.providers:
             if prov.name == provider_name:
                 return prov
@@ -170,6 +169,14 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
         args = provider.reqparse.parse_args()
         prov = self._find_provider(cluster_id, provider_name)
         prov.name = args.get('name')
+        prov.save()
+        return prov
+
+    @marshal_with(provider.fields)
+    def patch(self, cluster_id, provider_name):
+        args = provider.reqparse.parse_args()
+        prov = self._find_provider(cluster_id, provider_name)
+        prov.name = args.get('name', prov.name)
         prov.save()
         return prov
 
