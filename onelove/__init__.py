@@ -35,14 +35,13 @@ class OneLove(object):
             self.init_app(self.app)
 
     def init_app(self, app):
-        import tasks
         self.app = app
         OneLove.api = swagger.docs(
             Api(
                 self.app,
-                prefix='/api/v1.0'
+                prefix='/api/v0'
             ),
-            apiVersion='1.0'
+            apiVersion='0'
         )
         OneLove.celery.conf.update(app.config)
         OneLove.celery.set_default()
