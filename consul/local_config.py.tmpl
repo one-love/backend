@@ -2,6 +2,7 @@ from datetime import timedelta
 
 
 class BaseConfig:
+    DEBUG = False
     SECRET_KEY = '{{ key "onelove/secret_key" }}'
     MONGODB_DB = 'onelove'
 

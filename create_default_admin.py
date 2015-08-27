@@ -5,8 +5,7 @@ from manage import onelove
 from onelove.models import User
 
 
-ctx = onelove.app.test_request_context()
-ctx.push()
+ctx = onelove.app.test_request_context().push()
 try:
     user = User.objects.get(email='admin@example.com')
 except User.DoesNotExist:
