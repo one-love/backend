@@ -18,7 +18,7 @@ class TestConfig(BaseConfig):
 
 
 class ProdConfig(BaseConfig):
-    pass
+    DEBUG = True
 
 
 configs = {
