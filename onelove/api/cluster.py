@@ -1,4 +1,5 @@
 from flask.ext.restful import abort, reqparse, fields, marshal_with
+from flask_restful_swagger import swagger
 
 import application
 import provider
@@ -51,12 +52,45 @@ class ClusterMixin(object):
             return ProviderSSH
         return None
 
+@swagger.model
+class ClusterListAPIItem:
+    def __init__(self, name):
+        pass
 
 class ClusterListAPI(ProtectedResource):
+    @swagger.operation(
+        notes='get a Clusters list',
+        )
     @marshal_with(fields)
     def get(self):
         return [cluster for cluster in Cluster.objects.all()]
 
+
+    @swagger.operation(
+        notes='Create cluster',
+        responseClass=ClusterListAPIItem.__name__,
+        parameters=[
+            {
+                "method": "POST",
+                "name": "name",
+                "description": "The name of cluster",
+                "required": True,
+                "allowMultiple": False,
+                "dataType": ClusterListAPIItem.__name__,
+                "paramType": 'body'
+            }
+            ],
+        responseMessages=[
+                {
+                    "code": 201,
+                    "message": "New cluster is created."
+                },
+                {
+                    "code": 400,
+                    "message": "Bad request."
+                }
+            ]
+        )
     @marshal_with(fields)
     def post(self):
         args = reqparse.parse_args()
@@ -64,7 +98,7 @@ class ClusterListAPI(ProtectedResource):
             name=args.get('name'),
         )
         cluster.save()
-        return cluster
+        return cluster, 201
 
 
 class ClusterAPI(ProtectedResource, ClusterMixin):
@@ -81,6 +115,9 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
         cluster.save()
         return cluster
 
+    @swagger.operation(
+        notes='delete a cluster item by ID',
+    )
     @marshal_with(fields)
     def delete(self, id):
         cluster = self._find_cluster(id)

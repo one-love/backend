@@ -26,7 +26,7 @@ manager.add_command(
 
 @app.route('/')
 def index():
-    return redirect(url_for('api/clusters'))
+    return redirect(('api/v0/clusters'))
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 from celery import Celery
+from flask import Blueprint
 from flask.ext.mail import Mail
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.restful import Api
@@ -11,6 +12,7 @@ from models import User, Role
 
 
 current_app = None
+blueprint_v0 = Blueprint('blueprint_v0', __name__)
 
 
 class ErrorFriendlyApi(Api):
@@ -52,10 +54,12 @@ class OneLove(object):
         self.app = app
         OneLove.api = swagger.docs(
             ErrorFriendlyApi(
-                self.app,
-                prefix='/api/v0'
+                blueprint_v0
             ),
-            apiVersion='0'
+            apiVersion='0',
+            api_spec_url='/spec',
+            description='OneLove API',
+            swaggerVersion='2.0'
         )
         OneLove.celery.conf.update(app.config)
         OneLove.celery.set_default()
@@ -78,6 +82,7 @@ class OneLove(object):
         import urls
         urls.init(OneLove.api)
 
+        self.app.register_blueprint(blueprint_v0, url_prefix='/api/v0')
         OneLove.jwt.init_app(app)
 
     @jwt.authentication_handler
