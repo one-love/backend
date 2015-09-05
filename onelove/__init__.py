@@ -82,8 +82,8 @@ class OneLove(object):
         import urls
         urls.init(OneLove.api)
 
-        self.app.register_blueprint(blueprint_v0, url_prefix='/api/v0')
         OneLove.jwt.init_app(app)
+        self.app.register_blueprint(blueprint_v0, url_prefix='/api/v0')
 
     @jwt.authentication_handler
     def authenticate(username, password):

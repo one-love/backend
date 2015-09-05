@@ -20,4 +20,4 @@ curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Au
 In the same way you can get other resorces/endpoints
 
 ### Swagger
-To use swagger open [Swagger UI](https://192.168.33.33/api/v0/spec.html)
+To use swagger open [Swagger UI](https://192.168.33.33/docs)
