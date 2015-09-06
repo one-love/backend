@@ -58,8 +58,7 @@ class OneLove(object):
             ),
             apiVersion='0',
             api_spec_url='/spec',
-            description='OneLove API',
-            swaggerVersion='2.0'
+            description='OneLove API'
         )
         OneLove.celery.conf.update(app.config)
         OneLove.celery.set_default()
