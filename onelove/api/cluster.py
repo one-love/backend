@@ -53,30 +53,30 @@ class ClusterMixin(object):
         return None
 
 @swagger.model
-class ClusterListAPIItem:
+class ClusterListAPICreate:
     def __init__(self, name):
         pass
 
 class ClusterListAPI(ProtectedResource):
     @swagger.operation(
-        notes='get a Clusters list',
-        )
+        summary='Get a Clusters list',
+    )
     @marshal_with(fields)
     def get(self):
         return [cluster for cluster in Cluster.objects.all()]
 
 
     @swagger.operation(
-        notes='Create cluster',
-        responseClass=ClusterListAPIItem.__name__,
+        summary='Create the cluster',
+        responseClass=ClusterListAPICreate.__name__,
         parameters=[
             {
                 "method": "POST",
-                "name": "name",
-                "description": "The name of cluster",
+                "name": "Cluster",
+                "description": "Cluster object to create a user",
                 "required": True,
                 "allowMultiple": False,
-                "dataType": ClusterListAPIItem.__name__,
+                "dataType": ClusterListAPICreate.__name__,
                 "paramType": 'body'
             }
             ],
@@ -116,7 +116,7 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
         return cluster
 
     @swagger.operation(
-        notes='delete a cluster item by ID',
+        summary='Delete a cluster item by ID',
     )
     @marshal_with(fields)
     def delete(self, id):
@@ -126,6 +126,9 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
 
 
 class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
+    @swagger.operation(
+        summary='Get list of aplications in the cluster',
+    )
     @marshal_with(application.fields)
     def get(self, cluster_id):
         cluster = self._find_cluster(cluster_id)

@@ -1,6 +1,7 @@
 from flask.ext.restful import abort, reqparse, fields, marshal_with
 from flask.ext.security.registerable import register_user
 from mongoengine.queryset import NotUniqueError
+from flask_restful_swagger import swagger
 
 from ..models import User
 from resources import ProtectedResource
@@ -22,11 +23,43 @@ reqparse.add_argument('last_name', type=str, required=False, location='json')
 reqparse.add_argument('password', type=str, required=False, location='json')
 
 
+@swagger.model
+class UserListAPICreate:
+    def __init__(self, email, password, first_name="NA", last_name="NA"):
+        pass
+
 class UserListAPI(ProtectedResource):
+    @swagger.operation(summary='Get a users list')
     @marshal_with(fields)
     def get(self):
         return [user for user in User.objects.all()]
 
+    @swagger.operation(
+        notes='Create user',
+        summary='Create the user',
+        responseClass=UserListAPICreate.__name__,
+        parameters=[
+            {
+                "method": "POST",
+                "name": "user",
+                "description": "User object to create a user",
+                "required": True,
+                "allowMultiple": False,
+                "dataType": UserListAPICreate.__name__,
+                "paramType": 'body'
+            }
+            ],
+        responseMessages=[
+                {
+                    "code": 201,
+                    "message": "New user is created."
+                },
+                {
+                    "code": 409,
+                    "message": "User with that email exists."
+                }
+            ]
+        )
     @marshal_with(fields)
     def post(self):
         args = reqparse.parse_args()
@@ -39,7 +72,7 @@ class UserListAPI(ProtectedResource):
             )
         except NotUniqueError:
             abort(409, error='User with that email exists')
-        return user
+        return user, 201
 
 
 class UserAPI(ProtectedResource):
@@ -62,6 +95,7 @@ class UserAPI(ProtectedResource):
         user.save()
         return user
 
+    @swagger.operation(summary='Delete a user')
     @marshal_with(fields)
     def delete(self, id):
         try:
