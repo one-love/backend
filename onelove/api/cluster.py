@@ -52,10 +52,12 @@ class ClusterMixin(object):
             return ProviderSSH
         return None
 
+
 @swagger.model
 class ClusterListAPICreate:
     def __init__(self, name):
         pass
+
 
 class ClusterListAPI(ProtectedResource):
     @swagger.operation(
@@ -64,7 +66,6 @@ class ClusterListAPI(ProtectedResource):
     @marshal_with(fields)
     def get(self):
         return [cluster for cluster in Cluster.objects.all()]
-
 
     @swagger.operation(
         summary='Create the cluster',
@@ -79,18 +80,18 @@ class ClusterListAPI(ProtectedResource):
                 "dataType": ClusterListAPICreate.__name__,
                 "paramType": 'body'
             }
-            ],
+        ],
         responseMessages=[
-                {
-                    "code": 201,
-                    "message": "New cluster is created."
-                },
-                {
-                    "code": 400,
-                    "message": "Bad request."
-                }
-            ]
-        )
+            {
+                "code": 201,
+                "message": "New cluster is created."
+            },
+            {
+                "code": 400,
+                "message": "Bad request."
+            }
+        ]
+    )
     @marshal_with(fields)
     def post(self):
         args = reqparse.parse_args()

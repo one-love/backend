@@ -28,6 +28,7 @@ class UserListAPICreate:
     def __init__(self, email, password, first_name="NA", last_name="NA"):
         pass
 
+
 class UserListAPI(ProtectedResource):
     @swagger.operation(summary='Get a users list')
     @marshal_with(fields)
@@ -48,17 +49,17 @@ class UserListAPI(ProtectedResource):
                 "dataType": UserListAPICreate.__name__,
                 "paramType": 'body'
             }
-            ],
+        ],
         responseMessages=[
-                {
-                    "code": 201,
-                    "message": "New user is created."
-                },
-                {
-                    "code": 409,
-                    "message": "User with that email exists."
-                }
-            ]
+            {
+                "code": 201,
+                "message": "New user is created."
+            },
+            {
+                "code": 409,
+                "message": "User with that email exists."
+            }
+        ]
         )
     @marshal_with(fields)
     def post(self):
