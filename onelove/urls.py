@@ -9,7 +9,7 @@ from api.cluster import (
 )
 from api.task import TaskListAPI, TaskAPI
 from api.user import UserListAPI, UserAPI
-from api.auth import LoginAPI
+from api.auth import AuthAPI
 
 
 def init(api):
@@ -69,7 +69,7 @@ def init(api):
         endpoint='api/user'
     )
     api.add_resource(
-        LoginAPI,
-        '/login',
-        endpoint='api/login'
+        AuthAPI,
+        '/auth',
+        endpoint='api/auth'
     )
