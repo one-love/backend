@@ -2,7 +2,7 @@
 import os
 
 from celery import current_app as celery
-from flask import redirect, url_for, Flask, render_template
+from flask import redirect, Flask, render_template
 from flask.ext.script import Manager, Server
 
 from onelove import OneLove
@@ -26,17 +26,13 @@ manager.add_command(
 
 @app.route('/')
 def index():
-    return redirect(('api/v0/clusters'))
-
-@app.route('/docs')
-def docsr():
-    return redirect(('api/v0/docs'))
+    return redirect('api/v0/docs')
 
 
 @app.route('/api/v0/docs')
 def docs():
-    resource_list_url="/api/v0/spec/_/resource_list.json"
-    base_url="/api/v0/spec/_/static/"
+    resource_list_url = "/api/v0/spec/_/resource_list.json"
+    base_url = "/api/v0/spec/_/static/"
     return render_template(
         'swagger/index.html',
         base_url=base_url,
