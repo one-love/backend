@@ -7,13 +7,16 @@ from ..models import User
 from resources import ProtectedResource
 
 
-fields = {
-    'email': fields.String,
-    'first_name': fields.String,
-    'id': fields.String,
-    'last_name': fields.String,
-    'password': fields.String,
-}
+@swagger.model
+class UserFields:
+    resource_fields = {
+        'email': fields.String,
+        'first_name': fields.String,
+        'id': fields.String,
+        'last_name': fields.String,
+        'password': fields.String,
+    }
+    required = ['email']
 
 
 reqparse = reqparse.RequestParser()
@@ -23,30 +26,25 @@ reqparse.add_argument('last_name', type=str, required=False, location='json')
 reqparse.add_argument('password', type=str, required=False, location='json')
 
 
-@swagger.model
-class UserListAPICreate:
-    def __init__(self, email, password, first_name="NA", last_name="NA"):
-        pass
-
-
 class UserListAPI(ProtectedResource):
-    @swagger.operation(summary='Get a users list')
-    @marshal_with(fields)
+    @swagger.operation(
+        summary='Get a users list',
+        responseClass=UserFields
+    )
+    @marshal_with(UserFields.resource_fields)
     def get(self):
         return [user for user in User.objects.all()]
 
     @swagger.operation(
         notes='Create user',
         summary='Create the user',
-        responseClass=UserListAPICreate.__name__,
+        responseClass=UserFields,
         parameters=[
             {
-                "method": "POST",
-                "name": "user",
+                "name": "body",
                 "description": "User object to create a user",
-                "required": True,
                 "allowMultiple": False,
-                "dataType": UserListAPICreate.__name__,
+                "dataType": UserFields.__name__,
                 "paramType": 'body'
             }
         ],
@@ -61,7 +59,7 @@ class UserListAPI(ProtectedResource):
             }
         ]
         )
-    @marshal_with(fields)
+    @marshal_with(UserFields.resource_fields)
     def post(self):
         args = reqparse.parse_args()
         try:
@@ -77,7 +75,11 @@ class UserListAPI(ProtectedResource):
 
 
 class UserAPI(ProtectedResource):
-    @marshal_with(fields)
+    @swagger.operation(
+        summary='Get a user',
+        responseClass=UserFields,
+    )
+    @marshal_with(UserFields.resource_fields)
     def get(self, id):
         try:
             user = User.objects.get(id=id)
@@ -85,7 +87,26 @@ class UserAPI(ProtectedResource):
             abort(404, error='User does not exist')
         return user
 
-    @marshal_with(fields)
+    @swagger.operation(
+        description='User operations',
+        summary='Change the user email.',
+        responseClass=UserFields,
+        parameters=[
+            {
+                "name": "body",
+                "allowMultiple": False,
+                "dataType": UserFields.__name__,
+                "paramType": "body"
+            }
+        ],
+        responseMessages=[
+            {
+                "code": 200,
+                "message": "Email is changed."
+            }
+        ]
+    )
+    @marshal_with(UserFields.resource_fields)
     def put(self, id):
         try:
             user = User.objects.get(id=id)
@@ -96,8 +117,11 @@ class UserAPI(ProtectedResource):
         user.save()
         return user
 
-    @swagger.operation(summary='Delete a user')
-    @marshal_with(fields)
+    @swagger.operation(
+        summary='Delete a user',
+        responseClass=UserFields,
+    )
+    @marshal_with(UserFields.resource_fields)
     def delete(self, id):
         try:
             user = User.objects.get(id=id)
