@@ -7,12 +7,16 @@ from ..models import Application, Cluster, ProviderSSH
 from resources import ProtectedResource
 
 
-fields = {
-    'applications': fields.List(fields.Nested(application.fields)),
-    'id': fields.String,
-    'name': fields.String,
-    'providers': fields.List(fields.Nested(application.fields)),
-}
+@swagger.model
+class ClusterFields:
+    resource_fields = {
+        'applications': fields.List(fields.Nested(application.fields)),
+        'id': fields.String,
+        'name': fields.String,
+        'providers': fields.List(fields.Nested(application.fields)),
+    }
+    required = ['name']
+    description = ['something']
 
 
 reqparse = reqparse.RequestParser()
@@ -62,22 +66,22 @@ class ClusterListAPICreate:
 class ClusterListAPI(ProtectedResource):
     @swagger.operation(
         summary='Get a Clusters list',
+        responseClass=ClusterFields
     )
-    @marshal_with(fields)
+    @marshal_with(ClusterFields.resource_fields)
     def get(self):
         return [cluster for cluster in Cluster.objects.all()]
 
     @swagger.operation(
         summary='Create the cluster',
-        responseClass=ClusterListAPICreate.__name__,
+        responseClass=ClusterFields,
         parameters=[
             {
-                "method": "POST",
-                "name": "Cluster",
+                "name": "body",
                 "description": "Cluster object to create a user",
                 "required": True,
                 "allowMultiple": False,
-                "dataType": ClusterListAPICreate.__name__,
+                "dataType": ClusterFields.__name__,
                 "paramType": 'body'
             }
         ],
@@ -92,7 +96,7 @@ class ClusterListAPI(ProtectedResource):
             }
         ]
     )
-    @marshal_with(fields)
+    @marshal_with(ClusterFields.resource_fields)
     def post(self):
         args = reqparse.parse_args()
         cluster = Cluster(

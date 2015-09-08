@@ -12,7 +12,6 @@ class UserFields:
     resource_fields = {
         'email': fields.String,
         'first_name': fields.String,
-        'id': fields.String,
         'last_name': fields.String,
         'password': fields.String,
     }
