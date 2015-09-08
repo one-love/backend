@@ -48,15 +48,23 @@
       docExpansion: "none"
     });
 
+    if ($('#input_apiKey').val() === '' && window.localStorage.oneLoveToken) {
+      $('#input_apiKey').val(window.localStorage.oneLoveToken.replace('Bearer ', ''));
+    }
+
     $('#input_apiKey').change(function() {
       var key = "Bearer " + $('#input_apiKey')[0].value;
       console.log("key: " + key);
       if(key && key.trim() != "") {
         console.log("added key " + key);
         window.authorizations.add("key", new ApiKeyAuthorization("Authorization", key, "header"));
+        window.localStorage.oneLoveToken = key;
       }
     })
     window.swaggerUi.load();
+  });
+  $(function() {
+    $('#input_apiKey').change();
   });
 
   </script>
