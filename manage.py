@@ -2,7 +2,7 @@
 import os
 
 from celery import current_app as celery
-from flask import redirect, url_for, Flask
+from flask import redirect, Flask
 from flask.ext.script import Manager, Server
 
 from onelove import OneLove
@@ -26,7 +26,7 @@ manager.add_command(
 
 @app.route('/')
 def index():
-    return redirect(url_for('api/clusters'))
+    return redirect(('api/v0/doc'))
 
 
 if __name__ == '__main__':

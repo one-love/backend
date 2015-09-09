@@ -1,7 +1,7 @@
 from celery import Celery
 from flask.ext.mail import Mail
 from flask.ext.mongoengine import MongoEngine
-from flask.ext.restplus import Api
+from flask.ext.restplus import Api, apidoc
 from flask.ext.security import Security, MongoEngineUserDatastore
 from flask.ext.security.utils import verify_password
 from flask_jwt import JWT, JWTError
@@ -51,7 +51,9 @@ class OneLove(object):
         self.app = app
 
         from api import api_v0
+
         self.app.register_blueprint(api_v0, url_prefix='/api/v0')
+        self.app.register_blueprint(apidoc.apidoc)
 
         OneLove.celery.conf.update(app.config)
         OneLove.celery.set_default()
@@ -96,3 +98,5 @@ class OneLove(object):
         except User.DoesNotExist:
             return None
         return user
+
+
