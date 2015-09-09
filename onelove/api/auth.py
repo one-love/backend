@@ -2,21 +2,8 @@ from flask.ext.restplus import reqparse, fields, marshal_with, Resource
 from flask.ext.restful import request
 from flask_jwt import _jwt, JWTAuthView, JWTError
 from . import api
-
-ns_auth = api.namespace('auth', description='Auth operations')
-
-auth_fields = api.model(
-    'Auth', {
-        'email': fields.String(description='The email', required=True, default='admin@example.com'),
-        'password': fields.String(description='The password', required=True, default='Sekrit'),
-    }
-)
-
-token_response = api.model(
-    'Token', {
-        'token': fields.String,
-    }
-)
+from .namespaces import ns_auth
+from .fields import auth_fields, token_response
 
 
 parser = api.parser()

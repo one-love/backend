@@ -24,3 +24,7 @@ def swagger_ui():
 
 from . import auth
 from . import user
+from . import cluster
+from . import application
+from . import provider
+from . import task

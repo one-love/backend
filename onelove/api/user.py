@@ -1,34 +1,13 @@
-from flask.ext.restplus import abort, reqparse, fields, marshal_with
+from flask.ext.restplus import abort, reqparse
 from flask.ext.security.registerable import register_user
 from mongoengine.queryset import NotUniqueError
 from . import api
+from .namespaces import ns_user
+from .fields import user_fields as fields
+from .fields import get_user_fields as get_fields
 
 from ..models import User
 from resources import ProtectedResource
-
-
-ns_user = api.namespace('user', description='Users operations')
-
-users_fields = api.model('User', {
-        'email': fields.String(
-            description='The email',
-            required=True,
-            default='admin@example.com'
-        ),
-        'first_name': fields.String,
-        'last_name': fields.String,
-        'password': fields.String(
-            description='Password',
-            required=True,
-            default='Sekrit'
-        ),
-    }
-)
-
-get_users_fields = api.extend('Get Users', users_fields, {
-        'id': fields.String,
-    }
-)
 
 
 parser = api.parser()
@@ -37,14 +16,14 @@ parser.add_argument('first_name', type=str, required=False, location='json')
 parser.add_argument('last_name', type=str, required=False, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
 
-@ns_user.route('/list', endpoint='user/list')
+@ns_user.route('', endpoint='api/users')
 class UserListAPI(ProtectedResource):
-    @api.marshal_with(get_users_fields)
+    @api.marshal_with(get_fields)
     def get(self):
         return [user for user in User.objects.all()]
 
-    @api.expect(users_fields)
-    @api.marshal_with(users_fields)
+    @api.expect(fields)
+    @api.marshal_with(fields)
     def post(self):
         args = parser.parse_args()
         try:
@@ -59,9 +38,9 @@ class UserListAPI(ProtectedResource):
         return user
 
 
-@ns_user.route('/<id>', endpoint='user/user')
+@ns_user.route('/<id>', endpoint='api/user')
 class UserAPI(ProtectedResource):
-    @api.marshal_with(users_fields)
+    @api.marshal_with(fields)
     def get(self, id):
         try:
             user = User.objects.get(id=id)
@@ -69,8 +48,8 @@ class UserAPI(ProtectedResource):
             abort(404, error='User does not exist')
         return user
 
-    @api.expect(users_fields)
-    @api.marshal_with(users_fields)
+    @api.expect(fields)
+    @api.marshal_with(fields)
     def put(self, id):
         try:
             user = User.objects.get(id=id)
@@ -81,7 +60,7 @@ class UserAPI(ProtectedResource):
         user.save()
         return user
 
-    @api.marshal_with(users_fields)
+    @api.marshal_with(fields)
     def delete(self, id):
         try:
             user = User.objects.get(id=id)
