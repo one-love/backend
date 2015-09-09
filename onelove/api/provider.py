@@ -22,7 +22,7 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
     @api.expect(fields)
     @api.marshal_with(fields)
     def post(self, cluster_id):
-        args = parser.parser_args()
+        args = parser.parse_args()
         provider_name = args.get('name')
         provider_type = args.get('type')
         prov = self._find_provider(cluster_id, provider_name)
@@ -44,7 +44,7 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
 
     @api.marshal_with(fields)
     def put(self, cluster_id, provider_name):
-        args = parser.parser_args()
+        args = parser.parse_args()
         prov = self._find_provider(cluster_id, provider_name)
         prov.name = args.get('name')
         prov.save()
@@ -52,7 +52,7 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
 
     @api.marshal_with(fields)
     def patch(self, cluster_id, provider_name):
-        args = parser.parser_args()
+        args = parser.parse_args()
         prov = self._find_provider(cluster_id, provider_name)
         prov.name = args.get('name', prov.name)
         prov.save()
