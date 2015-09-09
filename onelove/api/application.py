@@ -1,4 +1,4 @@
-from flask.ext.restplus import abort, fields, reqparse, marshal_with
+from flask.ext.restplus import abort
 from resources import ProtectedResource
 from ..models import Application, Cluster
 from . import api
@@ -7,10 +7,11 @@ from .namespaces import ns_cluster
 from .fields import application_fields as fields
 
 
-reqparse = reqparse.RequestParser()
-reqparse.add_argument('application_name', type=str, required=True, location='json')
-reqparse.add_argument('galaxy_role', type=str, required=True, location='json')
-reqparse.add_argument('name', type=str, required=True, location='json')
+parser = api.parser()
+parser.add_argument('application_name', type=str, required=True, location='json')
+parser.add_argument('galaxy_role', type=str, required=True, location='json')
+parser.add_argument('name', type=str, required=True, location='json')
+
 
 @ns_cluster.route('/<cluster_id>/application', endpoint='api/cluster/applications')
 class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
@@ -23,7 +24,7 @@ class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def post(self, cluster_id):
         cluster = self._find_cluster(cluster_id)
-        args = reqparse.parse_args()
+        args = parser.parse_args()
         application_name = args.get('name')
         app = self._find_app(cluster_id, application_name)
         if app is not None:
@@ -43,7 +44,7 @@ class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
     @api.expect(fields)
     @api.marshal_with(fields)
     def put(self, cluster_id, application_name):
-        args = reqparse.parse_args()
+        args = parser.parse_args()
         app = self._find_app(cluster_id, application_name)
         app.name = args.get('name')
         app.save()

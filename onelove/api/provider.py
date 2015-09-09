@@ -1,4 +1,4 @@
-from flask.ext.restplus import abort, fields, reqparse
+from flask.ext.restplus import abort, fields
 from .mixins import ClusterMixin
 from resources import ProtectedResource
 from ..models import Cluster
@@ -7,9 +7,9 @@ from .fields import provider_fields as fields
 from .namespaces import ns_cluster
 
 
-reqparse = reqparse.RequestParser()
-reqparse.add_argument('name', type=str, required=True, location='json')
-reqparse.add_argument('type', type=str, required=True, location='json')
+parser = api.parser()
+parser.add_argument('name', type=str, required=True, location='json')
+parser.add_argument('type', type=str, required=True, location='json')
 
 
 @ns_cluster.route('/<cluster_id>/provider', endpoint='api/cluster/providers')
@@ -22,7 +22,7 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
     @api.expect(fields)
     @api.marshal_with(fields)
     def post(self, cluster_id):
-        args = reqparse.parse_args()
+        args = parser.parser_args()
         provider_name = args.get('name')
         provider_type = args.get('type')
         prov = self._find_provider(cluster_id, provider_name)
@@ -44,7 +44,7 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
 
     @api.marshal_with(fields)
     def put(self, cluster_id, provider_name):
-        args = reqparse.parse_args()
+        args = parser.parser_args()
         prov = self._find_provider(cluster_id, provider_name)
         prov.name = args.get('name')
         prov.save()
@@ -52,7 +52,7 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
 
     @api.marshal_with(fields)
     def patch(self, cluster_id, provider_name):
-        args = reqparse.parse_args()
+        args = parser.parser_args()
         prov = self._find_provider(cluster_id, provider_name)
         prov.name = args.get('name', prov.name)
         prov.save()
