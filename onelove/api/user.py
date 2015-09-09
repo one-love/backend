@@ -9,12 +9,24 @@ from resources import ProtectedResource
 
 ns_user = api.namespace('user', description='Users operations')
 
-users_fields = api.model(
-    'User', {
-        'email': fields.String(description='The email', required=True, default='admin@example.com'),
+users_fields = api.model('User', {
+        'email': fields.String(
+            description='The email',
+            required=True,
+            default='admin@example.com'
+        ),
         'first_name': fields.String,
         'last_name': fields.String,
-        'password': fields.String,
+        'password': fields.String(
+            description='Password',
+            required=True,
+            default='Sekrit'
+        ),
+    }
+)
+
+get_users_fields = api.extend('Get Users', users_fields, {
+        'id': fields.String,
     }
 )
 
@@ -26,12 +38,12 @@ parser.add_argument('last_name', type=str, required=False, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
 
 @ns_user.route('/list', endpoint='user/list')
-@api.doc(body=users_fields)
 class UserListAPI(ProtectedResource):
-    @api.marshal_with(users_fields)
+    @api.marshal_with(get_users_fields)
     def get(self):
         return [user for user in User.objects.all()]
 
+    @api.expect(users_fields)
     @api.marshal_with(users_fields)
     def post(self):
         args = parser.parse_args()
@@ -48,10 +60,8 @@ class UserListAPI(ProtectedResource):
 
 
 @ns_user.route('/<id>', endpoint='user/user')
-@api.doc(body=users_fields)
 class UserAPI(ProtectedResource):
     @api.marshal_with(users_fields)
-    @api.doc(security='token')
     def get(self, id):
         try:
             user = User.objects.get(id=id)
@@ -59,6 +69,7 @@ class UserAPI(ProtectedResource):
             abort(404, error='User does not exist')
         return user
 
+    @api.expect(users_fields)
     @api.marshal_with(users_fields)
     def put(self, id):
         try:
