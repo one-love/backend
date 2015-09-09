@@ -1,35 +1,40 @@
-from flask.ext.restful import abort, reqparse, fields, marshal_with
+from flask.ext.restplus import abort, reqparse, fields, marshal_with
 from flask.ext.security.registerable import register_user
 from mongoengine.queryset import NotUniqueError
+from . import api
 
 from ..models import User
 from resources import ProtectedResource
 
 
-fields = {
-    'email': fields.String,
-    'first_name': fields.String,
-    'id': fields.String,
-    'last_name': fields.String,
-    'password': fields.String,
-}
+ns_user = api.namespace('user', description='Users operations')
+
+users_fields = api.model(
+    'User', {
+        'email': fields.String(description='The email', required=True, default='admin@example.com'),
+        'first_name': fields.String,
+        'last_name': fields.String,
+        'password': fields.String,
+    }
+)
 
 
-reqparse = reqparse.RequestParser()
-reqparse.add_argument('email', type=str, required=True, location='json')
-reqparse.add_argument('first_name', type=str, required=False, location='json')
-reqparse.add_argument('last_name', type=str, required=False, location='json')
-reqparse.add_argument('password', type=str, required=False, location='json')
+parser = api.parser()
+parser.add_argument('email', type=str, required=True, location='json')
+parser.add_argument('first_name', type=str, required=False, location='json')
+parser.add_argument('last_name', type=str, required=False, location='json')
+parser.add_argument('password', type=str, required=False, location='json')
 
-
+@ns_user.route('/list', endpoint='user/list')
+@api.doc(body=users_fields)
 class UserListAPI(ProtectedResource):
-    @marshal_with(fields)
+    @api.marshal_with(users_fields)
     def get(self):
         return [user for user in User.objects.all()]
 
-    @marshal_with(fields)
+    @api.marshal_with(users_fields)
     def post(self):
-        args = reqparse.parse_args()
+        args = parser.parse_args()
         try:
             user = register_user(
                 email=args.get('email'),
@@ -42,8 +47,11 @@ class UserListAPI(ProtectedResource):
         return user
 
 
+@ns_user.route('/<id>', endpoint='user/user')
+@api.doc(body=users_fields)
 class UserAPI(ProtectedResource):
-    @marshal_with(fields)
+    @api.marshal_with(users_fields)
+    @api.doc(security='token')
     def get(self, id):
         try:
             user = User.objects.get(id=id)
@@ -51,18 +59,18 @@ class UserAPI(ProtectedResource):
             abort(404, error='User does not exist')
         return user
 
-    @marshal_with(fields)
+    @api.marshal_with(users_fields)
     def put(self, id):
         try:
             user = User.objects.get(id=id)
         except User.DoesNotExist:
             abort(404, error='User does not exist')
-        args = reqparse.parse_args()
+        args = parse.parse_args()
         user.email = args.get('email')
         user.save()
         return user
 
-    @marshal_with(fields)
+    @api.marshal_with(users_fields)
     def delete(self, id):
         try:
             user = User.objects.get(id=id)
