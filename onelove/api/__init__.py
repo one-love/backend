@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask.ext.restplus import Api
 
-api_auth = Blueprint('api', __name__)
+api_v0 = Blueprint('api', __name__)
 
 authorizations = {
     'token': {
@@ -11,11 +11,14 @@ authorizations = {
     }
 }
 
-api = Api(api_auth, version='0', title='Todo API',
-            description='A simple TODO API',
-            authorizations=authorizations,
-            security='token'
-        )
+api = Api(
+    api_v0,
+    version='0',
+    title='Todo API',
+    description='A simple TODO API',
+    authorizations=authorizations,
+    security='token'
+)
 
 
 from . import auth
