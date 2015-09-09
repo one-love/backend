@@ -1,15 +1,14 @@
-from flask.ext.restful import reqparse, fields, marshal_with, Resource, request
-from flask_restful_swagger import swagger
+from flask.ext.restplus import Resource
+from flask.ext.restful import request
 from flask_jwt import _jwt, JWTAuthView, JWTError
+from . import api
+from .namespaces import ns_auth
+from .fields import auth_fields, token_response
 
 
-fields = {
-    'token': fields.String,
-}
-
-reqparse = reqparse.RequestParser()
-reqparse.add_argument('email', type=str, required=True, location='json')
-reqparse.add_argument('password', type=str, required=False, location='json')
+parser = api.parser()
+parser.add_argument('email', type=str, required=True, location='json')
+parser.add_argument('password', type=str, required=False, location='json')
 
 
 def generate_token(user):
@@ -20,37 +19,14 @@ def generate_token(user):
     return token
 
 
-@swagger.model
-class AuthAPIpost:
-    def __init__(self, email, password):
-        pass
-
-
+@ns_auth.route('/token', endpoint='aput/token')
+@api.doc(body=auth_fields)
 class AuthAPI(JWTAuthView, Resource):
-    @swagger.operation(
-        summary='Get a token.',
-        responseClass=AuthAPIpost.__name__,
-        parameters=[
-            {
-                "method": "POST",
-                "name": "user",
-                "description": "User credentials.",
-                "required": True,
-                "allowMultiple": False,
-                "dataType": AuthAPIpost.__name__,
-                "paramType": 'body'
-            }
-            ],
-        responseMessages=[
-            {
-                "code": 400,
-                "message": "Invalid credentials."
-            }
-            ]
-        )
-    @marshal_with(fields)
+    @api.response(400, 'Invalid credentials')
+    @api.doc(security=None)
+    @api.marshal_with(token_response, code=200, description='Get a token.')
     def post(self):
-        args = reqparse.parse_args()
+        args = parser.parse_args()
         data = request.get_json(force=True)
         username = args.get('email')
         password = args.get('password')

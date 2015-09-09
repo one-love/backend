@@ -1,23 +1,20 @@
-from flask.ext.restful import fields, marshal_with
-
 from resources import ProtectedResource
 from ..models import Task
+from . import api
+from .namespaces import ns_task
+from .fields import task_fields as fields
 
 
-fields = {
-    'id': fields.String,
-    'celery_id': fields.String,
-}
-
-
+@ns_task.route('', endpoint='api/tasks')
 class TaskListAPI(ProtectedResource):
-    @marshal_with(fields)
+    @api.marshal_with(fields)
     def get(self):
         return [task for task in Task.objects.all()]
 
 
+@ns_task.route('/<id>', endpoint='api/task')
 class TaskAPI(ProtectedResource):
-    @marshal_with(fields)
+    @api.marshal_with(fields)
     def get(self, id):
         from .. import current_app
         task = current_app.celery.AsyncResult(id=id)
