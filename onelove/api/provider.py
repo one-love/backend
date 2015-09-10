@@ -1,4 +1,4 @@
-from flask.ext.restplus import abort, fields
+from flask.ext.restplus import abort
 from .mixins import ClusterMixin
 from resources import ProtectedResource
 from ..models import Cluster
@@ -12,7 +12,7 @@ parser.add_argument('name', type=str, required=True, location='json')
 parser.add_argument('type', type=str, required=True, location='json')
 
 
-@ns_cluster.route('/<cluster_id>/provider', endpoint='api/cluster/providers')
+@ns_cluster.route('/<cluster_id>/providers', endpoint='api/cluster/providers')
 class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def get(self, cluster_id):
@@ -36,12 +36,13 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
         return cluster.providers
 
 
-@ns_cluster.route('/<cluster_id>/provider/<provider_name>', endpoint='api/cluster/provider')
+@ns_cluster.route('/<cluster_id>/providers/<provider_name>', endpoint='api/cluster/provider')
 class ClusterProviderAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def get(self, cluster_id, provider_name):
         return self._find_provider(cluster_id, provider_name)
 
+    @api.expect(fields)
     @api.marshal_with(fields)
     def put(self, cluster_id, provider_name):
         args = parser.parse_args()

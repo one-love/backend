@@ -13,16 +13,18 @@ parser.add_argument('galaxy_role', type=str, required=True, location='json')
 parser.add_argument('name', type=str, required=True, location='json')
 
 
-@ns_cluster.route('/<cluster_id>/application', endpoint='api/cluster/applications')
+@ns_cluster.route('/<cluster_id>/applications', endpoint='api/cluster/applications')
 class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def get(self, cluster_id):
+        """Get list of a aplications for the cluster"""
         cluster = self._find_cluster(cluster_id)
         return cluster.applications
 
     @api.expect(fields)
     @api.marshal_with(fields)
     def post(self, cluster_id):
+        """Create aplication for the cluster"""
         cluster = self._find_cluster(cluster_id)
         args = parser.parse_args()
         application_name = args.get('name')
@@ -35,7 +37,7 @@ class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
         return cluster.applications
 
 
-@ns_cluster.route('/<cluster_id>/application/<application_name>', endpoint='api/cluster/application')
+@ns_cluster.route('/<cluster_id>/applications/<application_name>', endpoint='api/cluster/application')
 class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def get(self, cluster_id, application_name):
@@ -59,7 +61,7 @@ class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
         return app
 
 
-@ns_cluster.route('/<cluster_id>/application/<application_name>/provision', endpoint='api/cluster/application/provision')
+@ns_cluster.route('/<cluster_id>/applications/<application_name>/provision', endpoint='api/cluster/application/provision')
 class ClusterApplicationProvisionAPI(ProtectedResource, ClusterMixin):
     @api.expect(fields)
     @api.marshal_with(fields)
