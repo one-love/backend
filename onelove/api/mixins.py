@@ -18,7 +18,7 @@ class ClusterMixin(object):
         for app in cluster.applications:
             if app.name == application_name:
                 return app
-        abort(404, error='Application does not exist')
+        return None
 
     def _find_provider(self, cluster_id, provider_name):
         try:
