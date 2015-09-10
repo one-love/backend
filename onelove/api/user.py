@@ -20,11 +20,13 @@ parser.add_argument('password', type=str, required=False, location='json')
 class UserListAPI(ProtectedResource):
     @api.marshal_with(get_fields)
     def get(self):
+        """Get list of users."""
         return [user for user in User.objects.all()]
 
     @api.expect(fields)
     @api.marshal_with(fields)
     def post(self):
+        """Create the user."""
         args = parser.parse_args()
         try:
             user = register_user(
@@ -42,6 +44,7 @@ class UserListAPI(ProtectedResource):
 class UserAPI(ProtectedResource):
     @api.marshal_with(fields)
     def get(self, id):
+        """Get informations for the user"""
         try:
             user = User.objects.get(id=id)
         except User.DoesNotExist:
@@ -51,6 +54,7 @@ class UserAPI(ProtectedResource):
     @api.expect(fields)
     @api.marshal_with(fields)
     def put(self, id):
+        """Change user informations"""
         try:
             user = User.objects.get(id=id)
         except User.DoesNotExist:
@@ -62,6 +66,7 @@ class UserAPI(ProtectedResource):
 
     @api.marshal_with(fields)
     def delete(self, id):
+        """Delete the user."""
         try:
             user = User.objects.get(id=id)
         except User.DoesNotExist:
