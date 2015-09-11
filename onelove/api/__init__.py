@@ -23,7 +23,8 @@ api = ErrorFriendlyApi(
     version='0',
     title='OneLove API',
     description='API for OneLove project.',
-    ui=False
+    ui=False,
+    catch_all_404s=True
 )
 
 
