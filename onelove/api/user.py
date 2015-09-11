@@ -1,6 +1,7 @@
-from flask.ext.restplus import abort, reqparse
+from flask.ext.restplus import reqparse
 from flask.ext.security.registerable import register_user
 from mongoengine.queryset import NotUniqueError
+from mongoengine.errors import ValidationError
 from . import api
 from .namespaces import ns_user
 from .fields import user_fields as fields
@@ -47,8 +48,9 @@ class UserAPI(ProtectedResource):
         """Get informations for the user"""
         try:
             user = User.objects.get(id=id)
-        except User.DoesNotExist:
-            abort(404, error='User does not exist')
+        except (User.DoesNotExist, ValidationError):
+            api.abort(404, error='User does not exist')
+
         return user
 
     @api.expect(fields)
@@ -57,9 +59,10 @@ class UserAPI(ProtectedResource):
         """Change user informations"""
         try:
             user = User.objects.get(id=id)
-        except User.DoesNotExist:
-            abort(404, error='User does not exist')
-        args = parse.parse_args()
+        except (User.DoesNotExist, ValidationError):
+            api.abort(404, error='User does not exist')
+
+        args = parser.parse_args()
         user.email = args.get('email')
         user.save()
         return user
@@ -69,7 +72,7 @@ class UserAPI(ProtectedResource):
         """Delete the user."""
         try:
             user = User.objects.get(id=id)
-        except User.DoesNotExist:
-            abort(404, error='User does not exist')
+        except (User.DoesNotExist, ValidationError):
+            api.abort(404, error='User does not exist')
         user.delete()
         return user
