@@ -3,7 +3,7 @@ celery
 flask-jwt
 flask-mongoengine
 flask-restful
-flask-restful-swagger
+flask-restplus
 flask-script
 flask-security
 flower
