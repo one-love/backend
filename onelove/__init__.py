@@ -35,7 +35,8 @@ class OneLove(object):
     def init_app(self, app):
         self.app = app
 
-        from api import api_v0
+        from api import api_v0, api
+        self.api = api
 
         self.app.register_blueprint(api_v0, url_prefix='/api/v0')
         self.app.register_blueprint(apidoc.apidoc)
