@@ -1,4 +1,4 @@
-ansible
+git+https://github.com/ansible/ansible
 celery
 flask-jwt
 flask-mongoengine
