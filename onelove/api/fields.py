@@ -1,6 +1,17 @@
 from flask.ext.restplus import fields
 from . import api
 
+
+# Roles fields
+
+roles_fields = api.model(
+    'Roles', {
+        'name': fields.String(required=True),
+        'description': fields.String(required=True),
+    }
+)
+
+
 # User fields
 user_fields = api.model(
     'User', {
@@ -22,14 +33,24 @@ user_fields = api.model(
 get_user_fields = api.extend(
     'Get Users', user_fields, {
         'id': fields.String,
+        'roles': fields.Nested(roles_fields),
     }
 )
+
 
 # Auth fields
 auth_fields = api.model(
     'Auth', {
-        'email': fields.String(description='The email', required=True, default='admin@example.com'),
-        'password': fields.String(description='The password', required=True, default='Sekrit'),
+        'email': fields.String(
+            description='The email',
+            required=True,
+            default='admin@example.com'
+        ),
+        'password': fields.String(
+            description='The password',
+            required=True,
+            default='Sekrit'
+        ),
     }
 )
 
@@ -66,14 +87,14 @@ cluster_fields = api.model(
 )
 
 get_cluster_fields = api.extend('Get Clusters', cluster_fields, {
-        'id': fields.String,
-    }
+    'id': fields.String,
+}
 )
 
 # Task fields
 task_fields = api.model(
     'Task', {
-    'id': fields.String,
-    'celery_id': fields.String,
+        'id': fields.String,
+        'celery_id': fields.String,
     }
 )

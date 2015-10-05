@@ -42,7 +42,7 @@
                 window.swaggerUi.api.clientAuthorizations.add("key", new SwaggerClient.ApiKeyAuthorization("Authorization", key, "header"));
                 window.localStorage.oneLoveToken = key;
               }
-            })
+            });
             window.swaggerUi.load();
         });
 
