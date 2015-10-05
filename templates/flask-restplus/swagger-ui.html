@@ -30,6 +30,7 @@
                 },
                 docExpansion: "{{ config.SWAGGER_UI_DOC_EXPANSION | default('none') }}"
             });
+
             if ($('#input_apiKey').val() === '' && window.localStorage.oneLoveToken) {
               $('#input_apiKey').val(window.localStorage.oneLoveToken.replace('Bearer ', ''));
             }
@@ -38,12 +39,13 @@
               console.log("key: " + key);
               if(key && key.trim() != "") {
                 console.log("added key " + key);
-                window.authorizations.add("key", new ApiKeyAuthorization("Authorization", key, "header"));
+                window.swaggerUi.api.clientAuthorizations.add("key", new SwaggerClient.ApiKeyAuthorization("Authorization", key, "header"));
                 window.localStorage.oneLoveToken = key;
               }
-            });
+            })
             window.swaggerUi.load();
         });
+
         $(function() {
           $('#input_apiKey').change();
         });
