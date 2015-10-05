@@ -1,4 +1,4 @@
-from flask.ext.restful import Resource
+from flask.ext.restplus import Resource
 from flask_jwt import jwt_required
 
 
