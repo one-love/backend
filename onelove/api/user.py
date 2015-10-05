@@ -1,4 +1,3 @@
-from flask.ext.restplus import reqparse
 from flask.ext.security.registerable import register_user
 from mongoengine.queryset import NotUniqueError
 from mongoengine.errors import ValidationError
@@ -16,6 +15,7 @@ parser.add_argument('email', type=str, required=True, location='json')
 parser.add_argument('first_name', type=str, required=False, location='json')
 parser.add_argument('last_name', type=str, required=False, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
+
 
 @ns_user.route('', endpoint='api/users')
 class UserListAPI(ProtectedResource):
@@ -37,7 +37,7 @@ class UserListAPI(ProtectedResource):
                 password=args.get('password'),
             )
         except NotUniqueError:
-            abort(409, error='User with that email exists')
+            api.abort(409, error='User with that email exists')
         return user, 201
 
 
