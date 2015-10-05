@@ -28,9 +28,8 @@
                 onFailure: function(data) {
                     log("Unable to Load SwaggerUI");
                 },
-                docExpansion: "none"
+                docExpansion: "{{ config.SWAGGER_UI_DOC_EXPANSION | default('none') }}"
             });
-
             if ($('#input_apiKey').val() === '' && window.localStorage.oneLoveToken) {
               $('#input_apiKey').val(window.localStorage.oneLoveToken.replace('Bearer ', ''));
             }
@@ -42,10 +41,9 @@
                 window.authorizations.add("key", new ApiKeyAuthorization("Authorization", key, "header"));
                 window.localStorage.oneLoveToken = key;
               }
-            })
+            });
             window.swaggerUi.load();
         });
-
         $(function() {
           $('#input_apiKey').change();
         });
