@@ -3,7 +3,7 @@ celery
 flask-jwt
 flask-mongoengine
 flask-restful
-flask-restplus
+flask-restplus<0.8
 flask-script
 flask-security
 flower
