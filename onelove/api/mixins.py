@@ -1,15 +1,21 @@
 from flask.ext.restplus import abort
 from ..models import Cluster, ProviderSSH
 from mongoengine.errors import ValidationError
+from flask_jwt import current_user
+from ..models import User
 
 
 class ClusterMixin(object):
     def _find_cluster(self, cluster_id):
         try:
             cluster = Cluster.objects.get(id=cluster_id)
+            user = User.objects.get(id=current_user.get_id())
+            if user.has_role(cluster.name):
+                return cluster
+            else:
+                abort(403)
         except (Cluster.DoesNotExist, ValidationError):
             abort(404, error='Cluster does not exist')
-        return cluster
 
     def _find_app(self, cluster_id, application_name):
         try:
