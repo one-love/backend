@@ -24,6 +24,10 @@ class UserListAPI(ProtectedResource):
         """Get list of users."""
         return [user for user in User.objects.all()]
 
+    @api.doc(responses={
+        409: 'User with that email exists',
+        422: 'Validation error'
+    })
     @api.expect(fields)
     @api.marshal_with(fields)
     def post(self):
@@ -38,6 +42,8 @@ class UserListAPI(ProtectedResource):
             )
         except NotUniqueError:
             api.abort(409, error='User with that email exists')
+        except (ValidationError):
+            api.abort(422, error='ValidationError')
         return user, 201
 
 
