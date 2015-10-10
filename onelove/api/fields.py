@@ -22,11 +22,6 @@ user_fields = api.model(
         ),
         'first_name': fields.String,
         'last_name': fields.String,
-        'password': fields.String(
-            description='Password',
-            required=True,
-            default='Sekrit'
-        ),
     }
 )
 
@@ -77,12 +72,24 @@ provider_fields = api.model(
     }
 )
 
+
 # Cluster fields
+cluster_owner_fields = api.model(
+    'User', {
+        'id': fields.String,
+        'email': fields.String(),
+        'first_name': fields.String,
+        'last_name': fields.String,
+        'roles': fields.Nested(roles_fields),
+    }
+)
+
 cluster_fields = api.model(
     'Cluster', {
         'applications': fields.Nested(application_fields),
         'name': fields.String(required=True),
         'providers': fields.Nested(provider_fields),
+        'owner': fields.Nested(cluster_owner_fields),
     }
 )
 

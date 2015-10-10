@@ -46,15 +46,6 @@ class ProviderSSH(Provider):
     hosts = EmbeddedDocumentListField(HostSSH)
 
 
-class Cluster(Document):
-    name = StringField(max_length=512)
-    applications = EmbeddedDocumentListField(Application)
-    providers = EmbeddedDocumentListField(Provider)
-
-    def __repr__(self):
-        return '<Cluster %r>' % self.name
-
-
 class Role(Document, RoleMixin):
     """
     Role
@@ -76,6 +67,16 @@ class User(Document, UserMixin):
 
     def __repr__(self):
         return '<user %r>' % self.email
+
+
+class Cluster(Document):
+    name = StringField(max_length=512)
+    applications = EmbeddedDocumentListField(Application)
+    providers = EmbeddedDocumentListField(Provider)
+    owner = ReferenceField(User)
+
+    def __repr__(self):
+        return '<Cluster %r>' % self.name
 
 
 class Task(Document):

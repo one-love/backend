@@ -30,10 +30,10 @@ class ClusterListAPI(ProtectedResource):
             name=cluster_name,
             description="Cluster %s" % cluster_name
         )
+        cluster.owner = (user)
         OneLove.user_datastore.add_role_to_user(user, cluster_role)
         cluster.save()
         return cluster, 201
-
 
 @ns_cluster.route('/<id>', endpoint='cluster/cluster')
 class ClusterAPI(ProtectedResource, ClusterMixin):
