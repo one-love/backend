@@ -22,6 +22,11 @@ user_fields = api.model(
         ),
         'first_name': fields.String,
         'last_name': fields.String,
+        'password': fields.String(
+            description='Password',
+            required=True,
+            default='Sekrit'
+        ),
     }
 )
 
@@ -75,7 +80,7 @@ provider_fields = api.model(
 
 # Cluster fields
 cluster_owner_fields = api.model(
-    'User', {
+    'Owner', {
         'id': fields.String,
         'email': fields.String(),
         'first_name': fields.String,
