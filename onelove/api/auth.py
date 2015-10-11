@@ -19,13 +19,14 @@ def generate_token(user):
     return token
 
 
-@ns_auth.route('/token', endpoint='auth/token')
+@ns_auth.route('/tokens', endpoint='auth/token')
 @api.doc(body=auth_fields)
 class AuthAPI(JWTAuthView, Resource):
     @api.response(400, 'Invalid credentials')
     @api.doc(security=None)
     @api.marshal_with(token_response, code=200, description='Get a token.')
     def post(self):
+        """Authenticates and generates a token."""
         args = parser.parse_args()
         data = request.get_json(force=True)
         username = args.get('email')

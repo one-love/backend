@@ -19,6 +19,7 @@ class ErrorFriendlyApi(Api):
 
 api_v0 = Blueprint('api', __name__)
 
+
 api = ErrorFriendlyApi(
     api_v0,
     version='0',

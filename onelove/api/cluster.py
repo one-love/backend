@@ -17,12 +17,13 @@ parser.add_argument('name', type=str, required=True, location='json')
 class ClusterListAPI(ProtectedResource):
     @api.marshal_with(get_fields)
     def get(self):
+        """List clusters"""
         return [cluster for cluster in Cluster.objects.all()]
 
     @api.doc(body=fields)
-    @api.marshal_with(fields)
+    @api.marshal_with(get_fields)
     def post(self):
-        args = parser.parse_args()
+        """Create cluster"""
         cluster_name = args.get('name')
         cluster = Cluster(cluster_name)
         user = User.objects.get(id=current_user.get_id())
@@ -35,16 +36,19 @@ class ClusterListAPI(ProtectedResource):
         cluster.save()
         return cluster, 201
 
+
 @ns_cluster.route('/<id>', endpoint='cluster/cluster')
 class ClusterAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(get_fields)
     def get(self, id):
+        """Show cluster details"""
         cluster = self._find_cluster(id)
         return cluster
 
     @api.expect(fields)
     @api.marshal_with(fields)
     def put(self, id):
+        """Update cluster"""
         cluster = self._find_cluster(id)
         args = parser.parse_args()
         cluster.name = args.get('name')
@@ -53,6 +57,7 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
 
     @api.marshal_with(fields)
     def delete(self, id):
+        """Delete the cluster."""
         cluster = self._find_cluster(id)
         cluster.delete()
         return cluster

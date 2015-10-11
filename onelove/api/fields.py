@@ -91,15 +91,15 @@ cluster_owner_fields = api.model(
 
 cluster_fields = api.model(
     'Cluster', {
-        'applications': fields.Nested(application_fields),
         'name': fields.String(required=True),
-        'providers': fields.Nested(provider_fields),
-        'owner': fields.Nested(cluster_owner_fields),
     }
 )
 
 get_cluster_fields = api.extend('Get Clusters', cluster_fields, {
+    'providers': fields.Nested(provider_fields),
     'id': fields.String,
+    'owner': fields.Nested(cluster_owner_fields),
+    'applications': fields.Nested(application_fields),
 }
 )
 
