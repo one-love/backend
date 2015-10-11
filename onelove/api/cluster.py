@@ -24,6 +24,7 @@ class ClusterListAPI(ProtectedResource):
     @api.marshal_with(get_fields)
     def post(self):
         """Create cluster"""
+        args = parser.parse_args()
         cluster_name = args.get('name')
         cluster = Cluster(cluster_name)
         user = User.objects.get(id=current_user.get_id())
