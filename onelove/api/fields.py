@@ -13,7 +13,7 @@ roles_fields = api.model(
 
 
 # User fields
-user_fields = api.model(
+user_base = api.model(
     'User', {
         'email': fields.String(
             description='The email',
@@ -22,16 +22,22 @@ user_fields = api.model(
         ),
         'first_name': fields.String,
         'last_name': fields.String,
-        'password': fields.String(
-            description='Password',
-            required=True,
-            default='Sekrit'
-        ),
     }
 )
 
-get_user_fields = api.extend(
-    'Get Users', user_fields, {
+
+user_body = api.extend(
+    'User password', user_base, {
+        'password': fields.String(
+            description='Password',
+            required=True,
+            default='Sekrit',
+        )
+    }
+)
+
+user_response = api.extend(
+    'Get User', user_base, {
         'id': fields.String,
         'roles': fields.Nested(roles_fields),
     }
