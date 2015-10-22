@@ -1,7 +1,7 @@
 from flask.ext.restplus import abort
 from ..models import Cluster, ProviderSSH
 from mongoengine.errors import ValidationError
-from flask_jwt import current_user
+from flask_jwt import current_identity
 from ..models import User
 
 
@@ -9,7 +9,7 @@ class ClusterMixin(object):
     def _find_cluster(self, cluster_id):
         try:
             cluster = Cluster.objects.get(id=cluster_id)
-            user = User.objects.get(id=current_user.get_id())
+            user = User.objects.get(id=current_identity.get_id())
             if user.has_role(cluster.name):
                 return cluster
             else:

@@ -5,7 +5,7 @@ from .mixins import ClusterMixin
 from .namespaces import ns_cluster
 from .fields import cluster_fields as fields
 from .fields import get_cluster_fields as get_fields
-from flask_jwt import current_user
+from flask_jwt import current_identity
 from onelove import OneLove
 
 
@@ -27,7 +27,7 @@ class ClusterListAPI(ProtectedResource):
         args = parser.parse_args()
         cluster_name = args.get('name')
         cluster = Cluster(cluster_name)
-        user = User.objects.get(id=current_user.get_id())
+        user = User.objects.get(id=current_identity.get_id())
         cluster_role = OneLove.user_datastore.find_or_create_role(
             name=cluster_name,
             description="Cluster %s" % cluster_name
