@@ -9,8 +9,7 @@ class ClusterMixin(object):
     def _find_cluster(self, cluster_id):
         try:
             cluster = Cluster.objects.get(id=cluster_id)
-            user = User.objects.get(id=current_identity.get_id())
-            if user.has_role(cluster.name):
+            if current_identity.has_role(cluster.name):
                 return cluster
             else:
                 abort(403)
