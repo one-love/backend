@@ -77,10 +77,10 @@ class OneLove(object):
         if verify_password(password, user.password):
             return result
 
-    @jwt.user_handler
-    def load_user(payload):
+    @jwt.identity_handler
+    def identity(payload):
         try:
-            user = User.objects.get(id=payload['user_id'])
+            user = User.objects.get(id=payload['identity'])
         except User.DoesNotExist:
             return None
         return user

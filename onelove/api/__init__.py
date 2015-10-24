@@ -19,6 +19,7 @@ class ErrorFriendlyApi(Api):
 
 api_v0 = Blueprint('api', __name__)
 
+
 api = ErrorFriendlyApi(
     api_v0,
     version='0',
@@ -44,3 +45,4 @@ from . import cluster
 from . import application
 from . import provider
 from . import task
+from . import me

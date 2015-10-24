@@ -3,8 +3,9 @@ from mongoengine.queryset import NotUniqueError
 from mongoengine.errors import ValidationError
 from . import api
 from .namespaces import ns_user
-from .fields import user_fields as fields
-from .fields import get_user_fields as get_fields
+from .fields import user_body as body_fields
+from .fields import user_response as response_fields
+
 
 from ..models import User
 from resources import ProtectedResource
@@ -16,18 +17,24 @@ parser.add_argument('first_name', type=str, required=False, location='json')
 parser.add_argument('last_name', type=str, required=False, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
 
-
 @ns_user.route('', endpoint='api/users')
 class UserListAPI(ProtectedResource):
-    @api.marshal_with(get_fields)
+    @api.marshal_with(response_fields)
     def get(self):
-        """Get list of users."""
+        """List users"""
         return [user for user in User.objects.all()]
 
-    @api.expect(fields)
-    @api.marshal_with(fields)
+    @api.doc(
+        model=response_fields,
+        body=body_fields,
+        responses={
+            409: 'User with that email exists',
+            422: 'Validation error'
+        }
+    )
+    # @api.marshal_with(fields)
     def post(self):
-        """Create the user."""
+        """Create user"""
         args = parser.parse_args()
         try:
             user = register_user(
@@ -38,14 +45,16 @@ class UserListAPI(ProtectedResource):
             )
         except NotUniqueError:
             api.abort(409, error='User with that email exists')
+        except (ValidationError):
+            api.abort(422, error='ValidationError')
         return user, 201
 
 
 @ns_user.route('/<id>', endpoint='api/user')
 class UserAPI(ProtectedResource):
-    @api.marshal_with(fields)
+    @api.marshal_with(response_fields)
     def get(self, id):
-        """Get informations for the user"""
+        """Show user details"""
         try:
             user = User.objects.get(id=id)
         except (User.DoesNotExist, ValidationError):
@@ -53,10 +62,10 @@ class UserAPI(ProtectedResource):
 
         return user
 
-    @api.expect(fields)
-    @api.marshal_with(fields)
+    @api.expect(body_fields)
+    @api.marshal_with(response_fields)
     def put(self, id):
-        """Change user informations"""
+        """Update user"""
         try:
             user = User.objects.get(id=id)
         except (User.DoesNotExist, ValidationError):
@@ -67,9 +76,9 @@ class UserAPI(ProtectedResource):
         user.save()
         return user
 
-    @api.marshal_with(fields)
+    @api.marshal_with(response_fields)
     def delete(self, id):
-        """Delete the user."""
+        """Delete user."""
         try:
             user = User.objects.get(id=id)
         except (User.DoesNotExist, ValidationError):

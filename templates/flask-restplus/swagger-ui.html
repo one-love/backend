@@ -32,10 +32,10 @@
             });
 
             if ($('#input_apiKey').val() === '' && window.localStorage.oneLoveToken) {
-              $('#input_apiKey').val(window.localStorage.oneLoveToken.replace('Bearer ', ''));
+              $('#input_apiKey').val(window.localStorage.oneLoveToken.replace('JWT ', ''));
             }
             $('#input_apiKey').change(function() {
-              var key = "Bearer " + $('#input_apiKey')[0].value;
+              var key = "JWT " + $('#input_apiKey')[0].value;
               console.log("key: " + key);
               if(key && key.trim() != "") {
                 console.log("added key " + key);
