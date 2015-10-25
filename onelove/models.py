@@ -50,7 +50,8 @@ class Role(Document, RoleMixin):
     """
     Role
     """
-    name = StringField(max_length=255, unique=True)
+    name = StringField(max_length=255)
+    admin = BooleanField()
     description = StringField(max_length=255)
 
 
@@ -73,7 +74,7 @@ class Cluster(Document):
     name = StringField(max_length=512)
     applications = EmbeddedDocumentListField(Application)
     providers = EmbeddedDocumentListField(Provider)
-    owner = ReferenceField(User)
+    roles = ListField(ReferenceField(Role), default=[])
 
     def __repr__(self):
         return '<Cluster %r>' % self.name

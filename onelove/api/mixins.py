@@ -3,18 +3,29 @@ from ..models import Cluster, ProviderSSH
 from mongoengine.errors import ValidationError
 from flask_jwt import current_identity
 from ..models import User
+from ..models import Role
 
 
 class ClusterMixin(object):
     def _find_cluster(self, cluster_id):
+        self.permission = False
         try:
             cluster = Cluster.objects.get(id=cluster_id)
-            if current_identity.has_role(cluster.name):
-                return cluster
+            user = User.objects.get(email=current_identity.email)
+
+            for role in cluster.roles:
+                if user.has_role(role):
+                    self.permission = True
+
+            if self.permission:
+               return cluster
             else:
-                abort(403)
+               abort(403)
+
         except (Cluster.DoesNotExist, ValidationError):
             abort(404, error='Cluster does not exist')
+        except (Role.DoesNotExist):
+            abort(401, error='You don\'t have valid permissions.')
 
     def _find_app(self, cluster_id, application_name):
         try:
