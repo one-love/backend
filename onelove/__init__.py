@@ -6,6 +6,8 @@ from flask.ext.security import Security, MongoEngineUserDatastore
 from flask.ext.security.utils import verify_password
 from flask_jwt import JWT
 from models import User, Role
+from admin import admin
+from flask_admin import helpers as admin_helpers
 
 
 current_app = None
@@ -24,6 +26,7 @@ class OneLove(object):
     security = Security()
     user_datastore = None
     jwt = JWT()
+    admin = admin
 
     def __init__(self, app=None):
         global current_app
@@ -48,6 +51,7 @@ class OneLove(object):
         OneLove.mail.init_app(app)
 
         OneLove.db.init_app(app)
+        OneLove.admin.init_app(app)
 
         OneLove.user_datastore = MongoEngineUserDatastore(
             OneLove.db,
@@ -60,6 +64,14 @@ class OneLove(object):
         )
 
         OneLove.jwt.init_app(app)
+
+        @app.context_processor
+        def security_context_processor():
+            return dict(
+                admin_base_template=admin.base_template,
+                admin_view=admin.index_view,
+                h=admin_helpers,
+            )
 
     @jwt.authentication_handler
     def authenticate(username, password):

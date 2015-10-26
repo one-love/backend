@@ -8,6 +8,7 @@ roles_fields = api.model(
     'Roles', {
         'name': fields.String(required=True),
         'description': fields.String(required=True),
+        'admin': fields.String(required=True),
     }
 )
 
@@ -85,16 +86,6 @@ provider_fields = api.model(
 
 
 # Cluster fields
-cluster_owner_fields = api.model(
-    'Owner', {
-        'id': fields.String,
-        'email': fields.String(),
-        'first_name': fields.String,
-        'last_name': fields.String,
-        'roles': fields.Nested(roles_fields),
-    }
-)
-
 cluster_fields = api.model(
     'Cluster', {
         'name': fields.String(required=True),
@@ -104,7 +95,7 @@ cluster_fields = api.model(
 get_cluster_fields = api.extend('Get Clusters', cluster_fields, {
     'providers': fields.Nested(provider_fields),
     'id': fields.String,
-    'owner': fields.Nested(cluster_owner_fields),
+    'roles': fields.Nested(roles_fields),
     'applications': fields.Nested(application_fields),
 }
 )

@@ -18,6 +18,7 @@ class TestConfig(BaseConfig):
 
 
 class ProdConfig(BaseConfig):
+    SECURITY_POST_LOGIN_VIEW = "/admin/"
     pass
 
 
