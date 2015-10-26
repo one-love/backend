@@ -17,6 +17,7 @@ parser.add_argument('first_name', type=str, required=False, location='json')
 parser.add_argument('last_name', type=str, required=False, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
 
+
 @ns_user.route('', endpoint='api/users')
 class UserListAPI(ProtectedResource):
     @api.marshal_with(response_fields)
@@ -32,7 +33,7 @@ class UserListAPI(ProtectedResource):
             422: 'Validation error'
         }
     )
-    # @api.marshal_with(fields)
+    @api.marshal_with(response_fields)
     def post(self):
         """Create user"""
         args = parser.parse_args()

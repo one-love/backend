@@ -27,7 +27,6 @@ class ClusterListAPI(ProtectedResource):
         args = parser.parse_args()
         cluster_name = args.get('name')
         cluster = Cluster(cluster_name)
-        cluster.save()
 
         admin_role = OneLove.user_datastore.find_or_create_role(
             name='admin' + cluster_name,
@@ -42,6 +41,7 @@ class ClusterListAPI(ProtectedResource):
             admin=False,
         )
         cluster.roles.append(user_role)
+        cluster.save()
 
         user = User.objects.get(id=current_identity.get_id())
 

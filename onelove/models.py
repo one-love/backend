@@ -6,7 +6,8 @@ from mongoengine.fields import (
     ReferenceField,
     StringField,
     EmbeddedDocument,
-    EmbeddedDocumentListField
+    EmbeddedDocumentListField,
+    EmbeddedDocumentField  # Required for flask-admin
 )
 from flask.ext.security import UserMixin, RoleMixin
 
@@ -19,6 +20,10 @@ class Application(EmbeddedDocument):
     def __repr__(self):
         return '<Application %r>' % self.name
 
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.name
+
 
 class Provider(EmbeddedDocument):
     name = StringField(max_length=512)
@@ -26,6 +31,10 @@ class Provider(EmbeddedDocument):
 
     def __repr__(self):
         return '<Provider %r>' % self.name
+
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.name
 
 
 class ProviderAWS(Provider):
@@ -54,6 +63,10 @@ class Role(Document, RoleMixin):
     admin = BooleanField()
     description = StringField(max_length=255)
 
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.name
+
 
 class User(Document, UserMixin):
     """
@@ -72,8 +85,8 @@ class User(Document, UserMixin):
 
 class Cluster(Document):
     name = StringField(max_length=512)
-    applications = EmbeddedDocumentListField(Application)
-    providers = EmbeddedDocumentListField(Provider)
+    applications = ListField(EmbeddedDocumentField(Application))
+    providers = ListField(EmbeddedDocumentField(Provider))
     roles = ListField(ReferenceField(Role), default=[])
 
     def __repr__(self):
