@@ -1,5 +1,11 @@
 {% extends 'admin/base.html' %}
 
+{% block head_tail %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('backend_static', filename='css/bootstrap.css')}}">
+{% endblock %}
+
 {% block access_control %}
 {% if current_user.is_authenticated() %}
 <div class="navbar-text btn-group pull-right">

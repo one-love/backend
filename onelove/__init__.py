@@ -1,4 +1,5 @@
 from celery import Celery
+from flask import send_from_directory
 from flask.ext.mail import Mail
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.restplus import apidoc
@@ -72,6 +73,10 @@ class OneLove(object):
                 admin_view=admin.index_view,
                 h=admin_helpers,
             )
+        # OneLove static data
+        @app.route('/backend/static/<path:filename>')
+        def backend_static(filename):
+            return send_from_directory(app.static_folder, filename)
 
     @jwt.authentication_handler
     def authenticate(username, password):
