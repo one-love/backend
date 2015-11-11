@@ -18,7 +18,11 @@ class ClusterListAPI(ProtectedResource):
     @api.marshal_with(get_fields)
     def get(self):
         """List clusters"""
-        return [cluster for cluster in Cluster.objects.all()]
+        clusters = []
+        for role in current_identity.roles:
+            clusters.append(Cluster.objects.get(roles=role))
+
+        return clusters
 
     @api.doc(body=fields)
     @api.marshal_with(get_fields)
@@ -29,14 +33,14 @@ class ClusterListAPI(ProtectedResource):
         cluster = Cluster(cluster_name)
 
         admin_role = OneLove.user_datastore.find_or_create_role(
-            name='admin' + cluster_name,
+            name='admin_' + cluster_name,
             description="Cluster %s admin" % cluster_name,
             admin=True,
         )
         cluster.roles.append(admin_role)
 
         user_role = OneLove.user_datastore.find_or_create_role(
-            name='user' + cluster_name,
+            name='user_' + cluster_name,
             description="Cluster %s users" % cluster_name,
             admin=False,
         )
