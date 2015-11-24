@@ -20,14 +20,15 @@ class OneLove(object):
             for k, v in kwargs.items():
                 setattr(self, k, v)
 
+    admin = admin
     api = None
     celery = Celery('onelove')
     db = MongoEngine()
+    jwt = JWT()
     mail = Mail()
     security = Security()
+    toolbar = None
     user_datastore = None
-    jwt = JWT()
-    admin = admin
 
     def __init__(self, app=None):
         global current_app
@@ -65,6 +66,10 @@ class OneLove(object):
         )
 
         OneLove.jwt.init_app(app)
+        use_panel = self.app.config.get('DEBUG_TB_PANELS', False)
+        if self.app.config.get('DEBUG_TB_PANELS', False):
+            from flask_debugtoolbar import DebugToolbarExtension
+            self.toolbar = DebugToolbarExtension(self.app)
 
         @app.context_processor
         def security_context_processor():
@@ -73,6 +78,7 @@ class OneLove(object):
                 admin_view=admin.index_view,
                 h=admin_helpers,
             )
+
         # OneLove static data
         @app.route('/backend/static/<path:filename>')
         def backend_static(filename):
