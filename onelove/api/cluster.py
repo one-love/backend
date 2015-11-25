@@ -3,8 +3,7 @@ from resources import ProtectedResource
 from . import api
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
-from .fields import cluster_fields as fields
-from .fields import get_cluster_fields as get_fields
+from .fields import cluster_fields as fields, get_cluster_fields as get_fields
 from flask_jwt import current_identity
 from .. import current_app
 
@@ -62,11 +61,13 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
 
     @api.expect(fields)
     @api.marshal_with(fields)
-    def put(self, id):
+    def patch(self, id):
         """Update cluster"""
+        for arg in parser.args:
+            arg.required = False
         cluster = self._find_cluster(id)
         args = parser.parse_args()
-        cluster.name = args.get('name')
+        cluster.name = args.get('name') or cluster.name
         cluster.save()
         return cluster
 

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from flask.ext.restplus import Api
+from flask_restplus import Api
 from flask_jwt import JWTError
 
 
