@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-from flask.ext.security.registerable import register_user
-from onelove import OneLove
+from flask_security.utils import encrypt_password
 
 from manage import onelove
 from onelove.models import User
@@ -12,13 +11,15 @@ ctx = onelove.app.test_request_context().push()
 try:
     user = User.objects.get(email='admin@example.com')
 except User.DoesNotExist:
-    user = register_user(email='admin@example.com', password='Sekrit')
+    user = User(email='admin@example.com')
+    user.password = encrypt_password('Sekrit')
+    user.save()
 
 # Create admin role
-admin_role = OneLove.user_datastore.find_or_create_role(
+admin_role = onelove.user_datastore.find_or_create_role(
     name="admin",
     description="Administrator"
 )
 
 # Add admin user to admin role
-OneLove.user_datastore.add_role_to_user(user, admin_role)
+onelove.user_datastore.add_role_to_user(user, admin_role)

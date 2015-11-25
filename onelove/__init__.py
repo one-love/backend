@@ -1,14 +1,13 @@
 from celery import Celery
-from flask import send_from_directory
-from flask.ext.mail import Mail
-from flask.ext.mongoengine import MongoEngine
-from flask.ext.restplus import apidoc
-from flask.ext.security import Security, MongoEngineUserDatastore
-from flask.ext.security.utils import verify_password
+from flask import Blueprint
+from flask_admin import Admin, helpers as admin_helpers
 from flask_jwt import JWT
-from models import User, Role
-from admin import admin
-from flask_admin import helpers as admin_helpers
+from flask_mail import Mail
+from flask_mongoengine import MongoEngine
+from flask_restplus import apidoc
+from flask_security import Security, MongoEngineUserDatastore
+from flask_security.utils import verify_password
+from .models import User, Role
 
 
 current_app = None
@@ -20,8 +19,14 @@ class OneLove(object):
             for k, v in kwargs.items():
                 setattr(self, k, v)
 
-    admin = admin
+    admin = Admin(
+        name='One Love Admin',
+        base_template='admin_master.html',
+        template_mode='bootstrap3',
+    )
     api = None
+    app = None
+    blueprint = None
     celery = Celery('onelove')
     db = MongoEngine()
     jwt = JWT()
@@ -33,9 +38,8 @@ class OneLove(object):
     def __init__(self, app=None):
         global current_app
         current_app = self
-        self.app = app
-        if self.app is not None:
-            self.init_app(self.app)
+        if app is not None:
+            self.init_app(app)
 
     def init_app(self, app):
         self.app = app
@@ -43,30 +47,42 @@ class OneLove(object):
         from api import api_v0, api
         self.api = api
 
+        self.blueprint = Blueprint(
+            'onelove',
+            __name__,
+            template_folder='templates',
+            static_folder='static',
+            static_url_path='/static/flarior',
+        )
+        self.app.register_blueprint(self.blueprint)
+
         self.app.register_blueprint(api_v0, url_prefix='/api/v0')
         self.app.register_blueprint(apidoc.apidoc)
 
-        OneLove.celery.conf.update(app.config)
-        OneLove.celery.set_default()
-        OneLove.celery.set_current()
+        self.celery.conf.update(app.config)
+        self.celery.set_default()
+        self.celery.set_current()
 
-        OneLove.mail.init_app(app)
+        self.mail.init_app(app)
 
-        OneLove.db.init_app(app)
-        OneLove.admin.init_app(app)
+        self.db.init_app(app)
 
-        OneLove.user_datastore = MongoEngineUserDatastore(
-            OneLove.db,
+        self.user_datastore = MongoEngineUserDatastore(
+            self.db,
             User,
             Role,
         )
-        OneLove.security.init_app(
+        self.security.init_app(
             self.app,
-            OneLove.user_datastore,
+            self.user_datastore,
         )
 
-        OneLove.jwt.init_app(app)
-        use_panel = self.app.config.get('DEBUG_TB_PANELS', False)
+        from .admin import register_admin_views
+        register_admin_views(self.admin)
+        self.admin.init_app(self.app)
+
+        self.jwt.init_app(app)
+
         if self.app.config.get('DEBUG_TB_PANELS', False):
             from flask_debugtoolbar import DebugToolbarExtension
             self.toolbar = DebugToolbarExtension(self.app)
@@ -74,15 +90,10 @@ class OneLove(object):
         @app.context_processor
         def security_context_processor():
             return dict(
-                admin_base_template=admin.base_template,
-                admin_view=admin.index_view,
+                admin_base_template=self.admin.base_template,
+                admin_view=self.admin.index_view,
                 h=admin_helpers,
             )
-
-        # OneLove static data
-        @app.route('/backend/static/<path:filename>')
-        def backend_static(filename):
-            return send_from_directory(app.static_folder, filename)
 
     @jwt.authentication_handler
     def authenticate(username, password):

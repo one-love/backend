@@ -10,7 +10,7 @@ from config import configs
 
 
 config_name = os.getenv('FLASK_CONFIG') or 'default'
-app = Flask(__name__, static_folder='onelove/static')
+app = Flask(__name__)
 app.config.from_object(configs[config_name])
 onelove = OneLove(app)
 manager = Manager(app)
