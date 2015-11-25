@@ -1,5 +1,5 @@
 from celery import Celery
-from flask import send_from_directory
+from flask import Blueprint
 from flask.ext.mail import Mail
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.restplus import apidoc
@@ -21,6 +21,7 @@ class OneLove(object):
                 setattr(self, k, v)
 
     api = None
+    blueprint = None
     celery = Celery('onelove')
     db = MongoEngine()
     mail = Mail()
@@ -42,29 +43,37 @@ class OneLove(object):
         from api import api_v0, api
         self.api = api
 
+        self.blueprint = Blueprint(
+            'onelove',
+            __name__,
+            template_folder='templates',
+            static_folder='static',
+            static_url_path='/static/flarior',
+        )
+
         self.app.register_blueprint(api_v0, url_prefix='/api/v0')
         self.app.register_blueprint(apidoc.apidoc)
 
-        OneLove.celery.conf.update(app.config)
-        OneLove.celery.set_default()
-        OneLove.celery.set_current()
+        self.celery.conf.update(app.config)
+        self.celery.set_default()
+        self.celery.set_current()
 
-        OneLove.mail.init_app(app)
+        self.mail.init_app(app)
 
-        OneLove.db.init_app(app)
-        OneLove.admin.init_app(app)
+        self.db.init_app(app)
+        self.admin.init_app(app)
 
-        OneLove.user_datastore = MongoEngineUserDatastore(
+        self.user_datastore = MongoEngineUserDatastore(
             OneLove.db,
             User,
             Role,
         )
-        OneLove.security.init_app(
+        self.security.init_app(
             self.app,
             OneLove.user_datastore,
         )
 
-        OneLove.jwt.init_app(app)
+        self.jwt.init_app(app)
 
         @app.context_processor
         def security_context_processor():
@@ -73,10 +82,6 @@ class OneLove(object):
                 admin_view=admin.index_view,
                 h=admin_helpers,
             )
-        # OneLove static data
-        @app.route('/backend/static/<path:filename>')
-        def backend_static(filename):
-            return send_from_directory(app.static_folder, filename)
 
     @jwt.authentication_handler
     def authenticate(username, password):

@@ -1,5 +1,7 @@
 git+https://github.com/ansible/ansible
 celery
+flask-admin
+flask-collect
 flask-jwt
 flask-mongoengine
 flask-restful
@@ -10,4 +12,3 @@ flask-login==0.2.11
 flower
 mongoengine
 uwsgi
-Flask-Admin
