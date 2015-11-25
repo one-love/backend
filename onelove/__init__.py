@@ -21,7 +21,7 @@ class OneLove(object):
                 setattr(self, k, v)
 
     admin = Admin(
-        name='One Love Admin',
+        name='One Love',
         base_template='admin_master.html',
         template_mode='bootstrap3',
         index_view=AdminIndexView(
