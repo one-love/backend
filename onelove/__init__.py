@@ -29,10 +29,11 @@ class OneLove(object):
     blueprint = None
     celery = Celery('onelove')
     db = MongoEngine()
+    jwt = JWT()
     mail = Mail()
     security = Security()
+    toolbar = None
     user_datastore = None
-    jwt = JWT()
 
     def __init__(self, app=None):
         global current_app
@@ -81,6 +82,10 @@ class OneLove(object):
         self.admin.init_app(self.app)
 
         self.jwt.init_app(app)
+
+        if self.app.config.get('DEBUG_TB_PANELS', False):
+            from flask_debugtoolbar import DebugToolbarExtension
+            self.toolbar = DebugToolbarExtension(self.app)
 
         @app.context_processor
         def security_context_processor():
