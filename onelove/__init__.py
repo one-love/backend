@@ -1,6 +1,7 @@
 from celery import Celery
 from flask import Blueprint
 from flask_admin import Admin, AdminIndexView, helpers as admin_helpers
+from flask_collect import Collect
 from flask_jwt import JWT
 from flask_mail import Mail
 from flask_mongoengine import MongoEngine
@@ -31,6 +32,7 @@ class OneLove(object):
     app = None
     blueprint = None
     celery = Celery('onelove')
+    collect = Collect()
     db = MongoEngine()
     jwt = JWT()
     mail = Mail()
@@ -62,13 +64,13 @@ class OneLove(object):
         self.app.register_blueprint(api_v0, url_prefix='/api/v0')
         self.app.register_blueprint(apidoc.apidoc)
 
-        self.celery.conf.update(app.config)
+        self.celery.conf.update(self.app.config)
         self.celery.set_default()
         self.celery.set_current()
 
-        self.mail.init_app(app)
+        self.mail.init_app(self.app)
 
-        self.db.init_app(app)
+        self.db.init_app(self.app)
 
         self.user_datastore = MongoEngineUserDatastore(
             self.db,
@@ -84,13 +86,14 @@ class OneLove(object):
         register_admin_views(self.admin)
         self.admin.init_app(self.app)
 
-        self.jwt.init_app(app)
+        self.jwt.init_app(self.app)
+        self.collect.init_app(self.app)
 
         if self.app.config.get('DEBUG_TB_PANELS', False):
             from flask_debugtoolbar import DebugToolbarExtension
             self.toolbar = DebugToolbarExtension(self.app)
 
-        @app.context_processor
+        @self.app.context_processor
         def security_context_processor():
             return dict(
                 admin_base_template=self.admin.base_template,

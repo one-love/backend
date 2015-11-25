@@ -22,6 +22,7 @@ manager.add_command(
         use_debugger=True
     )
 )
+onelove.collect.init_script(manager)
 
 
 @app.route('/')
