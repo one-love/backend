@@ -1,6 +1,6 @@
 from celery import Celery
 from flask import Blueprint
-from flask_admin import Admin, helpers as admin_helpers
+from flask_admin import Admin, AdminIndexView, helpers as admin_helpers
 from flask_jwt import JWT
 from flask_mail import Mail
 from flask_mongoengine import MongoEngine
@@ -23,6 +23,9 @@ class OneLove(object):
         name='One Love Admin',
         base_template='admin_master.html',
         template_mode='bootstrap3',
+        index_view=AdminIndexView(
+            template='admin/onelove_index.html',
+        ),
     )
     api = None
     app = None
@@ -52,7 +55,7 @@ class OneLove(object):
             __name__,
             template_folder='templates',
             static_folder='static',
-            static_url_path='/static/flarior',
+            static_url_path='/static/onelove',
         )
         self.app.register_blueprint(self.blueprint)
 
