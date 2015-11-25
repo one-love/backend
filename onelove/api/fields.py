@@ -70,7 +70,6 @@ token_response = api.model(
 # Application fields
 application_fields = api.model(
     'Application', {
-        'application_name': fields.String(required=True),
         'galaxy_role': fields.String(required=True),
         'name': fields.String(required=True),
     }

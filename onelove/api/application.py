@@ -8,7 +8,6 @@ from .fields import application_fields as fields
 
 
 parser = api.parser()
-parser.add_argument('application_name', type=str, required=True, location='json')
 parser.add_argument('galaxy_role', type=str, required=True, location='json')
 parser.add_argument('name', type=str, required=True, location='json')
 
@@ -27,14 +26,12 @@ class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
         """Create aplication for the cluster"""
         cluster = self._find_cluster(cluster_id)
         args = parser.parse_args()
-        application_name = args.get('application_name')
         galaxy_role = args.get('galaxy_role')
         name = args.get('name')
         app = self._find_app(cluster_id, name)
         if app is not None:
             abort(409, error='Application with that name already exists')
         app = Application(
-            application_name=application_name,
             galaxy_role=galaxy_role,
             name=name,
         )
