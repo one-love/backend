@@ -18,9 +18,9 @@ class ClusterMixin(object):
                     self.permission = True
 
             if self.permission:
-               return cluster
+                return cluster
             else:
-               abort(403)
+                abort(403)
 
         except (Cluster.DoesNotExist, ValidationError):
             abort(404, error='Cluster does not exist')

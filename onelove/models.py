@@ -15,14 +15,13 @@ from flask.ext.security import UserMixin, RoleMixin
 class Application(EmbeddedDocument):
     name = StringField(max_length=512)
     galaxy_role = StringField(max_length=1024)
-    application_name = StringField(max_length=1024)
 
     def __repr__(self):
         return '<Application %r>' % self.name
 
     # Required for administrative interface
     def __unicode__(self):
-        return self.name
+        return self.__repr__()
 
 
 class Provider(EmbeddedDocument):
@@ -34,7 +33,7 @@ class Provider(EmbeddedDocument):
 
     # Required for administrative interface
     def __unicode__(self):
-        return self.name
+        return self.__repr__()
 
 
 class ProviderAWS(Provider):
@@ -48,6 +47,9 @@ class HostSSH(EmbeddedDocument):
 
     def __repr__(self):
         return '<Host %r>' % self.hostname
+
+    def __unicode__(self):
+        return self.__repr__()
 
 
 class ProviderSSH(Provider):

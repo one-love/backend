@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from flask.ext.restplus import Api
+from flask_restplus import Api
 from flask_jwt import JWTError
 
 
@@ -17,7 +17,7 @@ class ErrorFriendlyApi(Api):
             )
 
 
-api_v0 = Blueprint('api', __name__)
+api_v0 = Blueprint('api', __name__, url_prefix='/api/v0')
 
 
 api = ErrorFriendlyApi(
@@ -25,18 +25,19 @@ api = ErrorFriendlyApi(
     version='0',
     title='OneLove API',
     description='API for OneLove project.',
-    ui=False,
-    catch_all_404s=True
+    catch_all_404s=True,
+    doc='/doc/',
 )
 
-
-@api_v0.route('/doc/', endpoint='doc')
 def swagger_ui():
     return render_template(
         'flask-restplus/swagger-ui.html',
         title=api.title,
         specs_url=api.specs_url
     )
+
+
+api._doc_view = swagger_ui
 
 
 from . import auth

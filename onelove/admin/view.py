@@ -53,8 +53,7 @@ class ClusterView(ModelView):
         'applications': {
             'form_subdocuments': {
                 None: {
-                    # 'form_columns': ('name',),
-                    'form_rules': ('name', 'galaxy_role', 'application_name'),
+                    'form_rules': ('name', 'galaxy_role'),
                     'form_widget_args': {
                         'name': {
                             'style': 'color: red'

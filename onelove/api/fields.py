@@ -1,4 +1,4 @@
-from flask.ext.restplus import fields
+from flask_restplus import fields
 from . import api
 
 
@@ -70,7 +70,6 @@ token_response = api.model(
 # Application fields
 application_fields = api.model(
     'Application', {
-        'application_name': fields.String(required=True),
         'galaxy_role': fields.String(required=True),
         'name': fields.String(required=True),
     }

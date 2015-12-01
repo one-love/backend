@@ -19,8 +19,8 @@ class ClusterListAPI(ProtectedResource):
     def get(self):
         """List clusters"""
         clusters = []
-        for role in current_identity.roles:
-            clusters.append(Cluster.objects.get(roles=role))
+        for cluster in Cluster.objects(roles__in=current_identity.roles):
+            clusters.append(cluster)
 
         return clusters
 
