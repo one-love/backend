@@ -2,11 +2,7 @@ from flask_admin.contrib.mongoengine import ModelView
 from flask_security.core import current_user
 
 
-class RoleView(ModelView):
-    column_filters = ['name']
-
-    column_searchable_list = ('name', 'description')
-
+class BaseView(ModelView):
     def is_accessible(self):
         return (
             current_user.is_authenticated() and
@@ -14,7 +10,13 @@ class RoleView(ModelView):
         )
 
 
-class UserView(ModelView):
+class RoleView(BaseView):
+    column_filters = ['name']
+
+    column_searchable_list = ('name', 'description')
+
+
+class UserView(BaseView):
     column_list = ('id', 'active', 'email', 'first_name', 'last_name', 'roles')
     column_filters = ['email']
 
@@ -29,14 +31,8 @@ class UserView(ModelView):
         }
     }
 
-    def is_accessible(self):
-        return (
-            current_user.is_authenticated() and
-            current_user.has_role('admin')
-        )
 
-
-class ClusterView(ModelView):
+class ClusterView(BaseView):
     column_list = ('id', 'name', 'applications', 'providers', 'roles')
     column_filters = ['name']
 
@@ -70,9 +66,3 @@ class ClusterView(ModelView):
             }
         }
     }
-
-    def is_accessible(self):
-        return (
-            current_user.is_authenticated() and
-            current_user.has_role('admin')
-        )
