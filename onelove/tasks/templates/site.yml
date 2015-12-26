@@ -1,0 +1,9 @@
+- name: {{ cluster }} provisioning
+  hosts: all
+  pre_tasks:
+    - include: roles/common/pre_tasks/main.yml
+    {% for pre_task in pre_tasks %}- include: {{ pre_task }}{% endfor %}
+  roles:
+    - common
+    {% for role in roles %}- {{ role }}
+{% endfor %}
