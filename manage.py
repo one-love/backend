@@ -24,6 +24,8 @@ manager.add_command(
 )
 onelove.collect.init_script(manager)
 
+from onelove.tasks import *
+
 
 @app.route('/')
 def index():

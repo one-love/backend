@@ -66,9 +66,10 @@ class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
 
 @ns_cluster.route('/<cluster_id>/applications/<application_name>/provision', endpoint='api/cluster/application/provision')
 class ClusterApplicationProvisionAPI(ProtectedResource, ClusterMixin):
-    @api.expect(fields)
     @api.marshal_with(fields)
     def post(self, cluster_id, application_name):
         from ..tasks import provision
+        cluster = self._find_cluster(cluster_id)
+        app = self._find_app(cluster_id, application_name)
         result = provision.delay(cluster_id, application_name)
         return {'result': str(result)}

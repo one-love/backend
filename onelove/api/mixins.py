@@ -25,13 +25,10 @@ class ClusterMixin(object):
         except (Cluster.DoesNotExist, ValidationError):
             abort(404, error='Cluster does not exist')
         except (Role.DoesNotExist):
-            abort(401, error='You don\'t have valid permissions.')
+            abort(401, error='You do not have valid permissions.')
 
     def _find_app(self, cluster_id, application_name):
-        try:
-            cluster = Cluster.objects.get(id=cluster_id)
-        except (Cluster.DoesNotExist, ValidationError):
-            abort(404, error='Cluster does not exist')
+        cluster = self._find_cluster(cluster_id)
         for app in cluster.applications:
             if app.name == application_name:
                 return app
