@@ -7,7 +7,7 @@ from mongoengine.fields import (
     StringField,
     EmbeddedDocument,
     EmbeddedDocumentListField,
-    EmbeddedDocumentField  # Required for flask-admin
+    EmbeddedDocumentField,
 )
 from flask.ext.security import UserMixin, RoleMixin
 
