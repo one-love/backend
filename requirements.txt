@@ -1,6 +1,6 @@
-git+https://github.com/ansible/ansible
+git+https://github.com/ansible/ansible@stable-2.0
 celery
-git+https://github.com/flask-admin/flask-admin
+https://github.com/flask-admin/flask-admin/archive/master.zip
 flask-collect
 flask-jwt
 flask-mongoengine

@@ -1,3 +1,4 @@
+import os
 from os import makedirs, path
 from shutil import rmtree
 from tempfile import mkdtemp
@@ -10,9 +11,12 @@ from jinja2 import Environment, PackageLoader
 
 
 class Options(object):
-    roles_path = None
     api_server = 'https://galaxy.ansible.com'
     ignore_certs = True
+
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
 
 def render_template(template, **kwargs):
@@ -44,7 +48,7 @@ def get_application_dependencies(playbook_path, application_name):
     dependencies_meta = yaml_meta['dependencies']
     dependencies = []
     for dependency in dependencies_meta:
-        dependencies.append(dependency['roles'])
+        dependencies.append(dependency)
     return dependencies
 
 
@@ -73,7 +77,22 @@ def generate_playbook(playbook_path, cluster_id, application_name):
     )
     with open(site_yml_path, 'w+') as site_yml_file:
         site_yml_file.write(site_yml)
-    print(site_yml)
+
+
+def run_playbook(playbook_path):
+    playbook_file = '{playbook_path}/provision/site.yml'.format(
+        playbook_path=playbook_path,
+    )
+    inventory_file = '{playbook_path}/provision/inventory'.format(
+        playbook_path=playbook_path,
+    )
+    with open(inventory_file, 'w+') as inventory:
+        inventory.write('localhost')
+    playbook_command = 'ansible-playbook -i {inventory} {playbook}'.format(
+        inventory=inventory_file,
+        playbook=playbook_file,
+    )
+    os.system(playbook_command)
 
 
 @current_app.task(bind=True)
@@ -88,6 +107,7 @@ def provision(self, cluster_id, application_name):
         for role in dependencies:
             fetch_role(playbook_path, role)
         generate_playbook(playbook_path, cluster_id, application_name)
+        run_playbook(playbook_path)
     finally:
         rmtree(playbook_path)
     return True
