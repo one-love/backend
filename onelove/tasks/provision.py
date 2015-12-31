@@ -1,11 +1,14 @@
-import os
 from os import makedirs, path
 from shutil import rmtree
 from tempfile import mkdtemp
 
 import yaml
+from ansible.executor.playbook_executor import PlaybookExecutor
 from ansible.galaxy import Galaxy
 from ansible.galaxy.role import GalaxyRole
+from ansible.inventory import Inventory
+from ansible.parsing.dataloader import DataLoader
+from ansible.vars import VariableManager
 from celery import current_app
 from jinja2 import Environment, PackageLoader
 
@@ -13,7 +16,6 @@ from jinja2 import Environment, PackageLoader
 class Options(object):
     api_server = 'https://galaxy.ansible.com'
     ignore_certs = True
-
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -88,11 +90,65 @@ def run_playbook(playbook_path):
     )
     with open(inventory_file, 'w+') as inventory:
         inventory.write('localhost')
-    playbook_command = 'ansible-playbook -i {inventory} {playbook}'.format(
-        inventory=inventory_file,
-        playbook=playbook_file,
+    loader = DataLoader()
+    variable_manager = VariableManager()
+    inventory = Inventory(
+        loader=loader,
+        variable_manager=variable_manager,
+        host_list=['localhost'],
     )
-    os.system(playbook_command)
+    options = Options(
+        subset=None,
+        ask_pass=False,
+        listtags=None,
+        become_user=None,
+        sudo=False,
+        private_key_file=None,
+        syntax=None,
+        skip_tags=None,
+        diff=False,
+        sftp_extra_args='',
+        check=False,
+        force_handlers=False,
+        remote_user=None,
+        become_method='sudo',
+        vault_password_file=None,
+        listtasks=None,
+        output_file=None,
+        ask_su_pass=False,
+        new_vault_password_file=None,
+        inventory=inventory_file,
+        forks=5,
+        listhosts=None,
+        ssh_extra_args='',
+        tags='all',
+        become_ask_pass=False,
+        start_at_task=None,
+        flush_cache=None,
+        step=None,
+        module_path=None,
+        su_user=None,
+        ask_sudo_pass=False,
+        extra_vars=[],
+        verbosity=0,
+        su=False,
+        scp_extra_args='',
+        connection='smart',
+        ask_vault_pass=False,
+        timeout=10,
+        become=False,
+        sudo_user=None,
+        ssh_common_args='',
+    )
+    executor = PlaybookExecutor(
+        playbooks=[playbook_file],
+        inventory=inventory,
+        variable_manager=variable_manager,
+        loader=loader,
+        options=options,
+        passwords=None,
+    )
+    executor.run()
 
 
 @current_app.task(bind=True)
