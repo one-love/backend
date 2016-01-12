@@ -1,4 +1,4 @@
-git+https://github.com/ansible/ansible@stable-2.0
+ansible
 celery
 flask-admin
 flask-collect
