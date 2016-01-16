@@ -2,8 +2,8 @@
 import os
 
 from celery import current_app as celery
-from flask import redirect, Flask, url_for
-from flask.ext.script import Manager, Server
+from flask import Flask, render_template, request
+from flask_script import Manager, Server
 
 from onelove import OneLove
 from config import configs
@@ -29,7 +29,18 @@ from onelove.tasks import *
 
 @app.route('/')
 def index():
-    return redirect(url_for(onelove.api.endpoint('doc')))
+    import urlparse
+    js_bundle = '/static/js/bundle.js'
+    url = urlparse.urlparse(request.url)
+    live_reload = app.config['FRONTEND_LIVERELOAD']
+    if live_reload:
+        js_bundle = '{scheme}://{host}:{port}{bundle}'.format(
+            scheme=url.scheme,
+            host=url.hostname,
+            port=8080,
+            bundle=js_bundle,
+        )
+    return render_template('index.html', js_bundle=js_bundle)
 
 
 if __name__ == '__main__':
