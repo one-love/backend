@@ -9,15 +9,15 @@ We will happily accept pull requests that conform to our [Contributing guideline
 ### Usage
 To get a login token:
 ```bash
-curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' https://192.168.33.33/auth -X POST -d '{"username": "admin@example.com", "password": "Sekrit"}'
+curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' http://onelove.vagrant:5000/auth -X POST -d '{"username": "admin@example.com", "password": "Sekrit"}'
 ```
 
 To use the token to get list of clusters:
 ```bash
-curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Authorization: Bearer <token>' http://192.168.33.33:5000/api/v0/clusters
+curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Authorization: Bearer <token>' http://onelove.vagrant:5000/api/v0/clusters
 ```
 
 In the same way you can get other resorces/endpoints
 
 ### Swagger
-To use swagger open [Swagger UI](https://192.168.33.33/)
+To use swagger open [Swagger UI](http://onelove.vagrant:5000/api/v0/doc)
