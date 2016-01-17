@@ -7,6 +7,7 @@ from .fields import cluster_fields as fields
 from .fields import get_cluster_fields as get_fields
 from flask_jwt import current_identity
 from .. import current_app
+import pagination
 
 
 parser = api.parser()
@@ -16,13 +17,17 @@ parser.add_argument('name', type=str, required=True, location='json')
 @ns_cluster.route('', endpoint='api/cluster')
 class ClusterListAPI(ProtectedResource):
     @api.marshal_with(get_fields)
+    @api.doc(parser=pagination.parser)
     def get(self):
         """List clusters"""
-        clusters = []
-        for cluster in Cluster.objects(roles__in=current_identity.roles):
-            clusters.append(cluster)
+        args = pagination.parser.parse_args()
+        page = args.get('page')
+        per_page = args.get('per_page')
 
-        return clusters
+        clusters = Cluster.objects(roles__in=current_identity.roles).paginate(page, per_page)
+        paging = pagination.Pagination(clusters)
+
+        return clusters.items, 200, paging.headers
 
     @api.doc(body=fields)
     @api.marshal_with(get_fields)
