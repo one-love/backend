@@ -2,6 +2,7 @@ from celery import Celery
 from flask import Blueprint
 from flask_admin import Admin, AdminIndexView, helpers as admin_helpers
 from flask_collect import Collect
+from flask_cors import CORS
 from flask_jwt import JWT
 from flask_mail import Mail
 from flask_mongoengine import MongoEngine
@@ -44,10 +45,14 @@ class OneLove(object):
         global current_app
         current_app = self
         if app is not None:
+            if app.config['DEBUG']:
+                self.cors = CORS()
             self.init_app(app)
 
     def init_app(self, app):
         self.app = app
+        if app.config['DEBUG']:
+            self.cors.init_app(self.app, resources={r'/api/*': {'origins': '*'}})
 
         from api import api_v0, api
         self.api = api
