@@ -38,7 +38,48 @@ class ClusterProviderHostListAPI(ProtectedResource, ClusterMixin):
         provider = self._find_provider(cluster_id, provider_name)
         host = HostSSH(hostname=hostname, ip=ip)
         provider.hosts.append(host)
-        provider.save()
-        cluster = self._find_cluster(cluster_id)
-        cluster.save()
-        return provider.hosts
+        provider.hosts.save()
+        return host
+
+
+@ns_cluster.route(
+    '/<cluster_id>/providers/<provider_name>/<hostname>',
+    endpoint='api/cluster/provider/host',
+)
+class ClusterProviderHostAPI(ProtectedResource, ClusterMixin):
+    @api.marshal_with(fields)
+    def get(self, cluster_id, provider_name, hostname):
+        provider = self._find_provider(cluster_id, provider_name)
+        if not provider:
+            abort(404, 'No such provider')
+        for host in provider.hosts:
+            if host.hostname == hostname:
+                return host
+        abort(404, 'No such host')
+
+    @api.expect(fields)
+    @api.marshal_with(fields)
+    def put(self, cluster_id, provider_name, hostname):
+        args = parser.parse_args()
+        prov = self._find_provider(cluster_id, provider_name)
+        if not prov:
+            abort(404, 'No such provider')
+        for host in prov.hosts:
+            if host.hostname == hostname:
+                host.hostname = args.get('hostname')
+                host.ip = args.get('ip')
+                host.save()
+                return host
+        abort(404, 'No such host')
+
+    @api.marshal_with(fields)
+    def delete(self, cluster_id, provider_name, hostname):
+        prov = self._find_provider(cluster_id, provider_name)
+        if not prov:
+            abort(404, 'No such provider')
+        for host in prov.hosts:
+            if host.hostname == hostname:
+                prov.hosts.remove(host)
+                prov.hosts.save()
+                return host
+        abort(404, 'No such host')
