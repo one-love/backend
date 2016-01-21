@@ -42,7 +42,7 @@ class ProviderAWS(Provider):
 
 
 class HostSSH(EmbeddedDocument):
-    ip = StringField(max_length=128)
+    ip = StringField(max_length=256)
     hostname = StringField(max_length=256)
 
     def __repr__(self):
@@ -53,6 +53,7 @@ class HostSSH(EmbeddedDocument):
 
 
 class ProviderSSH(Provider):
+    type = 'SSH'
     private_key = StringField(max_length=4096)
     hosts = EmbeddedDocumentListField(HostSSH)
 

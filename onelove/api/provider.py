@@ -28,7 +28,10 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
         prov = self._find_provider(cluster_id, provider_name)
         if prov is not None:
             abort(409, error='Provider with that name already exists')
+
         Provider = self._get_provider_class(provider_type)
+        if not Provider:
+            abort(400, error='No such provider available')
         prov = Provider(name=provider_name)
         cluster = self._find_cluster(cluster_id)
         cluster.providers.append(prov)
@@ -36,7 +39,10 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
         return cluster.providers
 
 
-@ns_cluster.route('/<cluster_id>/providers/<provider_name>', endpoint='api/cluster/provider')
+@ns_cluster.route(
+    '/<cluster_id>/providers/<provider_name>',
+    endpoint='api/cluster/provider',
+)
 class ClusterProviderAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def get(self, cluster_id, provider_name):
