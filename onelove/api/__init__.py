@@ -40,10 +40,11 @@ def swagger_ui():
 api._doc_view = swagger_ui
 
 
-from . import auth
-from . import user
-from . import cluster
 from . import application
+from . import auth
+from . import cluster
+from . import host
+from . import me
 from . import provider
 from . import task
-from . import me
+from . import user

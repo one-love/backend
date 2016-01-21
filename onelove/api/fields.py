@@ -106,3 +106,12 @@ task_fields = api.model(
         'celery_id': fields.String,
     }
 )
+
+
+# Host fields
+host_fields = api.model(
+    'Host', {
+        'hostname': fields.String,
+        'ip': fields.String,
+    }
+)
