@@ -1,6 +1,6 @@
 {% extends 'admin/master.html' %}
-{% from "security/_macros.html" import render_field, render_field_with_errors, render_checkbox_field %}
-{% include "security/_messages.html" %}
+{% from "security/login_macros.html" import render_field, render_field_with_errors, render_checkbox_field %}
+{% include "security/login_messages.html" %}
 {% block body %}
 {{ super() }}
 <div class="row-fluid">

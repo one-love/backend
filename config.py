@@ -30,7 +30,9 @@ class TestConfig(BaseConfig):
 
 
 class ProdConfig(BaseConfig):
+    SECURITY_URL_PREFIX = "/admin"
     SECURITY_POST_LOGIN_VIEW = "/admin/"
+    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
     pass
 
 
