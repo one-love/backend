@@ -8,20 +8,20 @@
       <p class="lead">
         Hi, my friend
       </p>
-      {% if current_user.is_authenticated() %}
+      {% if current_user.is_authenticated %}
       <p>
         Be good here, and if you can't be good be careful.
       </p>
       {% endif %}
 
-      {% if not current_user.is_authenticated() %}
+      {% if not current_user.is_authenticated %}
       <p>Please log in as a superuser:
       <p>
         <a class="btn btn-primary" href="{{ url_for('security.login') }}">login</a>
       </p>
       {% endif %}
       <p>
-        <a class="btn btn-primary" href="/"><i class="glyphicon glyphicon-chevron-right"></i> Swagger</a>
+        <a class="btn btn-primary" href="{{ url_for('api.doc') }}"><i class="glyphicon glyphicon-chevron-right"></i> Swagger</a>
       </p>
     </div>
   </div>
