@@ -5,7 +5,7 @@ from . import api
 from resources import ProtectedResource
 
 
-@ns_me.route('', endpoint='api/me')
+@ns_me.route('', endpoint='me')
 class UserAPI(ProtectedResource):
     @api.marshal_with(response_fields)
     def get(self):

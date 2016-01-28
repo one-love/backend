@@ -5,14 +5,14 @@ from .namespaces import ns_task
 from .fields import task_fields as fields
 
 
-@ns_task.route('', endpoint='api/tasks')
+@ns_task.route('', endpoint='tasks')
 class TaskListAPI(ProtectedResource):
     @api.marshal_with(fields)
     def get(self):
         return [task for task in Task.objects.all()]
 
 
-@ns_task.route('/<id>', endpoint='api/task')
+@ns_task.route('/<id>', endpoint='task')
 class TaskAPI(ProtectedResource):
     @api.marshal_with(fields)
     def get(self, id):
