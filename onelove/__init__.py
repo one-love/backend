@@ -10,6 +10,7 @@ from flask_restplus import apidoc
 from flask_security import Security, MongoEngineUserDatastore
 from flask_security.utils import verify_password
 from .models import User, Role
+from logger import log
 
 
 current_app = None
