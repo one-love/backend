@@ -1,32 +1,10 @@
-from datetime import timedelta
-
-
-class BaseConfig:
-    DEBUG = False
-    FRONTEND_LIVERELOAD = False
-    SECRET_KEY = '{{ key "onelove/secret_key" }}'
-    MONGODB_DB = 'onelove'
-
-{{ range service "mongo" }}
+class BaseConfig(object):
+    {{ range service "mongo" }}
     MONGODB_HOST = '{{.Address}}'
     MONGODB_PORT = {{.Port}}
-{{ end }}
-
-{{ range service "rabbitmq-5672" }}
+    {{ end }}
+    {{ range service "rabbitmq-5672" }}
     BROKER_URL = 'amqp://guest@{{.Address}}:{{.Port}}//'
     CELERY_RESULT_BACKEND = 'amqp://guest@{{.Address}}:{{.Port}}/'
-{{ end }}
-
-    SECURITY_PASSWORD_HASH = 'sha512_crypt'
-    SECURITY_PASSWORD_SALT = 'COmwUar8X1s4NrNN'
-    SECURITY_SEND_REGISTER_EMAIL = False
-    SECURITY_URL_PREFIX = "/admin"
-    SECURITY_POST_LOGIN_VIEW = '/admin/'
-    SECURITY_POST_LOGOUT_VIEW = '/admin/'
-    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
-
-    JWT_EXPIRATION_DELTA = timedelta(days=7)
-
-    @staticmethod
-    def init_app(app):
-        pass
+    {{ end }}
+    SECRET_KEY = '{{ key "onelove/secret_key" }}'
