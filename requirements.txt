@@ -1,15 +1,2 @@
-ansible
-celery
-flask-admin
-flask-collect
-flask-cors
-flask-jwt
-flask-mongoengine
-flask-restful
-flask-restplus
-flask-script
-flask-security
-flask-login
-flower
-mongoengine
+-r requirements_common.txt
 uwsgi

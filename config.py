@@ -1,8 +1,37 @@
-from local_config import BaseConfig
+from datetime import timedelta
 import os
 
 
-class DevConfig(BaseConfig):
+BACKEND_PATH = os.path.dirname(os.path.abspath(__file__))
+BACKEND_APP = os.path.basename(BACKEND_PATH)
+
+try:
+    from local_config import BaseConfig
+except ImportError:
+    class BaseConfig(object):
+        SECRET_KEY = 'top-secret'
+        pass
+
+
+class Config(BaseConfig):
+    DEBUG = False
+    FRONTEND_LIVERELOAD = False
+    MONGODB_DB = 'onelove'
+    SECURITY_PASSWORD_HASH = 'sha512_crypt'
+    SECURITY_PASSWORD_SALT = 'COmwUar8X1s4NrNN'
+    SECURITY_SEND_REGISTER_EMAIL = False
+    SECURITY_URL_PREFIX = "/admin"
+    SECURITY_POST_LOGIN_VIEW = '/admin/'
+    SECURITY_POST_LOGOUT_VIEW = '/admin/'
+    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
+    JWT_EXPIRATION_DELTA = timedelta(days=7)
+
+    @staticmethod
+    def init_app(app):
+        pass
+
+
+class DevConfig(Config):
     DEBUG = True
     FRONTEND_LIVERELOAD = True
     MAIL_SERVER = 'smtp.googlemail.com'
@@ -25,15 +54,14 @@ class DevConfig(BaseConfig):
     ]
 
 
-class TestConfig(BaseConfig):
+class TestConfig(Config):
     TESTING = True
 
 
-class ProdConfig(BaseConfig):
+class ProdConfig(Config):
     SECURITY_URL_PREFIX = "/admin"
     SECURITY_POST_LOGIN_VIEW = "/admin/"
     SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
-    pass
 
 
 configs = {

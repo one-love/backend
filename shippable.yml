@@ -13,5 +13,5 @@ services:
 script: nosetests
 
 install:
-  - pip install -r requirements_dev.txt
-
+  - pip install -r requirements_test.txt
+  - python create_default_admin.py
