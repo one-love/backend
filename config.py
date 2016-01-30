@@ -6,7 +6,7 @@ BACKEND_PATH = os.path.dirname(os.path.abspath(__file__))
 BACKEND_APP = os.path.basename(BACKEND_PATH)
 
 try:
-    from local_settings import BaseConfig
+    from local_config import BaseConfig
 except ImportError:
     class BaseConfig(object):
         SECRET_KEY = 'top-secret'
