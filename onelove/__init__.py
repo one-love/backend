@@ -21,14 +21,6 @@ class OneLove(object):
             for k, v in kwargs.items():
                 setattr(self, k, v)
 
-    admin = Admin(
-        name='One Love',
-        base_template='admin_master.html',
-        template_mode='bootstrap3',
-        index_view=AdminIndexView(
-            template='admin/onelove_index.html',
-        ),
-    )
     api = None
     app = None
     blueprint = None
@@ -47,12 +39,23 @@ class OneLove(object):
         if app is not None:
             if app.config['DEBUG']:
                 self.cors = CORS()
+                self.admin = Admin(
+                    name='One Love',
+                    base_template='admin_master.html',
+                    template_mode='bootstrap3',
+                    index_view=AdminIndexView(
+                        template='admin/onelove_index.html',
+                    ),
+                )
             self.init_app(app)
 
     def init_app(self, app):
         self.app = app
         if app.config['DEBUG']:
-            self.cors.init_app(self.app, resources={r'/api/*': {'origins': '*'}})
+            self.cors.init_app(
+                self.app,
+                resources={r'/api/*': {'origins': '*'}},
+            )
 
         from api import api_v0, api
         self.api = api
@@ -87,9 +90,10 @@ class OneLove(object):
             self.user_datastore,
         )
 
-        from .admin import register_admin_views
-        register_admin_views(self.admin)
-        self.admin.init_app(self.app)
+        if app.config['DEBUG']:
+            from .admin import register_admin_views
+            register_admin_views(self.admin)
+            self.admin.init_app(self.app)
 
         self.jwt.init_app(self.app)
         self.collect.init_app(self.app)
