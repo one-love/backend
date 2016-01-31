@@ -2,18 +2,16 @@
 import os
 
 from celery import current_app as celery
-from flask import Flask, render_template, request
+from flask import render_template, request
 from flask_script import Manager, Server
 
 from onelove import OneLove
-from config import configs
+from onelove.utils import create_app
 
 
 config_name = os.getenv('FLASK_CONFIG') or 'default'
-app = Flask(__name__)
-app.config.from_object(configs[config_name])
-onelove = OneLove(app)
-manager = Manager(app)
+onelove = OneLove(create_app(config_name))
+manager = Manager(onelove.app)
 manager.add_command(
     "runserver",
     Server(
@@ -27,12 +25,12 @@ onelove.collect.init_script(manager)
 from onelove.tasks import *
 
 
-@app.route('/')
+@onelove.app.route('/')
 def index():
     import urlparse
     js_bundle = '/static/js/bundle.js'
     url = urlparse.urlparse(request.url)
-    live_reload = app.config['FRONTEND_LIVERELOAD']
+    live_reload = onelove.app.config['FRONTEND_LIVERELOAD']
     if live_reload:
         js_bundle = '{scheme}://{host}:{port}{bundle}'.format(
             scheme=url.scheme,
