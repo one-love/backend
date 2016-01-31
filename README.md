@@ -17,7 +17,7 @@ curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' http:/
 
 To use the token to get list of clusters:
 ```bash
-curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Authorization: Bearer <token>' http://onelove.vagrant:5000/api/v0/clusters
+curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Authorization: JWT <token>' http://onelove.vagrant:5000/api/v0/clusters
 ```
 
 In the same way you can get other resorces/endpoints
