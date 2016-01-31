@@ -12,7 +12,7 @@ parser.add_argument('name', type=str, required=True, location='json')
 parser.add_argument('type', type=str, required=True, location='json')
 
 
-@ns_cluster.route('/<cluster_id>/providers', endpoint='api/cluster/providers')
+@ns_cluster.route('/<cluster_id>/providers', endpoint='clusters.providers')
 class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def get(self, cluster_id):
@@ -41,7 +41,7 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
 
 @ns_cluster.route(
     '/<cluster_id>/providers/<provider_name>',
-    endpoint='api/cluster/provider',
+    endpoint='clusters.provider',
 )
 class ClusterProviderAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)

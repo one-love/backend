@@ -51,6 +51,7 @@ class DevConfig(Config):
         'flask_debugtoolbar.panels.logger.LoggingPanel',
         'flask_debugtoolbar.panels.profiler.ProfilerDebugPanel',
         'flask.ext.mongoengine.panels.MongoDebugPanel',
+        'flask_debug_api.BrowseAPIPanel'
     ]
 
 

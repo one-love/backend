@@ -18,7 +18,7 @@ parser.add_argument('last_name', type=str, required=False, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
 
 
-@ns_user.route('', endpoint='api/users')
+@ns_user.route('', endpoint='users')
 class UserListAPI(ProtectedResource):
     @api.marshal_with(response_fields)
     def get(self):
@@ -51,7 +51,7 @@ class UserListAPI(ProtectedResource):
         return user, 201
 
 
-@ns_user.route('/<id>', endpoint='api/user')
+@ns_user.route('/<id>', endpoint='user')
 class UserAPI(ProtectedResource):
     @api.marshal_with(response_fields)
     def get(self, id):

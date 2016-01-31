@@ -10,6 +10,7 @@ from flask_restplus import apidoc
 from flask_security import Security, MongoEngineUserDatastore
 from flask_security.utils import verify_password
 from .models import User, Role
+from logger import log
 
 
 current_app = None
@@ -100,7 +101,9 @@ class OneLove(object):
 
         if self.app.config.get('DEBUG_TB_PANELS', False):
             from flask_debugtoolbar import DebugToolbarExtension
+            from flask_debug_api import DebugAPIExtension
             self.toolbar = DebugToolbarExtension(self.app)
+            self.toolbar = DebugAPIExtension(self.app)
 
         @self.app.context_processor
         def security_context_processor():

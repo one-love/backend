@@ -12,7 +12,7 @@ parser.add_argument('galaxy_role', type=str, required=True, location='json')
 parser.add_argument('name', type=str, required=True, location='json')
 
 
-@ns_cluster.route('/<cluster_id>/applications', endpoint='api/cluster/applications')
+@ns_cluster.route('/<cluster_id>/applications', endpoint='clusters.applications')
 class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def get(self, cluster_id):
@@ -40,7 +40,7 @@ class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
         return cluster.applications
 
 
-@ns_cluster.route('/<cluster_id>/applications/<application_name>', endpoint='api/cluster/application')
+@ns_cluster.route('/<cluster_id>/applications/<application_name>', endpoint='clusters.application')
 class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def get(self, cluster_id, application_name):
@@ -64,7 +64,7 @@ class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
         return app
 
 
-@ns_cluster.route('/<cluster_id>/applications/<application_name>/provision', endpoint='api/cluster/application/provision')
+@ns_cluster.route('/<cluster_id>/applications/<application_name>/provision', endpoint='clusters.application.provision')
 class ClusterApplicationProvisionAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(fields)
     def post(self, cluster_id, application_name):

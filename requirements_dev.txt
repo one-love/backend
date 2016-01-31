@@ -1,3 +1,4 @@
 -r requirements_common.txt
 ipdb
 flask-debugtoolbar
+Flask-Debug-API

@@ -14,7 +14,7 @@ parser = api.parser()
 parser.add_argument('name', type=str, required=True, location='json')
 
 
-@ns_cluster.route('', endpoint='api/cluster')
+@ns_cluster.route('', endpoint='clusters')
 class ClusterListAPI(ProtectedResource):
     @api.marshal_with(get_fields)
     @api.doc(parser=pagination.parser)
@@ -58,7 +58,7 @@ class ClusterListAPI(ProtectedResource):
         return cluster, 201
 
 
-@ns_cluster.route('/<id>', endpoint='cluster/cluster')
+@ns_cluster.route('/<id>', endpoint='clusters.cluster')
 class ClusterAPI(ProtectedResource, ClusterMixin):
     @api.marshal_with(get_fields)
     def get(self, id):

@@ -1,0 +1,32 @@
+<!doctype html>
+
+<head>
+    <link href="{{ url_for('onelove.static', filename='css/bootstrap.css') }}" rel="stylesheet">
+</head>
+
+<body>
+{{ data }}
+{% for method in methods %}
+<button class="debug-api" data-debug-api-method="{{ method }}">{{ method }}</button>
+{% endfor %}
+<br>
+<textarea style="border:2px solid #ccc;" rows="15" cols="70" id="data"></textarea>
+<script type="text/javascript">
+;[].slice.call(document.querySelectorAll('button.debug-api')).forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var method = btn.getAttribute('data-debug-api-method')
+      var xhr = new XMLHttpRequest()
+      xhr.open(method, location)
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4){
+          document.open()
+          document.write(xhr.responseText)
+          document.close()
+        }
+      }
+      xhr.send(document.getElementById('data').value)
+    })
+})
+</script>
+</body>

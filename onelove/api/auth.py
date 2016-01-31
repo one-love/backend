@@ -11,7 +11,7 @@ parser.add_argument('email', type=str, required=True, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
 
 
-@ns_auth.route('/tokens', endpoint='auth/token')
+@ns_auth.route('/tokens', endpoint='auth.token')
 @api.doc(body=auth_fields)
 class AuthAPI(Resource):
     @api.response(401, 'Invalid credentials')
