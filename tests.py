@@ -1,17 +1,13 @@
 from unittest import TestCase
 
-from flask import Flask
 
 from onelove import OneLove
-from config import configs
+from onelove.utils import create_app
 
 
 class TestAPI(TestCase):
     def setUp(self):
-        config_name = 'testing'
-        app = Flask(__name__)
-        app.config.from_object(configs[config_name])
-        self.onelove = OneLove(app)
+        self.onelove = OneLove(create_app(config_name='testing'))
         self.app = self.onelove.app.test_client()
         self.token = self.login('admin@example.com', 'Sekrit')
 
