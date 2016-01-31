@@ -1,6 +1,8 @@
 One Love REST API
 =================
 
+![shippable](https://api.shippable.com/projects/5478a4b2d46935d5fbbee379/badge/master)
+
 This is Flask based API part of [One Love](https://one-love.github.io/) project.
 
 ### Contributing to One Love
