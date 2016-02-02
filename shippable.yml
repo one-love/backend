@@ -9,9 +9,11 @@ python:
 services:
   - mongodb
 
+env:
+  - FLASK_CONFIG=testing
+
 # command to run tests
 script: nosetests
 
 install:
   - pip install -r requirements_test.txt
-  - python create_default_admin.py
