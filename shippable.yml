@@ -1,19 +1,20 @@
-# language setting
 language: python
 
-# version numbers
 python:
   - "2.7"
 
-# Mongo binds to 127.0.0.1 by default
 services:
   - mongodb
 
 env:
   - FLASK_CONFIG=testing
 
-# command to run tests
-script: nosetests
+before_script:
+  - mkdir -p shippable/testresults
+  - mkdir -p shippable/codecoverage
+
+script:
+    - nosetests --with-coverage --cover-erase --cover-xml --cover-xml-file=shippable/codecoverage/coverage.xml --cover-package onelove --with-xunit --xunit-file=shippable/testresults/nosetests.xml
 
 install:
   - pip install -r requirements_test.txt
