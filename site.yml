@@ -1,5 +1,0 @@
-- name: Dummy provision
-  hosts: all
-  tasks:
-    - name: dummy task
-      command: echo dummy
