@@ -1,4 +1,4 @@
-from flask.ext.mongoengine import Document
+from flask_mongoengine import Document
 from mongoengine.fields import (
     BooleanField,
     EmailField,
@@ -9,7 +9,7 @@ from mongoengine.fields import (
     EmbeddedDocumentListField,
     EmbeddedDocumentField,
 )
-from flask.ext.security import UserMixin, RoleMixin
+from flask_security import UserMixin, RoleMixin
 
 
 class Application(EmbeddedDocument):
