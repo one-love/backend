@@ -17,7 +17,7 @@ class ClusterMixin(object):
                 if user.has_role(role):
                     self.permission = True
 
-            if self.permission:
+            if self.permission or user.has_role('admin'):
                 return cluster
             else:
                 abort(403)
