@@ -7,3 +7,4 @@ media/
 /static/
 vendor/
 local_config.py
+shippable/
