@@ -8,16 +8,18 @@ from ..models import Role
 
 class ClusterMixin(object):
     def _find_cluster(self, cluster_id):
-        self.permission = False
+        permission = False
         try:
             cluster = Cluster.objects.get(id=cluster_id)
             user = User.objects.get(email=current_identity.email)
+            permission = user.has_role('admin')
 
-            for role in cluster.roles:
-                if user.has_role(role):
-                    self.permission = True
+            if not permission:
+                for role in cluster.roles:
+                    if user.has_role(role):
+                        permission = True
 
-            if self.permission or user.has_role('admin'):
+            if permission:
                 return cluster
             else:
                 abort(403)
