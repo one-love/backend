@@ -1,6 +1,5 @@
 from celery import Celery
 from flask import Blueprint
-from flask_admin import Admin, AdminIndexView, helpers as admin_helpers
 from flask_collect import Collect
 from flask_cors import CORS
 from flask_jwt import JWT
@@ -39,6 +38,7 @@ class OneLove(object):
         current_app = self
         if app is not None:
             if app.config['DEBUG']:
+                from flask_admin import Admin, AdminIndexView
                 self.cors = CORS()
                 self.admin = Admin(
                     name='One Love',
@@ -105,13 +105,16 @@ class OneLove(object):
             self.toolbar = DebugToolbarExtension(self.app)
             self.toolbar = DebugAPIExtension(self.app)
 
-        @self.app.context_processor
-        def security_context_processor():
-            return dict(
-                admin_base_template=self.admin.base_template,
-                admin_view=self.admin.index_view,
-                h=admin_helpers,
-            )
+        if self.app.config.get('DEBUG', False):
+            from flask_admin import helpers as admin_helpers
+
+            @self.app.context_processor
+            def security_context_processor():
+                return dict(
+                    admin_base_template=self.admin.base_template,
+                    admin_view=self.admin.index_view,
+                    h=admin_helpers,
+                )
 
     @jwt.authentication_handler
     def authenticate(username, password):
@@ -134,5 +137,5 @@ class OneLove(object):
         try:
             user = User.objects.get(id=payload['identity'])
         except User.DoesNotExist:
-            return None
+            user = None
         return user
