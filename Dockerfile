@@ -16,9 +16,9 @@ RUN apt-get update && \
     wget https://github.com/hashicorp/consul-template/releases/download/v0.10.0/consul-template_0.10.0_linux_amd64.tar.gz -O consul-template.tar.gz && \
     tar -xf consul-template.tar.gz && \
     mv consul-template_*/consul-template /usr/bin && \
-    rm -rf consul-template*
-    pip install --no-cache-dir -r requirements.txt
-    apt-get purge -y --auto-remove build-essential python-dev wget
+    rm -rf consul-template* && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apt-get purge -y --auto-remove build-essential python-dev wget python-pip
 
 
 CMD ["bin/start.sh"]
