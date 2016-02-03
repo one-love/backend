@@ -12,12 +12,13 @@ RUN mkdir -p ~/.ssh
 COPY ssh_config ~/.ssh/config
 
 RUN apt-get update && \
-    apt-get install -y build-essential wget sshpass tar python-dev curl libyaml-dev && \
+    apt-get install -y build-essential wget sshpass tar python-dev libyaml-dev && \
     wget https://github.com/hashicorp/consul-template/releases/download/v0.10.0/consul-template_0.10.0_linux_amd64.tar.gz -O consul-template.tar.gz && \
     tar -xf consul-template.tar.gz && \
     mv consul-template_*/consul-template /usr/bin && \
     rm -rf consul-template* && \
-    curl -fSL 'https://bootstrap.pypa.io/get-pip.py' | python2 && \
+    # curl -fSL 'https://bootstrap.pypa.io/get-pip.py' | python2 && \
+    wget -q -O - https://bootstrap.pypa.io/get-pip.py | python2 && \
     pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y --auto-remove build-essential python-dev wget && \
