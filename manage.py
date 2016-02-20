@@ -42,4 +42,6 @@ def index():
 
 
 if __name__ == '__main__':
+    from onelove.utils import reload_frontend
+    reload_frontend()
     manager.run()
