@@ -4,7 +4,7 @@ flask-collect
 flask-cors
 flask-jwt
 flask-mongoengine
-flask-restplus
+flask-restplus<0.9
 flask-script
 flask-security
 mongoengine
