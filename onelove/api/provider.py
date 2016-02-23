@@ -36,7 +36,7 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
         cluster = self._find_cluster(cluster_id)
         cluster.providers.append(prov)
         cluster.save()
-        return cluster.providers
+        return prov
 
 
 @ns_cluster.route(
@@ -70,5 +70,5 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
         prov = self._find_provider(cluster_id, provider_name)
         cluster = Cluster.objects.get(id=cluster_id)
         cluster.providers.remove(prov)
-        cluster.providers.save()
+        cluster.save()
         return prov
