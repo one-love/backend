@@ -1,10 +1,9 @@
-FROM debian:jessie
+FROM python:2-slim
 
 MAINTAINER Zoran Olujić <olujicz@gmail.com>
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY . /usr/src/app
 COPY requirements.txt /usr/src/app/
 COPY requirements_common.txt /usr/src/app/
 
@@ -29,6 +28,7 @@ RUN apt-get update && \
     apt-get purge -y --auto-remove build-essential python-dev wget && \
     rm -rf /var/lib/apt/lists/*
 
+COPY . /usr/src/app
 
 
 CMD ["bin/start.sh"]
