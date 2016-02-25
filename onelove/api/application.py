@@ -1,27 +1,29 @@
 from flask.ext.restplus import abort
 from resources import ProtectedResource
 from ..models import Application, Cluster
-from . import api
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
 from .fields import application_fields as fields
 
 
-parser = api.parser()
+parser = ns_cluster.parser()
 parser.add_argument('galaxy_role', type=str, required=True, location='json')
 parser.add_argument('name', type=str, required=True, location='json')
 
 
-@ns_cluster.route('/<cluster_id>/applications', endpoint='clusters.applications')
+@ns_cluster.route(
+    '/<cluster_id>/applications',
+    endpoint='clusters.applications'
+)
 class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
-    @api.marshal_with(fields)
+    @ns_cluster.marshal_with(fields)
     def get(self, cluster_id):
         """Get list of a aplications for the cluster"""
         cluster = self._find_cluster(cluster_id)
         return cluster.applications
 
-    @api.expect(fields)
-    @api.marshal_with(fields)
+    @ns_cluster.expect(fields)
+    @ns_cluster.marshal_with(fields)
     def post(self, cluster_id):
         """Create aplication for the cluster"""
         cluster = self._find_cluster(cluster_id)
@@ -40,14 +42,17 @@ class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
         return cluster.applications
 
 
-@ns_cluster.route('/<cluster_id>/applications/<application_name>', endpoint='clusters.application')
+@ns_cluster.route(
+    '/<cluster_id>/applications/<application_name>',
+    endpoint='clusters.application'
+)
 class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
-    @api.marshal_with(fields)
+    @ns_cluster.marshal_with(fields)
     def get(self, cluster_id, application_name):
         return self._find_app(cluster_id, application_name)
 
-    @api.expect(fields)
-    @api.marshal_with(fields)
+    @ns_cluster.expect(fields)
+    @ns_cluster.marshal_with(fields)
     def put(self, cluster_id, application_name):
         args = parser.parse_args()
         app = self._find_app(cluster_id, application_name)
@@ -55,7 +60,7 @@ class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
         app.save()
         return app
 
-    @api.marshal_with(fields)
+    @ns_cluster.marshal_with(fields)
     def delete(self, cluster_id, application_name):
         app = self._find_app(cluster_id, application_name)
         cluster = Cluster.objects.get(id=cluster_id)
@@ -64,12 +69,15 @@ class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
         return app
 
 
-@ns_cluster.route('/<cluster_id>/applications/<application_name>/provision', endpoint='clusters.application.provision')
+@ns_cluster.route(
+    '/<cluster_id>/applications/<application_name>/provision',
+    endpoint='clusters.application.provision'
+)
 class ClusterApplicationProvisionAPI(ProtectedResource, ClusterMixin):
-    @api.marshal_with(fields)
+    @ns_cluster.marshal_with(fields)
     def post(self, cluster_id, application_name):
         from ..tasks import provision
-        cluster = self._find_cluster(cluster_id)
         app = self._find_app(cluster_id, application_name)
-        result = provision.delay(cluster_id, application_name)
+        result = provision.delay(cluster_id, app.galaxy_role)
+        print result
         return {'result': str(result)}

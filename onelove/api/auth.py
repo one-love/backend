@@ -1,22 +1,20 @@
 from flask.ext.restplus import Resource
 from flask.ext.restful import request
 from flask_jwt import _jwt, JWTError
-from . import api
 from .namespaces import ns_auth
 from .fields import auth_fields, token_response
 
 
-parser = api.parser()
+parser = ns_auth.parser()
 parser.add_argument('email', type=str, required=True, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
 
 
 @ns_auth.route('/tokens', endpoint='auth.token')
-@api.doc(body=auth_fields)
 class AuthAPI(Resource):
-    @api.response(401, 'Invalid credentials')
-    @api.doc(security=None)
-    @api.marshal_with(token_response, code=200, description='Get a token.')
+    @ns_auth.response(401, 'Invalid credentials')
+    @ns_auth.doc(body=auth_fields, security=None)
+    @ns_auth.marshal_with(token_response, code=200, description='Get a token.')
     def post(self):
         """Authenticates and generates a token."""
         args = parser.parse_args()
