@@ -1,7 +1,6 @@
 from flask.ext.security.registerable import register_user
 from mongoengine.queryset import NotUniqueError
 from mongoengine.errors import ValidationError
-from . import api
 from .namespaces import ns_user
 from .fields import user_body as body_fields
 from .fields import user_response as response_fields
@@ -11,7 +10,7 @@ from ..models import User
 from resources import ProtectedResource
 
 
-parser = api.parser()
+parser = ns_user.parser()
 parser.add_argument('email', type=str, required=True, location='json')
 parser.add_argument('first_name', type=str, required=False, location='json')
 parser.add_argument('last_name', type=str, required=False, location='json')
@@ -20,12 +19,12 @@ parser.add_argument('password', type=str, required=False, location='json')
 
 @ns_user.route('', endpoint='users')
 class UserListAPI(ProtectedResource):
-    @api.marshal_with(response_fields)
+    @ns_user.marshal_with(response_fields)
     def get(self):
         """List users"""
         return [user for user in User.objects.all()]
 
-    @api.doc(
+    @ns_user.doc(
         model=response_fields,
         body=body_fields,
         responses={
@@ -33,7 +32,7 @@ class UserListAPI(ProtectedResource):
             422: 'Validation error'
         }
     )
-    @api.marshal_with(response_fields)
+    @ns_user.marshal_with(response_fields)
     def post(self):
         """Create user"""
         args = parser.parse_args()
@@ -53,7 +52,7 @@ class UserListAPI(ProtectedResource):
 
 @ns_user.route('/<id>', endpoint='user')
 class UserAPI(ProtectedResource):
-    @api.marshal_with(response_fields)
+    @ns_user.marshal_with(response_fields)
     def get(self, id):
         """Show user details"""
         try:
@@ -63,8 +62,8 @@ class UserAPI(ProtectedResource):
 
         return user
 
-    @api.expect(body_fields)
-    @api.marshal_with(response_fields)
+    @ns_user.expect(body_fields)
+    @ns_user.marshal_with(response_fields)
     def put(self, id):
         """Update user"""
         try:
@@ -77,7 +76,7 @@ class UserAPI(ProtectedResource):
         user.save()
         return user
 
-    @api.marshal_with(response_fields)
+    @ns_user.marshal_with(response_fields)
     def delete(self, id):
         """Delete user."""
         try:

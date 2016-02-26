@@ -2,12 +2,11 @@ from flask_restplus import abort
 from .mixins import ClusterMixin
 from resources import ProtectedResource
 from ..models import HostSSH
-from . import api
 from .fields import host_fields as fields
 from .namespaces import ns_cluster
 
 
-parser = api.parser()
+parser = ns_cluster.parser()
 parser.add_argument('hostname', type=str, required=True, location='json')
 parser.add_argument('ip', type=str, required=True, location='json')
 
@@ -17,7 +16,7 @@ parser.add_argument('ip', type=str, required=True, location='json')
     endpoint='cluster.provider.hosts',
 )
 class ClusterProviderHostListAPI(ProtectedResource, ClusterMixin):
-    @api.marshal_with(fields)
+    @ns_cluster.marshal_with(fields)
     def get(self, cluster_id, provider_name):
         cluster = self._find_cluster(cluster_id)
         provider = None
@@ -29,8 +28,8 @@ class ClusterProviderHostListAPI(ProtectedResource, ClusterMixin):
             abort(404, 'No such provider')
         return provider.hosts
 
-    @api.expect(fields)
-    @api.marshal_with(fields)
+    @ns_cluster.expect(fields)
+    @ns_cluster.marshal_with(fields)
     def post(self, cluster_id, provider_name):
         args = parser.parse_args()
         hostname = args.get('hostname')
@@ -47,7 +46,7 @@ class ClusterProviderHostListAPI(ProtectedResource, ClusterMixin):
     endpoint='cluster.provider.host',
 )
 class ClusterProviderHostAPI(ProtectedResource, ClusterMixin):
-    @api.marshal_with(fields)
+    @ns_cluster.marshal_with(fields)
     def get(self, cluster_id, provider_name, hostname):
         provider = self._find_provider(cluster_id, provider_name)
         if not provider:
@@ -57,8 +56,8 @@ class ClusterProviderHostAPI(ProtectedResource, ClusterMixin):
                 return host
         abort(404, 'No such host')
 
-    @api.expect(fields)
-    @api.marshal_with(fields)
+    @ns_cluster.expect(fields)
+    @ns_cluster.marshal_with(fields)
     def put(self, cluster_id, provider_name, hostname):
         args = parser.parse_args()
         prov = self._find_provider(cluster_id, provider_name)
@@ -72,7 +71,7 @@ class ClusterProviderHostAPI(ProtectedResource, ClusterMixin):
                 return host
         abort(404, 'No such host')
 
-    @api.marshal_with(fields)
+    @ns_cluster.marshal_with(fields)
     def delete(self, cluster_id, provider_name, hostname):
         prov = self._find_provider(cluster_id, provider_name)
         if not prov:
