@@ -60,7 +60,7 @@ class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
         app = self._find_app(cluster_id, application_name)
         cluster = Cluster.objects.get(id=cluster_id)
         cluster.applications.remove(app)
-        cluster.applications.save()
+        cluster.save()
         return app
 
 
