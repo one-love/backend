@@ -37,7 +37,7 @@ class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
         )
         cluster.applications.append(app)
         cluster.save()
-        return cluster.applications
+        return app
 
 
 @ns_cluster.route('/<cluster_id>/applications/<application_name>', endpoint='clusters.application')
