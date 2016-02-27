@@ -1,5 +1,5 @@
-from flask.ext.restplus import Resource
-from flask.ext.restful import request
+from flask_restplus import Resource
+from flask import request
 from flask_jwt import _jwt, JWTError
 from .namespaces import ns_auth
 from .fields import auth_fields, token_response
