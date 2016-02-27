@@ -27,7 +27,7 @@ user_base = api.model(
 )
 
 
-user_body = api.extend(
+user_body = api.clone(
     'User password', user_base, {
         'password': fields.String(
             description='Password',
@@ -37,7 +37,7 @@ user_body = api.extend(
     }
 )
 
-user_response = api.extend(
+user_response = api.clone(
     'Get User', user_base, {
         'id': fields.String,
         'roles': fields.Nested(roles_fields),
@@ -91,7 +91,7 @@ cluster_fields = api.model(
     }
 )
 
-get_cluster_fields = api.extend('Get Clusters', cluster_fields, {
+get_cluster_fields = api.clone('Get Clusters', cluster_fields, {
     'providers': fields.Nested(provider_fields),
     'id': fields.String,
     'roles': fields.Nested(roles_fields),

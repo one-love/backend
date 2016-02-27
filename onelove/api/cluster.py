@@ -1,6 +1,5 @@
 from ..models import Cluster, User
 from resources import ProtectedResource
-from . import api
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
 from .fields import cluster_fields as fields
@@ -10,14 +9,14 @@ from .. import current_app
 import pagination
 
 
-parser = api.parser()
+parser = ns_cluster.parser()
 parser.add_argument('name', type=str, required=True, location='json')
 
 
 @ns_cluster.route('', endpoint='clusters')
 class ClusterListAPI(ProtectedResource):
-    @api.marshal_with(get_fields)
-    @api.doc(parser=pagination.parser)
+    @ns_cluster.marshal_with(get_fields)
+    @ns_cluster.doc(parser=pagination.parser)
     def get(self):
         """List clusters"""
         args = pagination.parser.parse_args()
@@ -29,8 +28,8 @@ class ClusterListAPI(ProtectedResource):
 
         return clusters.items, 200, paging.headers
 
-    @api.doc(body=fields)
-    @api.marshal_with(get_fields)
+    @ns_cluster.doc(body=fields)
+    @ns_cluster.marshal_with(get_fields)
     def post(self):
         """Create cluster"""
         args = parser.parse_args()
@@ -60,14 +59,15 @@ class ClusterListAPI(ProtectedResource):
 
 @ns_cluster.route('/<id>', endpoint='clusters.cluster')
 class ClusterAPI(ProtectedResource, ClusterMixin):
-    @api.marshal_with(get_fields)
+    @ns_cluster.marshal_with(get_fields)
+    @ns_cluster.response(404, 'Cluster not found')
     def get(self, id):
         """Show cluster details"""
         cluster = self._find_cluster(id)
         return cluster
 
-    @api.expect(fields)
-    @api.marshal_with(fields)
+    @ns_cluster.expect(fields)
+    @ns_cluster.marshal_with(fields)
     def put(self, id):
         """Update cluster"""
         cluster = self._find_cluster(id)
@@ -76,7 +76,7 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
         cluster.save()
         return cluster
 
-    @api.marshal_with(fields)
+    @ns_cluster.marshal_with(fields)
     def delete(self, id):
         """Delete the cluster."""
         cluster = self._find_cluster(id)
