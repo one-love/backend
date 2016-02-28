@@ -1,3 +1,4 @@
+from flask import current_app
 from resources import ProtectedResource
 from ..models import Task
 from .namespaces import ns_task
@@ -15,6 +16,5 @@ class TaskListAPI(ProtectedResource):
 class TaskAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
     def get(self, id):
-        from .. import current_app
-        task = current_app.celery.AsyncResult(id=id)
+        task = current_app.onelove.celery.AsyncResult(id=id)
         return task
