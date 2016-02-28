@@ -10,8 +10,9 @@ from onelove.utils import create_app
 
 
 config_name = os.getenv('FLASK_CONFIG') or 'default'
-onelove = OneLove(create_app(config_name))
-manager = Manager(onelove.app)
+app = create_app(config_name)
+onelove = OneLove(app)
+manager = Manager(app)
 manager.add_command(
     "runserver",
     Server(
@@ -25,7 +26,7 @@ onelove.collect.init_script(manager)
 from onelove.tasks import *
 
 
-@onelove.app.route('/')
+@app.route('/')
 def index():
     return redirect(url_for(onelove.api.endpoint('doc')))
 

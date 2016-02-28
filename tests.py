@@ -1,29 +1,27 @@
 from unittest import TestCase
 
-from onelove import OneLove
-from onelove.utils import create_app
 import json
 
 
 class TestAPI(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.onelove = OneLove(create_app(config_name='testing'))
+        from onelove import OneLove
+        from onelove.utils import create_app
+        app = create_app(config_name='testing')
+        cls.onelove = OneLove(app)
         cls.onelove.app.test_request_context().push()
         cls.app = cls.onelove.app.test_client()
 
-        from onelove.models import User
-        from flask_security.utils import encrypt_password
-        cls.me = User(email='admin@example.com')
-        cls.me.password = encrypt_password('Sekrit')
-        cls.me.save()
+        from onelove import factories
+        cls.me = factories.UserFactory.create()
 
         admin_role = cls.onelove.user_datastore.find_or_create_role(
             name="admin",
             description="Administrator"
         )
         cls.onelove.user_datastore.add_role_to_user(cls.me, admin_role)
-        cls.token = cls.login('admin@example.com', 'Sekrit')
+        cls.token = cls.login(cls.me.email, 'Sekrit')
 
     @classmethod
     def tearDownClass(cls):
@@ -52,33 +50,88 @@ class TestAPI(TestCase):
         data = json.loads(response.data)
         return data
 
-    def test_default_admin_login(self):
-        self.assertEqual(len(self.token), 201)
+    def post(self, url, data):
+        response = self.app.post(
+            url,
+            data=json.dumps(data),
+            headers={
+                'Authorization': 'JWT {token}'.format(token=self.token),
+                'Content-Type': 'application/json',
+            },
+        )
+        self.assertLess(response.status_code, 400)
+        return json.loads(response.data)
 
-    def test_empty_clusters(self):
-        data = self.get('/api/v0/clusters')
-        self.assertEqual([], data)
+    def put(self, url, data):
+        response = self.app.put(
+            url,
+            data=json.dumps(data),
+            headers={
+                'Authorization': 'JWT {token}'.format(token=self.token),
+                'Content-Type': 'application/json',
+            },
+        )
+        print(response)
+        self.assertLess(response.status_code, 400)
+        return json.loads(response.data)
 
-    def test_clusters(self):
-        from onelove.models import Cluster
-        cluster = Cluster(name='name')
-        cluster.save()
-        url = '/api/v0/clusters/{id}'.format(id=str(cluster.id))
-        data = self.get(url)
-        self.assertEqual(str(cluster.id), data['id'])
-        self.assertEqual(cluster.name, data['name'])
-        self.assertEqual(cluster.applications, data['applications'])
-        self.assertEqual(cluster.providers, data['providers'])
-        self.assertEqual(cluster.roles, data['roles'])
-        cluster.delete()
+    def delete(self, url):
+        response = self.app.delete(
+            url,
+            headers={
+                'Authorization': 'JWT {token}'.format(token=self.token)
+            },
+        )
+        self.assertLess(response.status_code, 400)
+        return json.loads(response.data)
+
+    def test_cluster(self):
+        from onelove.models import Cluster, Role
+        url_list = '/api/v0/clusters'
+        data = {'name': 'first'}
+
+        response = self.get(url=url_list)
+        self.assertEqual(response, [])
+
+        response = self.post(url=url_list, data=data)
+        self.assertEqual(data['name'], response['name'])
+
+        url_detail = '/api/v0/clusters/{pk}'.format(pk=response['id'])
+        response = self.get(url=url_detail)
+        cluster = Cluster(response['name'])
+        roles = [
+            {
+                u'admin': u'True',
+                u'name': u'admin_{name}'.format(name=data['name']),
+                u'description': u'Cluster {name} admin'.format(name=data['name']),
+            },
+            {
+                u'admin': u'False',
+                u'name': u'user_{name}'.format(name=data['name']),
+                u'description': u'Cluster {name} users'.format(name=data['name']),
+            },
+        ]
+        self.assertEqual(roles, response['roles'])
+        self.assertEqual(cluster.name, response['name'])
+        self.assertEqual(cluster.applications, response['applications'])
+        self.assertEqual(cluster.providers, response['providers'])
+
+        data = {'name': 'second'}
+        response = self.put(url=url_detail, data=data)
+        cluster = Cluster(response['name'])
+        self.assertEqual(cluster.name, response['name'])
+
+        response = self.delete(url=url_detail)
+        self.assertEqual(data, response)
+        for item in roles:
+            role = Role.objects(name=item['name'])
+            role.delete()
 
     def test_me(self):
+        from onelove.models import User
         url = '/api/v0/me'
         data = self.get(url)
-        self.assertEqual(str(self.me.id), data['id'])
-        self.assertEqual(self.me.email, data['email'])
-        self.assertEqual(self.me.first_name, data['first_name'])
-        self.assertEqual(self.me.last_name, data['last_name'])
-        for role in data['roles']:
-            self.assertTrue(self.me.has_role(role['name']))
-        self.assertEqual(len(self.me.roles), len(data['roles']))
+        del data['id']
+        api_user = User(data)
+        api_user.pk = self.me.pk
+        self.assertEqual(self.me, api_user)

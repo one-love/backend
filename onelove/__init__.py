@@ -9,10 +9,6 @@ from flask_restplus import apidoc
 from flask_security import Security, MongoEngineUserDatastore
 from flask_security.utils import verify_password
 from .models import User, Role
-from logger import log
-
-
-current_app = None
 
 
 class OneLove(object):
@@ -34,8 +30,6 @@ class OneLove(object):
     user_datastore = None
 
     def __init__(self, app=None):
-        global current_app
-        current_app = self
         if app is not None:
             if app.config['DEBUG']:
                 from flask_admin import Admin, AdminIndexView
@@ -115,6 +109,7 @@ class OneLove(object):
                     admin_view=self.admin.index_view,
                     h=admin_helpers,
                 )
+        self.app.onelove = self
 
     @jwt.authentication_handler
     def authenticate(username, password):

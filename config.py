@@ -57,7 +57,6 @@ class DevConfig(Config):
 
 class TestConfig(Config):
     TESTING = True
-    SERVER_NAME = 'localhost:5000'
     MONGODB_DB = 'test'
 
 
