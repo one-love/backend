@@ -30,9 +30,9 @@ class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
         args = parser.parse_args()
         galaxy_role = args.get('galaxy_role')
         name = args.get('name')
-        app = self._find_app(cluster_id, name)
-        if app is not None:
-            abort(409, error='Application with that name already exists')
+        for app in cluster.applications:
+            if app.name == application_name:
+                abort(409, error='Application with that name already exists')
         app = Application(
             galaxy_role=galaxy_role,
             name=name,
@@ -49,24 +49,34 @@ class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
 class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)
     def get(self, cluster_id, application_name):
-        return self._find_app(cluster_id, application_name)
+        cluster = self._find_cluster(cluster_id)
+        for app in cluster.applications:
+            if app.name == application_name:
+                return app
+        abort(404, error='No such application')
 
     @ns_cluster.expect(fields)
     @ns_cluster.marshal_with(fields)
     def put(self, cluster_id, application_name):
         args = parser.parse_args()
-        app = self._find_app(cluster_id, application_name)
-        app.name = args.get('name')
-        app.save()
-        return app
+        cluster = Cluster.objects.get(id=cluster_id)
+        for app in cluster.applications:
+            if app.name == application_name:
+                app.name = args.get('name')
+                app.galaxy_role = args.get('galaxy_role')
+                app.save()
+                return app
+        abort(404, error='No such application')
 
     @ns_cluster.marshal_with(fields)
     def delete(self, cluster_id, application_name):
-        app = self._find_app(cluster_id, application_name)
-        cluster = Cluster.objects.get(id=cluster_id)
-        cluster.applications.remove(app)
-        cluster.save()
-        return app
+        cluster = self._find_cluster(cluster_id)
+        for app in cluster.applications:
+            if app.name == application_name:
+                cluster.applications.remove(app)
+                cluster.save()
+                return app
+        abort(404, error='No such application')
 
 
 @ns_cluster.route(

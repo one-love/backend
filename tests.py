@@ -85,6 +85,46 @@ class TestAPI(TestCase):
         self.assertLess(response.status_code, 400)
         return json.loads(response.data)
 
+    def test_application(self):
+        from onelove.models import Application, Cluster
+        from onelove.factories import ClusterFactory
+
+        cluster = ClusterFactory()
+        cluster.save()
+        url_list = '/api/v0/clusters/{clusterId}/applications'.format(
+            clusterId=str(cluster.pk)
+        )
+
+        response = self.get(url=url_list)
+        self.assertEqual(response, [])
+
+        data = {
+            'name': 'app',
+            'galaxy_role': 'galaxy',
+        }
+        response = self.post(url=url_list, data=data)
+        self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['galaxy_role'], response['galaxy_role'])
+
+        url_detail = url_list + '/{name}'.format(name=data['name'])
+        response = self.get(url=url_detail)
+        self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['galaxy_role'], response['galaxy_role'])
+
+        data = {
+            'name': 'application',
+            'galaxy_role': 'galaxy_role',
+        }
+        response = self.put(url=url_detail, data=data)
+        self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['galaxy_role'], response['galaxy_role'])
+
+        url_detail = url_list + '/{name}'.format(name=data['name'])
+        reponse = self.delete(url=url_detail)
+        self.assertEqual(data, response)
+
+        cluster.delete()
+
     def test_cluster(self):
         from onelove.models import Cluster, Role
         url_list = '/api/v0/clusters'

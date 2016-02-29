@@ -29,13 +29,6 @@ class ClusterMixin(object):
         except (Role.DoesNotExist):
             abort(401, error='You do not have valid permissions.')
 
-    def _find_app(self, cluster_id, application_name):
-        cluster = self._find_cluster(cluster_id)
-        for app in cluster.applications:
-            if app.name == application_name:
-                return app
-        return None
-
     def _find_provider(self, cluster_id, provider_name):
         try:
             cluster = Cluster.objects.get(id=cluster_id)
