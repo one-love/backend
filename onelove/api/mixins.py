@@ -29,16 +29,6 @@ class ClusterMixin(object):
         except (Role.DoesNotExist):
             abort(401, error='You do not have valid permissions.')
 
-    def _find_provider(self, cluster_id, provider_name):
-        try:
-            cluster = Cluster.objects.get(id=cluster_id)
-        except (Cluster.DoesNotExist, ValidationError):
-            abort(404, error='Cluster does not exist')
-        for prov in cluster.providers:
-            if prov.name == provider_name:
-                return prov
-        return None
-
     def _get_provider_class(self, type):
         if type == 'SSH':
             return ProviderSSH

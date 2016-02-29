@@ -86,7 +86,6 @@ class TestAPI(TestCase):
         return json.loads(response.data)
 
     def test_application(self):
-        from onelove.models import Application, Cluster
         from onelove.factories import ClusterFactory
 
         cluster = ClusterFactory()
@@ -120,7 +119,7 @@ class TestAPI(TestCase):
         self.assertEqual(data['galaxy_role'], response['galaxy_role'])
 
         url_detail = url_list + '/{name}'.format(name=data['name'])
-        reponse = self.delete(url=url_detail)
+        response = self.delete(url=url_detail)
         self.assertEqual(data, response)
 
         cluster.delete()
@@ -166,6 +165,45 @@ class TestAPI(TestCase):
         for item in roles:
             role = Role.objects(name=item['name'])
             role.delete()
+
+    def test_provider(self):
+        from onelove.factories import ClusterFactory
+
+        cluster = ClusterFactory()
+        cluster.save()
+        url_list = '/api/v0/clusters/{clusterId}/providers'.format(
+            clusterId=str(cluster.pk)
+        )
+
+        response = self.get(url=url_list)
+        self.assertEqual(response, [])
+
+        data = {
+            'name': 'Digital Ocean',
+            'type': 'SSH',
+        }
+        response = self.post(url=url_list, data=data)
+        self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['type'], response['type'])
+
+        url_detail = url_list + '/{name}'.format(name=data['name'])
+        response = self.get(url=url_detail)
+        self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['type'], response['type'])
+
+        data = {
+            'name': 'AWS',
+            'type': 'SSH',
+        }
+        response = self.put(url=url_detail, data=data)
+        self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['type'], response['type'])
+
+        url_detail = url_list + '/{name}'.format(name=data['name'])
+        response = self.delete(url=url_detail)
+        self.assertEqual(data, response)
+
+        cluster.delete()
 
     def test_me(self):
         from onelove.models import User
