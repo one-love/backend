@@ -89,5 +89,4 @@ class ClusterApplicationProvisionAPI(ProtectedResource, ClusterMixin):
         from ..tasks import provision
         app = self._find_app(cluster_id, application_name)
         result = provision.delay(cluster_id, app.galaxy_role)
-        print result
         return {'result': str(result)}
