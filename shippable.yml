@@ -14,7 +14,7 @@ before_script:
   - mkdir -p shippable/codecoverage
 
 script:
-    - nosetests --with-coverage --cover-erase --cover-xml --cover-xml-file=shippable/codecoverage/coverage.xml --cover-package onelove --with-xunit --xunit-file=shippable/testresults/nosetests.xml
+    - nosetests --with-coverage --cover-branches --cover-erase --cover-xml --cover-xml-file=shippable/codecoverage/coverage.xml --cover-package onelove --with-xunit --xunit-file=shippable/testresults/nosetests.xml
 
 install:
   - pip install -r requirements_test.txt
