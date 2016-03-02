@@ -71,7 +71,6 @@ class TestAPI(TestCase):
                 'Content-Type': 'application/json',
             },
         )
-        print(response)
         self.assertLess(response.status_code, 400)
         return json.loads(response.data)
 
