@@ -2,7 +2,7 @@
 import os
 
 from celery import current_app as celery
-from flask import render_template, request, redirect, url_for
+from flask import redirect, url_for
 from flask_script import Manager, Server
 
 from onelove import OneLove
@@ -32,6 +32,7 @@ def index():
 
 
 if __name__ == '__main__':
-    from onelove.utils import reload_frontend
+    from onelove.utils import reload_celery, reload_frontend
+    reload_celery(celery)
     reload_frontend()
     manager.run()
