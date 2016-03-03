@@ -32,6 +32,7 @@ class Config(BaseConfig):
 
 
 class DevConfig(Config):
+    CELERYD_POOL_RESTARTS = True
     DEBUG = True
     FRONTEND_LIVERELOAD = True
     MAIL_SERVER = 'smtp.googlemail.com'

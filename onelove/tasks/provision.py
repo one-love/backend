@@ -16,6 +16,7 @@ from jinja2 import Environment, PackageLoader
 class Options(object):
     api_server = 'https://galaxy.ansible.com'
     ignore_certs = True
+
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)

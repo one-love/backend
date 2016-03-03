@@ -27,3 +27,7 @@ def reload_frontend():
     frontend_file_path = projects_root + '/frontend/src/backend_url.js'
     with open(frontend_file_path, 'w+') as frontend_file:
         frontend_file.write(content)
+
+
+def reload_celery(celery):
+    celery.control.broadcast('pool_restart', arguments={'reload': True})
