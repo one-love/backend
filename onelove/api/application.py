@@ -31,7 +31,7 @@ class ClusterApplicationListAPI(ProtectedResource, ClusterMixin):
         galaxy_role = args.get('galaxy_role')
         name = args.get('name')
         for app in cluster.applications:
-            if app.name == application_name:
+            if app.name == name:
                 abort(409, error='Application with that name already exists')
         app = Application(
             galaxy_role=galaxy_role,
@@ -85,8 +85,11 @@ class ClusterApplicationAPI(ProtectedResource, ClusterMixin):
 )
 class ClusterApplicationProvisionAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)
-    def post(self, cluster_id, application_name):
+    def get(self, cluster_id, application_name):
         from ..tasks import provision
-        app = self._find_app(cluster_id, application_name)
-        result = provision.delay(cluster_id, app.galaxy_role)
-        return {'result': str(result)}
+        cluster = self._find_cluster(cluster_id)
+        for app in cluster.applications:
+            if app.name == application_name:
+                result = provision.delay(cluster_id, app.galaxy_role)
+                return app
+        abort(404, 'No such application')
