@@ -27,36 +27,6 @@ class UserListAPI(ProtectedResource):
         """List users"""
         return [user for user in User.objects.all()]
 
-    @ns_user.doc(
-        model=response_fields,
-        body=body_fields,
-        responses={
-            409: 'User with that email exists',
-            422: 'Validation error'
-        }
-    )
-    @ns_user.marshal_with(response_fields)
-    def post(self):
-        """Create user"""
-        args = parser.parse_args()
-        try:
-            user = User(
-                email=args.get('email'),
-                first_name=args.get('first_name'),
-                last_name=args.get('last_name'),
-                password=encrypt_password(args.get('password')),
-            )
-            user.active = False
-            user.register_uuid = uuid.uuid4()
-            user.save()
-            print(user.register_uuid)
-        except NotUniqueError:
-            abort(409, message='User with that email exists')
-        except (ValidationError):
-            abort(422, message='ValidationError')
-        send_email(user.email, 'Registration', 'mail/confirm', user=user)
-        return user, 201
-
 
 @ns_user.route('/<id>', endpoint='user')
 class UserAPI(ProtectedResource):
@@ -94,8 +64,8 @@ class UserAPI(ProtectedResource):
         return user
 
 
-@ns_user.route('/register/<uuid>', endpoint='user.register')
-class UserRegisterAPI(Resource):
+@ns_user.route('/confirm/<uuid>', endpoint='user.confirm')
+class UserConfirmAPI(Resource):
     @ns_user.marshal_with(response_fields)
     def get(self, uuid):
         """Update user"""
@@ -105,5 +75,39 @@ class UserRegisterAPI(Resource):
             abort(404, message='User does not exist')
 
         user.active = True
+        user.register_uuid = None
         user.save()
         return user
+
+
+@ns_user.route('/register', endpoint='user.register')
+class UserRegisterAPI(Resource):
+    @ns_user.doc(
+        model=response_fields,
+        body=body_fields,
+        responses={
+            409: 'User with that email exists',
+            422: 'Validation error'
+        }
+    )
+    @ns_user.marshal_with(response_fields)
+    def post(self):
+        """Create user"""
+        args = parser.parse_args()
+        try:
+            user = User(
+                email=args.get('email'),
+                first_name=args.get('first_name'),
+                last_name=args.get('last_name'),
+                password=encrypt_password(args.get('password')),
+            )
+            user.active = False
+            user.register_uuid = uuid.uuid4()
+            user.save()
+            print(user.register_uuid)
+        except NotUniqueError:
+            abort(409, message='User with that email exists')
+        except (ValidationError):
+            abort(422, message='ValidationError')
+        send_email(user.email, 'Registration', 'mail/confirm', user=user)
+        return user, 201
