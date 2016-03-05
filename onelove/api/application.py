@@ -1,4 +1,4 @@
-from flask.ext.restplus import abort
+from flask_restplus import abort
 from resources import ProtectedResource
 from ..models import Application, Cluster
 from .mixins import ClusterMixin

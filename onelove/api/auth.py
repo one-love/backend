@@ -3,6 +3,7 @@ from flask import request
 from flask_jwt import _jwt, JWTError
 from .namespaces import ns_auth
 from .fields import auth_fields, token_response
+from ..models import User
 
 
 parser = ns_auth.parser()
@@ -27,8 +28,9 @@ class AuthAPI(Resource):
             raise JWTError('Bad Request', 'Invalid credentials')
 
         identity = _jwt.authentication_callback(username, password)
+        user = User.objects.get(id=identity.id)
 
-        if identity:
+        if identity and user.active:
             access_token = _jwt.jwt_encode_callback(identity)
             token = {
                 "token": access_token

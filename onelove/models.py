@@ -8,6 +8,7 @@ from mongoengine.fields import (
     EmbeddedDocument,
     EmbeddedDocumentListField,
     EmbeddedDocumentField,
+    UUIDField,
 )
 from flask_security import UserMixin, RoleMixin
 
@@ -75,12 +76,13 @@ class User(Document, UserMixin):
     """
     User
     """
-    active = BooleanField(default=True)
+    active = BooleanField(default=False)
     email = EmailField(unique=True)
     first_name = StringField(max_length=255)
     last_name = StringField(max_length=255)
     password = StringField(max_length=255)
     roles = ListField(ReferenceField(Role), default=[])
+    register_uuid = UUIDField(binary=False)
 
     def __repr__(self):
         return '<user %r>' % self.email

@@ -11,6 +11,7 @@ class UserFactory(factory.Factory):
     last_name = factory.Faker('last_name')
     email = factory.Faker('email')
     password = encrypt_password('Sekrit')
+    active = True
 
 
 class RoleFactory(factory.Factory):
