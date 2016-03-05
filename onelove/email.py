@@ -8,6 +8,5 @@ def send_email(to, subject, template, **kwargs):
         sender=current_app.config['ONELOVE_MAIL_SENDER'],
         recipients=[to],
     )
-    msg.body = render_template(template + '.txt', **kwargs)
     msg.html = render_template(template + '.html', **kwargs)
     current_app.onelove.mail.send(msg)

@@ -1,4 +1,5 @@
-from flask.ext.security.registerable import register_user
+from flask_security.utils import encrypt_password
+from flask_restplus import Resource, abort
 from mongoengine.queryset import NotUniqueError
 from mongoengine.errors import ValidationError
 from .namespaces import ns_user
@@ -8,6 +9,8 @@ from .fields import user_response as response_fields
 
 from ..models import User
 from resources import ProtectedResource
+import uuid
+from ..email import send_email
 
 
 parser = ns_user.parser()
@@ -37,16 +40,21 @@ class UserListAPI(ProtectedResource):
         """Create user"""
         args = parser.parse_args()
         try:
-            user = register_user(
+            user = User(
                 email=args.get('email'),
                 first_name=args.get('first_name'),
                 last_name=args.get('last_name'),
-                password=args.get('password'),
+                password=encrypt_password(args.get('password')),
             )
+            user.active = False
+            user.register_uuid = uuid.uuid4()
+            user.save()
+            print(user.register_uuid)
         except NotUniqueError:
-            api.abort(409, error='User with that email exists')
+            abort(409, message='User with that email exists')
         except (ValidationError):
-            api.abort(422, error='ValidationError')
+            abort(422, message='ValidationError')
+        send_email(user.email, 'Registration', 'mail/confirm', user=user)
         return user, 201
 
 
@@ -58,8 +66,7 @@ class UserAPI(ProtectedResource):
         try:
             user = User.objects.get(id=id)
         except (User.DoesNotExist, ValidationError):
-            api.abort(404, error='User does not exist')
-
+            abort(404, message='User does not exist')
         return user
 
     @ns_user.expect(body_fields)
@@ -69,7 +76,7 @@ class UserAPI(ProtectedResource):
         try:
             user = User.objects.get(id=id)
         except (User.DoesNotExist, ValidationError):
-            api.abort(404, error='User does not exist')
+            abort(404, message='User does not exist')
 
         args = parser.parse_args()
         user.email = args.get('email')
@@ -82,6 +89,21 @@ class UserAPI(ProtectedResource):
         try:
             user = User.objects.get(id=id)
         except (User.DoesNotExist, ValidationError):
-            api.abort(404, error='User does not exist')
+            abort(404, message='User does not exist')
         user.delete()
+        return user
+
+
+@ns_user.route('/register/<uuid>', endpoint='user.register')
+class UserRegisterAPI(Resource):
+    @ns_user.marshal_with(response_fields)
+    def get(self, uuid):
+        """Update user"""
+        try:
+            user = User.objects.get(register_uuid=uuid)
+        except (User.DoesNotExist, ValidationError):
+            abort(404, message='User does not exist')
+
+        user.active = True
+        user.save()
         return user
