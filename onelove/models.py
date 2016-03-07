@@ -101,3 +101,8 @@ class Cluster(Document):
 class Task(Document):
     status = StringField(max_length=63)
     celery_id = StringField(max_length=255)
+
+
+class Service(Document):
+    name = StringField(max_length=512)
+    applications = ListField(EmbeddedDocumentField(Application))

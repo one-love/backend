@@ -115,3 +115,14 @@ host_fields = api.model(
         'ip': fields.String,
     }
 )
+
+# Service fields
+service_fields = api.model(
+    'Service', {
+        'name': fields.String(required=True),
+    }
+)
+get_service_fields = api.clone('Get Services', service_fields, {
+    'id': fields.String,
+    'applications': fields.Nested(application_fields),
+})
