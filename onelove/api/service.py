@@ -1,6 +1,6 @@
 from ..models import Service, User
 from resources import ProtectedResource
-from .mixins import ClusterMixin
+from .mixins import ServiceMixin
 from .namespaces import ns_service
 from .fields import service_fields as fields
 from .fields import get_service_fields as get_fields
@@ -11,6 +11,7 @@ import pagination
 
 parser = ns_service.parser()
 parser.add_argument('name', type=str, required=True, location='json')
+
 
 @ns_service.route('', endpoint='services')
 class ServiceListAPI(ProtectedResource):
@@ -41,15 +42,36 @@ class ServiceListAPI(ProtectedResource):
             description="Service %s admin" % service_name,
             admin=True,
         )
-
-        user_role = current_app.onelove.user_datastore.find_or_create_role(
-            name='user_' + service_name,
-            description="Service %s users" % service_name,
-            admin=False,
-        )
         service.save()
 
         user = User.objects.get(id=current_identity.get_id())
 
         current_app.onelove.user_datastore.add_role_to_user(user, admin_role)
         return service, 201
+
+
+@ns_service.route('/<id>', endpoint='services.service')
+class ServiceAPI(ProtectedResource, ServiceMixin):
+    @ns_service.marshal_with(get_fields)
+    @ns_service.response(404, 'Cluster not found')
+    def get(self, id):
+        """Show service details"""
+        service = self._find_service(id)
+        return service
+
+    @ns_service.expect(fields)
+    @ns_service.marshal_with(fields)
+    def put(self, id):
+        """Update service"""
+        service = self._find_service(id)
+        args = parser.parse_args()
+        service.name = args.get('name')
+        service.save()
+        return service
+
+    @ns_service.marshal_with(fields)
+    def delete(self, id):
+        """Delete the service."""
+        service = self._find_service(id)
+        service.delete()
+        return service
