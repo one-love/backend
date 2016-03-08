@@ -13,6 +13,7 @@ try:
 except User.DoesNotExist:
     user = User(email='admin@example.com')
     user.password = encrypt_password('Sekrit')
+    user.active = True
     user.save()
 
 # Create admin role
