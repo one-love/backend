@@ -37,23 +37,8 @@ class ClusterMixin(object):
 
 class ServiceMixin(object):
     def _find_service(self, service_id):
-        permission = False
         try:
             service = Service.objects.get(id=service_id)
-            user = User.objects.get(email=current_identity.email)
-            permission = user.has_role('admin')
-
-            if not permission:
-                for role in service.roles:
-                    if user.has_role(role):
-                        permission = True
-
-            if permission:
-                return service
-            else:
-                abort(403)
-
+            return service
         except (Service.DoesNotExist, ValidationError):
             abort(404, error='Service does not exist')
-        except (Role.DoesNotExist):
-            abort(401, error='You do not have valid permissions.')
