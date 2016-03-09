@@ -95,7 +95,7 @@ get_cluster_fields = api.clone('Get Clusters', cluster_fields, {
     'providers': fields.Nested(provider_fields),
     'id': fields.String,
     'roles': fields.Nested(roles_fields),
-    'applications': fields.Nested(application_fields),
+    'services': fields.String,
 }
 )
 
@@ -124,5 +124,6 @@ service_fields = api.model(
 )
 get_service_fields = api.clone('Get Services', service_fields, {
     'id': fields.String,
+    'name': fields.String,
     'applications': fields.Nested(application_fields),
 })

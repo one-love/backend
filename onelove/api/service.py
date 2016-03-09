@@ -1,7 +1,8 @@
 from ..models import Service
 from resources import ProtectedResource
-from .mixins import ServiceMixin
+from .mixins import ClusterMixin, ServiceMixin
 from .namespaces import ns_service
+from .namespaces import ns_cluster
 from .fields import service_fields as fields
 from .fields import get_service_fields as get_fields
 import pagination
@@ -62,3 +63,11 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         service = self._find_service(id)
         service.delete()
         return service
+
+
+@ns_cluster.route('/<cluster_id>/services', endpoint='clusters.services')
+class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
+    @ns_cluster.marshal_with(fields)
+    def get(self, cluster_id):
+        cluster = self._find_cluster(cluster_id)
+        return cluster.services
