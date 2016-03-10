@@ -1,4 +1,5 @@
 -r requirements_common.txt
+flake8
 flask-admin
 flask-debugtoolbar
 flask-debug-api
