@@ -29,6 +29,7 @@ api = ErrorFriendlyApi(
     doc='/doc/',
 )
 
+
 def swagger_ui():
     return render_template(
         'flask-restplus/swagger-ui.html',
