@@ -9,12 +9,10 @@ services:
 env:
   - FLASK_CONFIG=testing
 
-before_script:
-  - mkdir -p shippable/testresults
-  - mkdir -p shippable/codecoverage
-
-script:
+build:
+  ci:
+    - pip install -r requirements_test.txt
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
     - nosetests --with-coverage --cover-branches --cover-erase --cover-xml --cover-xml-file=shippable/codecoverage/coverage.xml --cover-package onelove --with-xunit --xunit-file=shippable/testresults/nosetests.xml
 
-install:
-  - pip install -r requirements_test.txt
