@@ -1,5 +1,5 @@
 from flask.ext.restplus import abort
-from ..models import Cluster, ProviderSSH
+from ..models import Cluster, ProviderSSH, Service
 from mongoengine.errors import ValidationError
 from flask_jwt import current_identity
 from ..models import User
@@ -33,3 +33,12 @@ class ClusterMixin(object):
         if type == 'SSH':
             return ProviderSSH
         return None
+
+
+class ServiceMixin(object):
+    def _find_service(self, service_id):
+        try:
+            service = Service.objects.get(id=service_id)
+            return service
+        except (Service.DoesNotExist, ValidationError):
+            abort(404, error='Service does not exist')

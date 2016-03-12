@@ -49,3 +49,4 @@ from . import me
 from . import provider
 from . import task
 from . import user
+from . import service
