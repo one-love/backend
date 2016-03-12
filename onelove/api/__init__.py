@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
-from flask_restplus import Api
 from flask_jwt import JWTError
+from flask_restplus import Api
 
 
 class ErrorFriendlyApi(Api):
