@@ -84,6 +84,26 @@ provider_fields = api.model(
 )
 
 
+# Service fields
+service_fields = api.model(
+    'Service', {
+        'name': fields.String(required=True),
+    }
+)
+
+post_service_fields = api.model(
+    'Post Service',
+    {'service': fields.String},
+)
+
+get_service_fields = api.clone('Get Services', service_fields, {
+    'id': fields.String,
+    'name': fields.String,
+    'applications': fields.Nested(application_fields),
+    'user': fields.Nested(user_response),
+})
+
+
 # Cluster fields
 cluster_fields = api.model(
     'Cluster', {
@@ -95,7 +115,7 @@ get_cluster_fields = api.clone('Get Clusters', cluster_fields, {
     'providers': fields.Nested(provider_fields),
     'id': fields.String,
     'roles': fields.Nested(roles_fields),
-    'services': fields.String,
+    'services': fields.Nested(get_service_fields),
 }
 )
 
@@ -115,22 +135,3 @@ host_fields = api.model(
         'ip': fields.String,
     }
 )
-
-# Service fields
-service_fields = api.model(
-    'Service', {
-        'name': fields.String(required=True),
-    }
-)
-
-post_service_fields = api.model(
-    'Post Service',
-    {'service': fields.String},
-)
-
-get_service_fields = api.clone('Get Services', service_fields, {
-    'id': fields.String,
-    'name': fields.String,
-    'applications': fields.Nested(application_fields),
-    'user': fields.Nested(user_response),
-})
