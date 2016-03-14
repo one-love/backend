@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template
 from flask_jwt import JWTError
+from ..utils import import_neighbour_modules
 from flask_restplus import Api
 
 
@@ -40,12 +41,4 @@ def swagger_ui():
 
 api._doc_view = swagger_ui
 
-
-from . import application
-from . import auth
-from . import cluster
-from . import host
-from . import me
-from . import provider
-from . import task
-from . import user
+import_neighbour_modules(__file__, 'onelove.api')

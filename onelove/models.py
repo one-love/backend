@@ -88,11 +88,21 @@ class User(Document, UserMixin):
         return '<user %r>' % self.email
 
 
+class Service(Document):
+    user = ReferenceField(User)
+    name = StringField(max_length=512, unique_with='user')
+    applications = ListField(EmbeddedDocumentField(Application))
+
+    def __repr__(self):
+        return '<Service %s/%s>' % (self.user.email, self.name)
+
+
 class Cluster(Document):
     name = StringField(max_length=512)
     applications = ListField(EmbeddedDocumentField(Application))
     providers = ListField(EmbeddedDocumentField(Provider))
     roles = ListField(ReferenceField(Role), default=[])
+    services = ListField(ReferenceField(Service), default=[])
 
     def __repr__(self):
         return '<Cluster %r>' % self.name
