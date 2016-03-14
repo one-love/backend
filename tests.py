@@ -84,52 +84,6 @@ class TestAPI(TestCase):
         self.assertLess(response.status_code, 400)
         return json.loads(response.data)
 
-    def test_application(self):
-        from onelove.factories import ClusterFactory
-
-        # Prepare
-        cluster = ClusterFactory()
-        cluster.save()
-        url_list = '/api/v0/clusters/{clusterId}/applications'.format(
-            clusterId=str(cluster.pk)
-        )
-
-        # Get empty list
-        response = self.get(url=url_list)
-        self.assertEqual(response, [])
-
-        # Create item
-        data = {
-            'name': 'app',
-            'galaxy_role': 'galaxy',
-        }
-        response = self.post(url=url_list, data=data)
-        self.assertEqual(data['name'], response['name'])
-        self.assertEqual(data['galaxy_role'], response['galaxy_role'])
-
-        # Get item details
-        url_detail = url_list + '/{name}'.format(name=data['name'])
-        response = self.get(url=url_detail)
-        self.assertEqual(data['name'], response['name'])
-        self.assertEqual(data['galaxy_role'], response['galaxy_role'])
-
-        # Change item details
-        data = {
-            'name': 'application',
-            'galaxy_role': 'galaxy_role',
-        }
-        response = self.put(url=url_detail, data=data)
-        self.assertEqual(data['name'], response['name'])
-        self.assertEqual(data['galaxy_role'], response['galaxy_role'])
-
-        # Delete item
-        url_detail = url_list + '/{name}'.format(name=data['name'])
-        response = self.delete(url=url_detail)
-        self.assertEqual(data, response)
-
-        # Cleanup
-        cluster.delete()
-
     def test_cluster(self):
         from onelove.models import Cluster, Role
 
@@ -167,7 +121,7 @@ class TestAPI(TestCase):
         ]
         self.assertEqual(roles, response['roles'])
         self.assertEqual(cluster.name, response['name'])
-        self.assertEqual(cluster.applications, response['applications'])
+        self.assertEqual(cluster.services, response['services'])
         self.assertEqual(cluster.providers, response['providers'])
 
         # Change item details
