@@ -122,8 +122,15 @@ service_fields = api.model(
         'name': fields.String(required=True),
     }
 )
+
+post_service_fields = api.model(
+    'Post Service',
+    {'service': fields.String},
+)
+
 get_service_fields = api.clone('Get Services', service_fields, {
     'id': fields.String,
     'name': fields.String,
     'applications': fields.Nested(application_fields),
+    'user': fields.Nested(user_response),
 })

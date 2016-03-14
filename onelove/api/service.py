@@ -1,11 +1,12 @@
-from ..models import Service
-from resources import ProtectedResource
-from .mixins import ClusterMixin, ServiceMixin
-from .namespaces import ns_service
-from .namespaces import ns_cluster
-from .fields import service_fields as fields
-from .fields import get_service_fields as get_fields
 import pagination
+from ..models import Service
+from .fields import service_fields as fields, get_service_fields as get_fields
+from .mixins import ServiceMixin
+from .namespaces import ns_service
+from resources import ProtectedResource
+from flask_jwt import current_identity
+from flask_restplus import abort
+from mongoengine.queryset import NotUniqueError
 
 
 parser = ns_service.parser()
@@ -27,14 +28,18 @@ class ServiceListAPI(ProtectedResource):
 
         return services.items, 200, paging.headers
 
+
     @ns_service.doc(body=fields)
     @ns_service.marshal_with(get_fields)
     def post(self):
         """Create service"""
         args = parser.parse_args()
         service_name = args.get('name')
-        service = Service(service_name)
-        service.save()
+        service = Service(name=service_name, user=current_identity.pk)
+        try:
+            service.save()
+        except NotUniqueError:
+            abort(409, error='Service with that name already exists')
         return service, 201
 
 
@@ -47,6 +52,7 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         service = self._find_service(id)
         return service
 
+
     @ns_service.expect(fields)
     @ns_service.marshal_with(fields)
     def put(self, id):
@@ -57,6 +63,7 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         service.save()
         return service
 
+
     @ns_service.marshal_with(fields)
     def delete(self, id):
         """Delete the service."""
@@ -64,10 +71,3 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         service.delete()
         return service
 
-
-@ns_cluster.route('/<cluster_id>/services', endpoint='clusters.services')
-class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
-    @ns_cluster.marshal_with(fields)
-    def get(self, cluster_id):
-        cluster = self._find_cluster(cluster_id)
-        return cluster.services

@@ -1,4 +1,10 @@
+from glob import glob
+from os import getcwd, chdir
+from os.path import abspath, splitext
+from importlib import import_module
+
 from flask import Flask
+
 from config import configs
 
 
@@ -31,3 +37,18 @@ def reload_frontend():
 
 def reload_celery(celery):
     celery.control.broadcast('pool_restart', arguments={'reload': True})
+
+
+def import_neighbour_modules(imported_module, package):
+    module_root = abspath(imported_module + '/..')
+    pattern = '*.py'
+    old_cwd = getcwd()
+
+    chdir(module_root)
+    file_abs_path = abspath(imported_module)
+    for module in glob(pattern):
+        module_abs_path = abspath(module)
+        if file_abs_path != module_abs_path and module != '__init__.py':
+            real_module = '.' + splitext(module)[0]
+            import_module(real_module, package)
+    chdir(old_cwd)

@@ -89,8 +89,12 @@ class User(Document, UserMixin):
 
 
 class Service(Document):
-    name = StringField(max_length=512)
+    user = ReferenceField(User)
+    name = StringField(max_length=512, unique_with='user')
     applications = ListField(EmbeddedDocumentField(Application))
+
+    def __repr__(self):
+        return '<Service %s/%s>' % (self.user.email, self.name)
 
 
 class Cluster(Document):
@@ -107,5 +111,3 @@ class Cluster(Document):
 class Task(Document):
     status = StringField(max_length=63)
     celery_id = StringField(max_length=255)
-
-
