@@ -90,6 +90,6 @@ class ServiceApplicationProvisionAPI(ProtectedResource, ServiceMixin):
         service = self._find_service(service_id)
         for app in service.applications:
             if app.name == application_name:
-                result = provision.delay(service_id, app.galaxy_role)
+                provision.delay(service_id, app.galaxy_role)
                 return app
         abort(404, 'No such application')
