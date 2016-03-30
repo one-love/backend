@@ -1,4 +1,4 @@
--r requirements_common.txt
+-r requirements_dev.txt
 coverage
 factory-boy
 flask-admin
