@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/one-love/backend.png?label=ready&title=Ready)](https://waffle.io/one-love/backend)
 One Love REST API
 =================
 
