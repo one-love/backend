@@ -1,5 +1,4 @@
 -r requirements_common.txt
 coverage
 factory-boy
-flask-admin
 nose

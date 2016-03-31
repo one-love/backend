@@ -21,6 +21,11 @@ user_base = api.model(
             required=True,
             default='admin@example.com'
         ),
+        'username': fields.String(
+            description='Username',
+            required=True,
+            default='admin'
+        ),
         'first_name': fields.String,
         'last_name': fields.String,
     }
@@ -104,6 +109,7 @@ post_cluster_service_fields = api.model(
     'Post Service',
     {
         'service': fields.String,
+        'username': fields.String,
         'email': fields.String,
     },
 )

@@ -22,12 +22,9 @@ class ServiceListAPI(ProtectedResource):
         args = pagination.parser.parse_args()
         page = args.get('page')
         per_page = args.get('per_page')
-
         services = Service.objects().paginate(page, per_page)
         paging = pagination.Pagination(services)
-
         return services.items, 200, paging.headers
-
 
     @ns_service.doc(body=fields)
     @ns_service.marshal_with(get_fields)
@@ -52,7 +49,6 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         service = self._find_service(id)
         return service
 
-
     @ns_service.expect(fields)
     @ns_service.marshal_with(fields)
     def put(self, id):
@@ -63,11 +59,9 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         service.save()
         return service
 
-
     @ns_service.marshal_with(fields)
     def delete(self, id):
         """Delete the service."""
         service = self._find_service(id)
         service.delete()
         return service
-
