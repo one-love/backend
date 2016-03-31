@@ -28,9 +28,10 @@ class AuthAPI(Resource):
             raise JWTError('Bad Request', 'Invalid credentials')
 
         identity = _jwt.authentication_callback(username, password)
-        user = User.objects.get(id=identity.id)
+        if identity is not None:
+            user = User.objects.get(id=identity.id)
 
-        if identity and user.active:
+        if identity and user and user.active:
             access_token = _jwt.jwt_encode_callback(identity)
             token = {
                 "token": access_token

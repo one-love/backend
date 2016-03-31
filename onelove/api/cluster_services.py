@@ -1,19 +1,24 @@
 from flask_restplus import abort
 from onelove.api.fields import (
     service_fields as fields,
-    post_service_fields as post_fields,
+    post_cluster_service_fields as post_fields,
+    task_fields,
 )
 from onelove.api.mixins import ClusterMixin
 from onelove.api.namespaces import ns_cluster
-from onelove.models import Service
+from onelove.models import Service, User
 from onelove.api.resources import ProtectedResource
 
 
 parser = ns_cluster.parser()
 parser.add_argument('service', type=str, required=True, location='json')
+parser.add_argument('username', type=str, required=True, location='json')
 
 
-@ns_cluster.route('/<cluster_id>/services', endpoint='clusters.services')
+@ns_cluster.route(
+    '/<cluster_id>/services',
+    endpoint='clusters.cluster.services',
+)
 class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)
     def get(self, cluster_id):
@@ -26,6 +31,7 @@ class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
         args = parser.parse_args()
         cluster = self._find_cluster(cluster_id)
         service_name = args.get('service')
+        service_username = args.get('username')
         for service in cluster.services:
             if service.name == service_name:
                 abort(
@@ -36,7 +42,70 @@ class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
                     )
                 )
 
-        service = Service.objects.get(name=service_name)
+        print(service_username)
+        try:
+            user = User.objects.get(username=service_username)
+        except User.DoesNotExist:
+            abort(404, 'No such user')
+
+        try:
+            service = Service.objects.get(name=service_name, user=user)
+        except Service.DoesNotExist:
+            abort(404, 'No such service')
+
         cluster.services.append(service)
         cluster.save()
         return service
+
+
+@ns_cluster.route(
+    '/<cluster_id>/services/<username>/<service_name>',
+    endpoint='clusters.cluster.service',
+)
+class ClusterServiceAPI(ProtectedResource, ClusterMixin):
+    @ns_cluster.marshal_with(fields)
+    def delete(self, cluster_id, username, service_name):
+        cluster = self._find_cluster(cluster_id)
+        for service in cluster.services:
+            if (
+                service.name == service_name and
+                username == service.user.username
+            ):
+                cluster.services.remove(service)
+                cluster.save()
+                return service
+        abort(
+            404,
+            'Service %s with user %s not found' % (
+                service_name,
+                username,
+            )
+        )
+        return service
+
+
+@ns_cluster.route(
+    '/<cluster_id>/services/<username>/<service_name>/provision',
+    endpoint='clusters.cluster.service.provision',
+)
+class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
+    @ns_cluster.marshal_with(task_fields)
+    def get(self, cluster_id, username, service_name):
+        cluster = self._find_cluster(cluster_id)
+        task = {
+            'id': '123',
+            'celery_id': '456',
+        }
+        for service in cluster.services:
+            if (
+                service.name == service_name and
+                username == service.user.username
+            ):
+                return task
+        abort(
+            404,
+            'Service %s with user %s not found' % (
+                service_name,
+                username,
+            )
+        )

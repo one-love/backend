@@ -83,9 +83,10 @@ class User(Document, UserMixin):
     password = StringField(max_length=255)
     roles = ListField(ReferenceField(Role), default=[])
     register_uuid = UUIDField(binary=False)
+    username = StringField(max_length=255, unique=True)
 
     def __repr__(self):
-        return '<user %r>' % self.email
+        return '<User %r>' % self.email
 
 
 class Service(Document):

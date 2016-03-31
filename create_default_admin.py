@@ -13,6 +13,7 @@ try:
 except User.DoesNotExist:
     user = User(email='admin@example.com')
     user.password = encrypt_password('Sekrit')
+    user.username = 'admin'
     user.active = True
     user.save()
 
