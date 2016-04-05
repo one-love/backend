@@ -29,7 +29,6 @@ class ClusterListAPI(ProtectedResource):
 
         return clusters.items, 200, paging.headers
 
-
     @ns_cluster.doc(body=fields)
     @ns_cluster.marshal_with(get_fields)
     def post(self):
