@@ -5,7 +5,8 @@ from .. import api
 fields = api.model(
     'Task',
     {
-        'id': String(),
         'celery_id': String(),
+        'error_message': String(),
+        'status': String(),
     },
 )

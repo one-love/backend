@@ -1,4 +1,3 @@
-from flask import current_app
 from resources import ProtectedResource
 from ..models import Task
 from .namespaces import ns_task
@@ -12,9 +11,9 @@ class TaskListAPI(ProtectedResource):
         return [task for task in Task.objects.all()]
 
 
-@ns_task.route('/<id>', endpoint='task')
+@ns_task.route('/<celery_id>', endpoint='task')
 class TaskAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
-    def get(self, id):
-        task = current_app.onelove.celery.AsyncResult(id=id)
+    def get(self, celery_id):
+        task = Task.objects.get(celery_id=celery_id)
         return task
