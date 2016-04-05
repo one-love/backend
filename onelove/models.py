@@ -107,5 +107,6 @@ class Cluster(Document):
 
 
 class Task(Document):
-    status = StringField(max_length=63)
+    status = StringField(max_length=63, default='PENDING')
+    error_message = StringField(max_length=255)
     celery_id = StringField(max_length=255)

@@ -173,27 +173,33 @@ def run_playbook(playbook_path):
 
 
 @current_app.task(bind=True)
-def provision(self, cluster_id, username, service_name):
-    from ..models import Cluster
+def provision(self, cluster_id, service_id):
+    from ..models import Cluster, Task
+    task = Task(celery_id=str(self.request.id))
     playbook_path = mkdtemp()
     try:
+        task.status = 'RUNNING'
+        task.save()
         cluster = Cluster.objects.get(id=cluster_id)
         service = None
         for service_iterator in cluster.services:
-            if service_iterator.name == service_name:
+            if str(service_iterator.id) == service_id:
                 service = service_iterator
+
         if service is None:
-            return 'no such service'
+            raise ValueError('no such service')
 
         if not service.applications:
-            return 'service has no applications'
-
-        if service.user.username != username:
-            return 'no such user'
+            raise ValueError('service has no applications')
 
         install_service(playbook_path, cluster, service)
         generate_playbook(playbook_path, cluster, service)
         result = run_playbook(playbook_path)
+        task.status = 'SUCCESS'
+        task.save()
+    except ValueError as e:
+        task.status = 'ERROR'
+        task.error_message = e.message
+        task.save()
     finally:
         rmtree(playbook_path)
-    return True
