@@ -2,7 +2,7 @@ from flask_restplus.fields import Nested, String
 from .. import api
 from .provider import fields as provider_fields
 from .role import fields as role_fields
-from .service import fields as service_fields
+from .service import get_fields as service_fields
 
 
 fields = api.model(
