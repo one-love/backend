@@ -1,10 +1,13 @@
 -r requirements_common.txt
+autoflake
 autopep8
+coverage
+factory-boy
 flake8
 flask-admin
-flask-debugtoolbar
 flask-debug-api
+flask-debugtoolbar
 importmagic
 ipdb
-rope
+nose
 yapf
