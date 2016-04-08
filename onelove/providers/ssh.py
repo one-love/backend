@@ -23,9 +23,10 @@ class ProviderSSH(Provider):
         return self.hosts
 
     def create(self, ip, hostname):
-        host = HostSSH(ip, hostname)
-        self.append(host)
+        host = HostSSH(ip=ip, hostname=hostname)
+        self.hosts.append(host)
         self.save()
+        return host
 
     def destroy(self, hostname):
         for host in self.hosts:

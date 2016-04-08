@@ -47,8 +47,8 @@ class Provider(EmbeddedDocument):
     def _setup(self):
         pass
 
-    def __init__(self, **kwargs):
-        super(Provider, self).__init__(kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Provider, self).__init__(*args, **kwargs)
         self._setup()
 
     def __repr__(self):
