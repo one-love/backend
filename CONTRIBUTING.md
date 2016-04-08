@@ -97,13 +97,12 @@ its own line
 _Correct:_
 
 - `some_func(short='arguments')`
-- `some_func(`
- 
-    `long='arguments',`
-
-    `short='lines',`
-    
-`)`
+```
+some_func(
+    long='arguments',
+    short='lines',
+)
+```
 
 _Incorrect:_
 - `some_func(arg1=1, arg2=2,
