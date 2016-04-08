@@ -1,4 +1,6 @@
 from datetime import timedelta
+from onelove.plugin import load_hosting_providers, load_knowledge_sources
+from plugins import HOSTING_PROVIDERS, KNOWLEDGE_SOURCES
 import os
 
 
@@ -10,7 +12,6 @@ try:
 except ImportError:
     class BaseConfig(object):
         SECRET_KEY = 'top-secret'
-        pass
 
 
 class Config(BaseConfig):
@@ -24,7 +25,11 @@ class Config(BaseConfig):
     SECURITY_POST_LOGIN_VIEW = '/admin/'
     SECURITY_POST_LOGOUT_VIEW = '/admin/'
     SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
+    SECURITY_URL_PREFIX = "/admin"
+    SECURITY_POST_LOGIN_VIEW = "/admin/"
     JWT_EXPIRATION_DELTA = timedelta(days=7)
+    PROVIDERS = load_hosting_providers(HOSTING_PROVIDERS)
+    KNOWLEDGES = load_knowledge_sources(KNOWLEDGE_SOURCES)
 
     @staticmethod
     def init_app(app):
@@ -62,9 +67,7 @@ class TestConfig(Config):
 
 
 class ProdConfig(Config):
-    SECURITY_URL_PREFIX = "/admin"
-    SECURITY_POST_LOGIN_VIEW = "/admin/"
-    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
+    pass
 
 
 configs = {

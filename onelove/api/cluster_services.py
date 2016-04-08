@@ -1,11 +1,11 @@
 from flask_restplus import abort
-from .fields.service import get_fields
+
+from ..models import Service
 from .fields.cluster_service import post_fields
-from .fields.task import fields as task_fields
-from onelove.api.mixins import ClusterMixin
-from onelove.api.namespaces import ns_cluster
-from onelove.models import Service, User
-from onelove.api.resources import ProtectedResource
+from .fields.service import get_fields
+from .mixins import ClusterMixin
+from .namespaces import ns_cluster
+from .resources import ProtectedResource
 
 
 parser = ns_cluster.parser()
@@ -29,7 +29,7 @@ class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
         cluster = self._find_cluster(cluster_id)
         service_id = args.get('service_id')
         for service in cluster.services:
-            if service.id == service_id:
+            if str(service.id) == service_id:
                 abort(
                     409,
                     'Service %s is already part of cluster %s' % (
@@ -57,7 +57,7 @@ class ClusterServiceAPI(ProtectedResource, ClusterMixin):
     def delete(self, cluster_id, service_id):
         cluster = self._find_cluster(cluster_id)
         for service in cluster.services:
-            if service.id == service_id:
+            if (service.id) == service_id:
                 cluster.services.remove(service)
                 cluster.save()
                 return service

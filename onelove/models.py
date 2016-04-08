@@ -29,31 +29,34 @@ class Provider(EmbeddedDocument):
     name = StringField(max_length=512)
     meta = {'allow_inheritance': True}
 
+    def list(self):
+        return []
+
+    def update(self):
+        pass
+
+    def create(self):
+        pass
+
+    def destroy(self):
+        pass
+
+    def _field_list(self):
+        return []
+
+    def _setup(self):
+        pass
+
+    def __init__(self, **kwargs):
+        super(Provider, self).__init__(kwargs)
+        self._setup()
+
     def __repr__(self):
         return '<Provider %r>' % self.name
 
     # Required for administrative interface
     def __unicode__(self):
         return self.__repr__()
-
-
-class ProviderAWS(Provider):
-    secret_key = StringField(max_length=512)
-    access_key = StringField(max_length=512)
-
-
-class HostSSH(EmbeddedDocument):
-    ip = StringField(max_length=256)
-    hostname = StringField(max_length=256)
-
-    def __repr__(self):
-        return '<Host %r>' % self.hostname
-
-
-class ProviderSSH(Provider):
-    type = 'SSH'
-    private_key = StringField(max_length=4096)
-    hosts = EmbeddedDocumentListField(HostSSH)
 
 
 class Role(Document, RoleMixin):

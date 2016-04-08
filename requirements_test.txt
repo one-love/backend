@@ -1,5 +1,0 @@
--r requirements_dev.txt
-coverage
-factory-boy
-nose
-autoflake
