@@ -13,7 +13,6 @@ from .namespaces import ns_cluster
 class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)
     def get(self, cluster_id, service_id):
-        from ..models import Task
         from ..tasks.provision import provision
         cluster = self._find_cluster(cluster_id)
         task = {'status': 'PENDING'}
