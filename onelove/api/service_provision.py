@@ -19,7 +19,8 @@ class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
         task = {'status': 'PENDING'}
         for service in cluster.services:
             if str(service.id) == service_id:
-                celery_id = provision.delay(cluster_id, service_id)
-                task['celery_id'] = str(celery_id)
+                task = Task(celery_id=provision.delay(cluster_id, service_id))
+                task.save()
+                task['celery_id'] = str(task.celery_id)
                 return task
         abort(404, 'Service %s not found' % service_id)
