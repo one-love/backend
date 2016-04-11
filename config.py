@@ -15,21 +15,25 @@ except ImportError:
 
 
 class Config(BaseConfig):
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_TASK_SERIALIZER = 'json'
     DEBUG = False
     FRONTEND_LIVERELOAD = False
+    JWT_EXPIRATION_DELTA = timedelta(days=7)
+    KNOWLEDGES = load_knowledge_sources(KNOWLEDGE_SOURCES)
     MONGODB_DB = 'onelove'
+    CELERY_MONGODB_BACKEND_SETTINGS = {
+        'database': 'onelove',
+    }
+    PROVIDERS = load_hosting_providers(HOSTING_PROVIDERS)
+    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
     SECURITY_PASSWORD_HASH = 'sha512_crypt'
     SECURITY_PASSWORD_SALT = 'COmwUar8X1s4NrNN'
-    SECURITY_SEND_REGISTER_EMAIL = False
-    SECURITY_URL_PREFIX = "/admin"
     SECURITY_POST_LOGIN_VIEW = '/admin/'
     SECURITY_POST_LOGOUT_VIEW = '/admin/'
-    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
+    SECURITY_SEND_REGISTER_EMAIL = False
     SECURITY_URL_PREFIX = "/admin"
-    SECURITY_POST_LOGIN_VIEW = "/admin/"
-    JWT_EXPIRATION_DELTA = timedelta(days=7)
-    PROVIDERS = load_hosting_providers(HOSTING_PROVIDERS)
-    KNOWLEDGES = load_knowledge_sources(KNOWLEDGE_SOURCES)
 
     @staticmethod
     def init_app(app):

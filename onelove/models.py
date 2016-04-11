@@ -1,13 +1,14 @@
 from flask_mongoengine import Document
 from mongoengine.fields import (
     BooleanField,
+    DateTimeField,
     EmailField,
+    EmbeddedDocument,
+    EmbeddedDocumentField,
+    EmbeddedDocumentListField,
     ListField,
     ReferenceField,
     StringField,
-    EmbeddedDocument,
-    EmbeddedDocumentListField,
-    EmbeddedDocumentField,
     UUIDField,
 )
 from flask_security import UserMixin, RoleMixin
@@ -110,6 +111,9 @@ class Cluster(Document):
 
 
 class Task(Document):
+    meta = {'collection': 'celery_taskmeta'}
     status = StringField(max_length=63, default='PENDING')
-    error_message = StringField(max_length=255)
-    celery_id = StringField(max_length=255)
+    date_done = DateTimeField()
+    traceback = StringField()
+    children = StringField()
+    result = StringField()

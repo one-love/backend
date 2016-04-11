@@ -169,12 +169,9 @@ def run_playbook(playbook_path):
 
 @current_app.task(bind=True)
 def provision(self, cluster_id, service_id):
-    from ..models import Cluster, Task
-    task = Task.objects.get(celery_id=str(self.request.id))
+    from ..models import Cluster
     playbook_path = mkdtemp()
     try:
-        task.status = 'RUNNING'
-        task.save()
         cluster = Cluster.objects.get(id=cluster_id)
         service = None
         for service_iterator in cluster.services:
@@ -190,11 +187,5 @@ def provision(self, cluster_id, service_id):
         install_service(playbook_path, cluster, service)
         generate_playbook(playbook_path, cluster, service)
         result = run_playbook(playbook_path)
-        task.status = 'SUCCESS'
-        task.save()
-    except ValueError as e:
-        task.status = 'ERROR'
-        task.error_message = e.message
-        task.save()
     finally:
         rmtree(playbook_path)
