@@ -16,6 +16,9 @@ except ImportError:
 
 class Config(BaseConfig):
     CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_MONGODB_BACKEND_SETTINGS = {
+        'database': 'onelove',
+    }
     CELERY_RESULT_SERIALIZER = 'json'
     CELERY_TASK_SERIALIZER = 'json'
     DEBUG = False
@@ -23,9 +26,6 @@ class Config(BaseConfig):
     JWT_EXPIRATION_DELTA = timedelta(days=7)
     KNOWLEDGES = load_knowledge_sources(KNOWLEDGE_SOURCES)
     MONGODB_DB = 'onelove'
-    CELERY_MONGODB_BACKEND_SETTINGS = {
-        'database': 'onelove',
-    }
     PROVIDERS = load_hosting_providers(HOSTING_PROVIDERS)
     SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
     SECURITY_PASSWORD_HASH = 'sha512_crypt'

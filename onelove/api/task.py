@@ -1,7 +1,8 @@
-from resources import ProtectedResource
+from mongoengine.fields import ObjectId
 from ..models import Task
-from .namespaces import ns_task
 from .fields.task import fields
+from .namespaces import ns_task
+from .resources import ProtectedResource
 
 
 @ns_task.route('', endpoint='tasks')
@@ -15,5 +16,5 @@ class TaskListAPI(ProtectedResource):
 class TaskAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
     def get(self, id):
-        task = Task.objects.get(id=id)
+        task = Task.objects.get(pk=id)
         return task
