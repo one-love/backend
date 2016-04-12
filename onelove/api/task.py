@@ -1,4 +1,5 @@
-from mongoengine.fields import ObjectId
+from flask_restplus import abort
+
 from ..models import Task
 from .fields.task import fields
 from .namespaces import ns_task
@@ -16,5 +17,8 @@ class TaskListAPI(ProtectedResource):
 class TaskAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
     def get(self, id):
-        task = Task.objects.get(pk=id)
+        try:
+            task = Task.objects.get(pk=id)
+        except Task.DoesNotExist:
+            abort(404, 'No such task')
         return task
