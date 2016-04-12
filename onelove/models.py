@@ -1,17 +1,31 @@
 from flask_mongoengine import Document
 from mongoengine.fields import (
+    BaseField,
     BooleanField,
     DateTimeField,
     EmailField,
     EmbeddedDocument,
     EmbeddedDocumentField,
-    EmbeddedDocumentListField,
     ListField,
     ReferenceField,
     StringField,
     UUIDField,
 )
 from flask_security import UserMixin, RoleMixin
+
+
+field_types = {
+    'BooleanField': 'boolean',
+    'DateTimeField': 'date_time',
+    'EmailField': 'email',
+    'EmbeddedDocument': 'embedded',
+    'EmbeddedDocumentField': 'embedded_document',
+    'EmbeddedDocumentListField': 'embedded_document_list',
+    'ListField': 'list',
+    'ReferenceField': 'reference',
+    'StringField': 'string',
+    'UUIDField': 'uuid',
+}
 
 
 class Application(EmbeddedDocument):
@@ -28,22 +42,36 @@ class Application(EmbeddedDocument):
 
 class Provider(EmbeddedDocument):
     name = StringField(max_length=512)
+    type = 'BASE'
     meta = {'allow_inheritance': True}
 
     def list(self):
         return []
 
-    def update(self):
+    def update(self, **kwargs):
         pass
 
-    def create(self):
+    def create(self, **kwargs):
         pass
 
-    def destroy(self):
+    def destroy(self, id):
         pass
 
-    def _field_list(self):
-        return []
+    @classmethod
+    def fields(cls):
+        result = []
+        for property in dir(cls):
+            if property[0] != '_':
+                property_type = getattr(cls, property)
+                if isinstance(property_type, BaseField):
+                    type_name = type(property_type).__name__
+                    result.append(
+                        {
+                            'name': property_type.name,
+                            'type': field_types[type_name]
+                        }
+                    )
+        return result
 
     def _setup(self):
         pass

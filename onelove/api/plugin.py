@@ -9,4 +9,12 @@ class ProviderPluginListAPI(ProtectedResource):
     @ns_plugin.marshal_with(provider_fields)
     def get(self):
         """List provider plugins"""
-        return [{'type': key} for key in app.config['PROVIDERS'].keys()]
+        result = []
+        for key in app.config['PROVIDERS'].keys():
+            Provider = app.config['PROVIDERS'][key]
+            provider = {
+                'type': Provider.type,
+                'properties': Provider.fields(),
+            }
+            result.append(provider)
+        return result
