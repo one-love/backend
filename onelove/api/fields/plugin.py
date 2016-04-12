@@ -1,9 +1,20 @@
-from flask_restplus.fields import String
+from flask_restplus.fields import String, Nested
 from .. import api
 
 
-provider_fields = api.model(
-    'Providers', {
+properties_fields = api.model(
+    'Properties',
+    {
+        'name': String(required=True),
         'type': String(required=True),
-    }
+    },
+)
+
+
+provider_fields = api.model(
+    'Providers',
+    {
+        'type': String(required=True),
+        'properties': Nested(properties_fields),
+    },
 )
