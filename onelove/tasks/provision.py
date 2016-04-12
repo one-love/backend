@@ -139,8 +139,14 @@ def generate_playbook(playbook_path, cluster, service):
         site_yml_file.write(site_yml)
 
 
-def run_playbook(playbook_path):
-    host = '192.168.33.34'
+def get_host_list(playbook_path, cluster):
+    result = []
+    for provider in cluster.providers:
+        result += [host.ip for host in provider.list()]
+    return result
+
+
+def run_playbook(playbook_path, cluster):
     playbook_file = '{playbook_path}/provision/site.yml'.format(
         playbook_path=playbook_path,
     )
@@ -149,7 +155,7 @@ def run_playbook(playbook_path):
     inventory = Inventory(
         loader=loader,
         variable_manager=variable_manager,
-        host_list=[host],
+        host_list=get_host_list(playbook_path, cluster),
     )
     options = Options(inventory=inventory)
     executor = PlaybookExecutor(
@@ -184,8 +190,11 @@ def provision(self, cluster_id, service_id):
         if not service.applications:
             raise ValueError('service has no applications')
 
+        if cluster.providers == []:
+            raise ValueError('you must add at least one provider')
+
         install_service(playbook_path, cluster, service)
         generate_playbook(playbook_path, cluster, service)
-        result = run_playbook(playbook_path)
+        result = run_playbook(playbook_path, cluster)
     finally:
         rmtree(playbook_path)
