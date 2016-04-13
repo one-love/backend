@@ -1,3 +1,4 @@
+from celery.result import AsyncResult
 from flask_restplus import abort
 
 from ..models import Task
@@ -17,8 +18,5 @@ class TaskListAPI(ProtectedResource):
 class TaskAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
     def get(self, id):
-        try:
-            task = Task.objects.get(pk=id)
-        except Task.DoesNotExist:
-            abort(404, 'No such task')
+        task = AsyncResult(id)
         return task
