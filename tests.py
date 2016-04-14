@@ -89,7 +89,10 @@ class TestAPI(TestCase):
 
         # Prepare
         url_list = '/api/v0/clusters'
-        data = {'name': 'first'}
+        data = {
+            'name': 'first',
+            'username': 'vagrant',
+        }
 
         # Get empty list
         response = self.get(url=url_list)
@@ -125,7 +128,10 @@ class TestAPI(TestCase):
         self.assertEqual(cluster.providers, response['providers'])
 
         # Change item details
-        data = {'name': 'second'}
+        data = {
+            'name': 'second',
+            'username': 'vagrant',
+        }
         response = self.put(url=url_detail, data=data)
         cluster = Cluster(response['name'])
         self.assertEqual(cluster.name, response['name'])
