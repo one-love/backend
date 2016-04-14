@@ -42,6 +42,7 @@ class Application(EmbeddedDocument):
 
 class Provider(EmbeddedDocument):
     name = StringField(max_length=512)
+    username = StringField(max_length=64)
     type = 'BASE'
     meta = {'allow_inheritance': True}
 

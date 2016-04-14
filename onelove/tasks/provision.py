@@ -196,5 +196,7 @@ def provision(self, cluster_id, service_id):
         install_service(playbook_path, cluster, service)
         generate_playbook(playbook_path, cluster, service)
         result = run_playbook(playbook_path, cluster)
+        if result != 0:
+            raise ValueError('something went wrong')
     finally:
         rmtree(playbook_path)
