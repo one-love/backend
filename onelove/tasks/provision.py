@@ -157,7 +157,10 @@ def run_playbook(playbook_path, cluster):
         variable_manager=variable_manager,
         host_list=get_host_list(playbook_path, cluster),
     )
-    options = Options(inventory=inventory)
+    options = Options(
+        inventory=inventory,
+        remote_user=cluster.username,
+    )
     executor = PlaybookExecutor(
         playbooks=[playbook_file],
         inventory=inventory,
