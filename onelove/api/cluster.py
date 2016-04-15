@@ -1,8 +1,8 @@
 from ..models import Cluster, User
-from resources import ProtectedResource
+from .fields.cluster import fields, get_fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
-from .fields.cluster import fields, get_fields
+from .resources import ProtectedResource
 from flask_jwt import current_identity
 from flask import current_app
 import pagination
@@ -27,7 +27,6 @@ class ClusterListAPI(ProtectedResource):
             roles__in=current_identity.roles
         ).paginate(page, per_page)
         paging = pagination.Pagination(clusters)
-
         return clusters.items, 200, paging.headers
 
     @ns_cluster.doc(body=fields)

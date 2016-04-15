@@ -7,4 +7,6 @@ flask-mongoengine
 flask-restplus
 flask-script
 flask-security
+flask-socketio
+gevent-websocket
 mongoengine

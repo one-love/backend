@@ -32,14 +32,24 @@
             });
 
             if ($('#input_apiKey').val() === '' && window.localStorage.oneLoveToken) {
-              $('#input_apiKey').val(window.localStorage.oneLoveToken.replace('JWT ', ''));
+              $('#input_apiKey').val(
+                window.localStorage.oneLoveToken.replace(
+                  'JWT ',
+                  ''
+                )
+              );
             }
             $('#input_apiKey').change(function() {
               var key = "JWT " + $('#input_apiKey')[0].value;
-              console.log("key: " + key);
               if(key && key.trim() != "") {
-                console.log("added key " + key);
-                window.swaggerUi.api.clientAuthorizations.add("key", new SwaggerClient.ApiKeyAuthorization("Authorization", key, "header"));
+                window.swaggerUi.api.clientAuthorizations.add(
+                  "key",
+                  new SwaggerClient.ApiKeyAuthorization(
+                    "Authorization",
+                    key,
+                    "header"
+                  )
+                );
                 window.localStorage.oneLoveToken = key;
               }
             });
@@ -56,7 +66,9 @@
   <div class="swagger-ui-wrap">
     <a id="logo" href="http://swagger.wordnik.com">swagger</a>
     <form id='api_selector'>
-      <div class='input'><input placeholder="token" id="input_apiKey" name="apiKey" type="text"/></div>
+      <div class='input'>
+        <input placeholder="token" id="input_apiKey" name="apiKey" type="text"/>
+      </div>
       <div class='input'><a id="explore" href="#">Explore</a></div>
     </form>
   </div>

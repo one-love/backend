@@ -31,7 +31,3 @@ def load_knowledge_sources(knowledges):
             break
         result[knowledge.type] = knowledge
     return result
-
-
-def list_providers():
-    return []
