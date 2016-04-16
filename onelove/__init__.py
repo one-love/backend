@@ -117,8 +117,6 @@ class OneLove(object):
                 )
 
         self.socketio = SocketIO(self.app, logger=True)
-        from .socketio import messages
-
         self.app.onelove = self
 
     @jwt.authentication_handler

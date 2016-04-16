@@ -20,6 +20,7 @@ class Config(BaseConfig):
         'database': 'onelove',
     }
     CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_SEND_EVENTS = True
     CELERY_TASK_SERIALIZER = 'json'
     DEBUG = False
     FRONTEND_LIVERELOAD = False
