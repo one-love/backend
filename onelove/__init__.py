@@ -8,7 +8,10 @@ from flask_mongoengine import MongoEngine
 from flask_restplus import apidoc
 from flask_security import Security, MongoEngineUserDatastore
 from flask_security.utils import verify_password
+from flask_socketio import SocketIO
 from .models import User, Role
+
+current_app = None
 
 
 class OneLove(object):
@@ -26,6 +29,7 @@ class OneLove(object):
     jwt = JWT()
     mail = Mail()
     security = Security()
+    socketio = None
     toolbar = None
     user_datastore = None
 
@@ -45,6 +49,8 @@ class OneLove(object):
             self.init_app(app)
 
     def init_app(self, app):
+        global current_app
+        current_app = self
         self.app = app
         if app.config['DEBUG']:
             self.cors.init_app(
@@ -109,11 +115,12 @@ class OneLove(object):
                     admin_view=self.admin.index_view,
                     h=admin_helpers,
                 )
+
+        self.socketio = SocketIO(self.app, logger=True)
         self.app.onelove = self
 
     @jwt.authentication_handler
     def authenticate(username, password):
-        result = None
         try:
             user = User.objects.get(email=username)
         except User.DoesNotExist:

@@ -103,7 +103,6 @@ class UserRegisterAPI(Resource):
             user.active = False
             user.register_uuid = uuid.uuid4()
             user.save()
-            print(user.register_uuid)
         except NotUniqueError:
             abort(409, message='User with that email exists')
         except (ValidationError):

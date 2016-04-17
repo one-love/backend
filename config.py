@@ -20,6 +20,7 @@ class Config(BaseConfig):
         'database': 'onelove',
     }
     CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_SEND_EVENTS = True
     CELERY_TASK_SERIALIZER = 'json'
     DEBUG = False
     FRONTEND_LIVERELOAD = False
@@ -43,7 +44,6 @@ class Config(BaseConfig):
 class DevConfig(Config):
     CELERYD_POOL_RESTARTS = True
     DEBUG = True
-    FRONTEND_LIVERELOAD = True
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True

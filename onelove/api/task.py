@@ -1,5 +1,4 @@
 from celery.result import AsyncResult
-from flask_restplus import abort
 
 from ..models import Task
 from .fields.task import fields
@@ -11,6 +10,8 @@ from .resources import ProtectedResource
 class TaskListAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
     def get(self):
+        from .. import current_app
+        current_app.socketio.emit('response', 'flask', namespace='/onelove')
         return [task for task in Task.objects.all()]
 
 
