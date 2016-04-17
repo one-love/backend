@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from gevent import monkey
+monkey.patch_all()
 import os
 
 from flask import redirect, url_for

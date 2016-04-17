@@ -20,6 +20,7 @@ def my_monitor():
                 'id': task.id,
                 'status': task.status,
             },
+            namespace='/onelove',
         )
 
 
