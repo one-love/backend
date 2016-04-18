@@ -5,7 +5,6 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY requirements.txt /usr/src/app/
-COPY requirements_common.txt /usr/src/app/
 
 RUN mkdir -p ~/.ssh
 COPY ssh_config ~/.ssh/config
