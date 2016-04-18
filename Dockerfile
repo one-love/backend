@@ -1,6 +1,6 @@
 FROM python:2-slim
 
-MAINTAINER Zoran Olujić <olujicz@gmail.com>
+MAINTAINER Tilda Center <office@tilda.center>
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
@@ -17,7 +17,7 @@ RUN apt-get update && \
     python-dev \
     ca-certificates \
     libyaml-dev && \
-    wget https://github.com/hashicorp/consul-template/releases/download/v0.10.0/consul-template_0.10.0_linux_amd64.tar.gz -O consul-template.tar.gz && \
+    wget https://releases.hashicorp.com/consul-template/0.14.0/consul-template_0.14.0_linux_amd64.zip -O consul-template.tar.gz && \
     tar -xf consul-template.tar.gz && \
     mv consul-template_*/consul-template /usr/bin && \
     rm -rf consul-template* && \
@@ -25,10 +25,11 @@ RUN apt-get update && \
     pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y --auto-remove build-essential python-dev wget && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /usr/src/app
 
 
 CMD ["bin/start.sh"]
-EXPOSE 5000 5555 9000
+EXPOSE 9000
