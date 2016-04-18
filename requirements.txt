@@ -1,2 +1,14 @@
--r requirements_common.txt
-uwsgi
+ansible
+celery
+flask-collect
+flask-cors
+flask-jwt
+flask-mongoengine
+flask-restplus
+flask-script
+flask-security
+flask-socketio
+gevent-websocket
+gunicorn
+mongoengine
+setproctitle
