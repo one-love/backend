@@ -9,6 +9,7 @@ fields = api.model(
     'Cluster', {
         'name': String(required=True),
         'username': String(required=True),
+        'sshKey': String(required=True),
     }
 )
 
