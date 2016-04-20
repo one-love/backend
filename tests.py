@@ -1,4 +1,5 @@
 from unittest import TestCase
+from base64 import b64encode, b64decode
 
 import json
 
@@ -29,7 +30,6 @@ class TestAPI(TestCase):
 
     @classmethod
     def login(cls, email, password):
-        import json
         response = cls.app.post(
             '/api/v0/auth/tokens',
             data=json.dumps({'email': email, 'password': password}),
@@ -92,6 +92,7 @@ class TestAPI(TestCase):
         data = {
             'name': 'first',
             'username': 'vagrant',
+            'sshKey': b64encode('fake key'),
         }
 
         # Get empty list
@@ -101,11 +102,13 @@ class TestAPI(TestCase):
         # Create item
         response = self.post(url=url_list, data=data)
         self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['username'], response['username'])
+        self.assertEqual(b64decode(data['sshKey']), response['sshKey'])
 
         # Get item details
         url_detail = '/api/v0/clusters/{pk}'.format(pk=response['id'])
         response = self.get(url=url_detail)
-        cluster = Cluster(response['name'])
+        cluster = Cluster.objects.get(name=response['name'])
         roles = [
             {
                 u'admin': u'True',
@@ -124,21 +127,28 @@ class TestAPI(TestCase):
         ]
         self.assertEqual(roles, response['roles'])
         self.assertEqual(cluster.name, response['name'])
+        self.assertEqual(cluster.username, response['username'])
         self.assertEqual(cluster.services, response['services'])
         self.assertEqual(cluster.providers, response['providers'])
+        self.assertEqual(cluster.sshKey, response['sshKey'])
 
         # Change item details
         data = {
             'name': 'second',
             'username': 'vagrant',
+            'sshKey': b64encode('another fake'),
         }
         response = self.put(url=url_detail, data=data)
-        cluster = Cluster(response['name'])
+        cluster = Cluster.objects.get(name=response['name'])
         self.assertEqual(cluster.name, response['name'])
+        self.assertEqual(cluster.username, response['username'])
+        self.assertEqual(cluster.sshKey, response['sshKey'])
 
         # Delete item
         response = self.delete(url=url_detail)
-        self.assertEqual(data, response)
+        self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['username'], response['username'])
+        self.assertEqual(b64decode(data['sshKey']), response['sshKey'])
 
         # Cleanup
         for item in roles:

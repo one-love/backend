@@ -1,6 +1,6 @@
 from os import makedirs, path
 from shutil import rmtree
-from tempfile import mkdtemp
+from tempfile import mkdtemp, mkstemp
 
 import yaml
 from ansible.executor.playbook_executor import PlaybookExecutor
@@ -157,9 +157,13 @@ def run_playbook(playbook_path, cluster):
         variable_manager=variable_manager,
         host_list=get_host_list(playbook_path, cluster),
     )
+    file_handle, private_key_file = mkstemp(dir=playbook_path)
+    with open(private_key_file, 'w') as key_file:
+        key_file.write(cluster.ssh_key)
     options = Options(
         inventory=inventory,
         remote_user=cluster.username,
+        private_key_file=private_key_file,
     )
     executor = PlaybookExecutor(
         playbooks=[playbook_file],
