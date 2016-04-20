@@ -159,7 +159,7 @@ def run_playbook(playbook_path, cluster):
     )
     file_handle, private_key_file = mkstemp(dir=playbook_path)
     with open(private_key_file, 'w') as key_file:
-        key_file.write(cluster.ssh_key)
+        key_file.write(cluster.sshKey)
     options = Options(
         inventory=inventory,
         remote_user=cluster.username,
