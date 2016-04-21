@@ -8,6 +8,7 @@ from .fields.task import fields
 class TaskListAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
     def get(self):
+    	"""Get list of tasks"""
         return [task for task in Task.objects.all()]
 
 
@@ -15,5 +16,6 @@ class TaskListAPI(ProtectedResource):
 class TaskAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
     def get(self, celery_id):
+    	"""Find task by the celery ID"""
         task = Task.objects.get(celery_id=celery_id)
         return task

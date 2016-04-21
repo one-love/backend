@@ -12,7 +12,10 @@ from .namespaces import ns_cluster
 )
 class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)
+    @ns_cluster.expect(fields)
+    @ns_cluster.response(404,'Service not found')
     def get(self, cluster_id, service_id):
+        """Check for task status"""
         from ..models import Task
         from ..tasks.provision import provision
         cluster = self._find_cluster(cluster_id)
