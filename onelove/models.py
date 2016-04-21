@@ -6,6 +6,7 @@ from mongoengine.fields import (
     EmailField,
     EmbeddedDocument,
     EmbeddedDocumentField,
+    EmbeddedDocumentListField,
     ListField,
     ReferenceField,
     StringField,
@@ -18,10 +19,6 @@ field_types = {
     'BooleanField': 'boolean',
     'DateTimeField': 'date_time',
     'EmailField': 'email',
-    'EmbeddedDocument': 'embedded',
-    'EmbeddedDocumentField': 'embedded_document',
-    'EmbeddedDocumentListField': 'embedded_document_list',
-    'ListField': 'list',
     'ReferenceField': 'reference',
     'StringField': 'string',
     'UUIDField': 'uuid',
@@ -58,12 +55,26 @@ class Provider(EmbeddedDocument):
         pass
 
     @classmethod
+    def _check_field(cls, field):
+        if isinstance(field, BaseField):
+            if isinstance(field, EmbeddedDocument):
+                return False
+            if isinstance(field, EmbeddedDocumentField):
+                return False
+            if isinstance(field, EmbeddedDocumentListField):
+                return False
+            if isinstance(field, ListField):
+                return False
+            return True
+        return False
+
+    @classmethod
     def fields(cls):
         result = []
         for property in dir(cls):
             if property[0] != '_':
                 property_type = getattr(cls, property)
-                if isinstance(property_type, BaseField):
+                if cls._check_field(property_type):
                     type_name = type(property_type).__name__
                     result.append(
                         {
