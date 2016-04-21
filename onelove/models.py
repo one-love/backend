@@ -1,16 +1,31 @@
 from flask_mongoengine import Document
 from mongoengine.fields import (
+    BaseField,
     BooleanField,
+    DateTimeField,
     EmailField,
+    EmbeddedDocument,
+    EmbeddedDocumentField,
     ListField,
     ReferenceField,
     StringField,
-    EmbeddedDocument,
-    EmbeddedDocumentListField,
-    EmbeddedDocumentField,
     UUIDField,
 )
 from flask_security import UserMixin, RoleMixin
+
+
+field_types = {
+    'BooleanField': 'boolean',
+    'DateTimeField': 'date_time',
+    'EmailField': 'email',
+    'EmbeddedDocument': 'embedded',
+    'EmbeddedDocumentField': 'embedded_document',
+    'EmbeddedDocumentListField': 'embedded_document_list',
+    'ListField': 'list',
+    'ReferenceField': 'reference',
+    'StringField': 'string',
+    'UUIDField': 'uuid',
+}
 
 
 class Application(EmbeddedDocument):
@@ -27,7 +42,43 @@ class Application(EmbeddedDocument):
 
 class Provider(EmbeddedDocument):
     name = StringField(max_length=512)
+    type = 'BASE'
     meta = {'allow_inheritance': True}
+
+    def list(self):
+        return []
+
+    def update(self, **kwargs):
+        pass
+
+    def create(self, **kwargs):
+        pass
+
+    def destroy(self, id):
+        pass
+
+    @classmethod
+    def fields(cls):
+        result = []
+        for property in dir(cls):
+            if property[0] != '_':
+                property_type = getattr(cls, property)
+                if isinstance(property_type, BaseField):
+                    type_name = type(property_type).__name__
+                    result.append(
+                        {
+                            'name': property_type.name,
+                            'type': field_types[type_name]
+                        }
+                    )
+        return result
+
+    def _setup(self):
+        pass
+
+    def __init__(self, *args, **kwargs):
+        super(Provider, self).__init__(*args, **kwargs)
+        self._setup()
 
     def __repr__(self):
         return '<Provider %r>' % self.name
@@ -35,25 +86,6 @@ class Provider(EmbeddedDocument):
     # Required for administrative interface
     def __unicode__(self):
         return self.__repr__()
-
-
-class ProviderAWS(Provider):
-    secret_key = StringField(max_length=512)
-    access_key = StringField(max_length=512)
-
-
-class HostSSH(EmbeddedDocument):
-    ip = StringField(max_length=256)
-    hostname = StringField(max_length=256)
-
-    def __repr__(self):
-        return '<Host %r>' % self.hostname
-
-
-class ProviderSSH(Provider):
-    type = 'SSH'
-    private_key = StringField(max_length=4096)
-    hosts = EmbeddedDocumentListField(HostSSH)
 
 
 class Role(Document, RoleMixin):
@@ -97,6 +129,8 @@ class Service(Document):
 
 class Cluster(Document):
     name = StringField(max_length=512)
+    username = StringField(max_length=64)
+    sshKey = StringField()
     applications = ListField(EmbeddedDocumentField(Application))
     providers = ListField(EmbeddedDocumentField(Provider))
     roles = ListField(ReferenceField(Role), default=[])
@@ -107,6 +141,10 @@ class Cluster(Document):
 
 
 class Task(Document):
+    id = UUIDField(primary_key=True, binary=False)
+    meta = {'collection': 'celery_taskmeta'}
     status = StringField(max_length=63, default='PENDING')
-    error_message = StringField(max_length=255)
-    celery_id = StringField(max_length=255)
+    date_done = DateTimeField()
+    traceback = StringField()
+    children = StringField()
+    result = StringField()

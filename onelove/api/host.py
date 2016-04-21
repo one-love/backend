@@ -1,7 +1,6 @@
 from flask_restplus import abort
 from .mixins import ClusterMixin
 from resources import ProtectedResource
-from ..models import HostSSH
 from .fields.host import fields
 from .namespaces import ns_cluster
 
@@ -39,11 +38,10 @@ class ClusterProviderHostListAPI(ProtectedResource, ClusterMixin):
         args = parser.parse_args()
         hostname = args.get('hostname')
         ip = args.get('ip')
-        host = HostSSH(hostname=hostname, ip=ip)
         cluster = self._find_cluster(cluster_id)
         for provider in cluster.providers:
             if provider.name == provider_name:
-                provider.hosts.append(host)
+                host = provider.create(hostname=hostname, ip=ip)
                 provider.save()
                 cluster.save()
                 return host

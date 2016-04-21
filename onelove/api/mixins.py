@@ -1,9 +1,11 @@
-from flask.ext.restplus import abort
-from ..models import Cluster, ProviderSSH, Service
-from mongoengine.errors import ValidationError
+from flask import current_app
 from flask_jwt import current_identity
-from ..models import User
+from flask_restplus import abort
+from mongoengine.errors import ValidationError
+
+from ..models import Cluster, Service
 from ..models import Role
+from ..models import User
 
 
 class ClusterMixin(object):
@@ -29,10 +31,8 @@ class ClusterMixin(object):
         except (Role.DoesNotExist):
             abort(401, error='You do not have valid permissions.')
 
-    def _get_provider_class(self, type):
-        if type == 'SSH':
-            return ProviderSSH
-        return None
+    def _get_provider_class(self, provider_type):
+        return current_app.config['PROVIDERS'].get(provider_type, None)
 
 
 class ServiceMixin(object):

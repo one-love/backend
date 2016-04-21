@@ -1,13 +1,12 @@
 from flask.ext.restplus import abort
 from .mixins import ClusterMixin
 from resources import ProtectedResource
-from .fields.provider import fields
+from .fields.provider import fields, put_fields
 from .namespaces import ns_cluster
 
 
 parser = ns_cluster.parser()
 parser.add_argument('name', type=str, required=True, location='json')
-parser.add_argument('type', type=str, required=True, location='json')
 
 
 @ns_cluster.route('/<cluster_id>/providers', endpoint='clusters.providers')
@@ -24,6 +23,7 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.response(400,'No such provider class')
     def post(self, cluster_id):
         """Create cluster provider"""
+        parser.add_argument('type', type=str, required=True, location='json')
         args = parser.parse_args()
         cluster = self._find_cluster(cluster_id)
         provider_name = args.get('name')
@@ -57,7 +57,7 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
                 return provider
         abort(404, 'No such provider')
 
-    @ns_cluster.expect(fields)
+    @ns_cluster.expect(put_fields)
     @ns_cluster.marshal_with(fields)
     def put(self, cluster_id, provider_name):
         """Update cluster provider"""
@@ -66,7 +66,6 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
         for provider in cluster.providers:
             if provider.name == provider_name:
                 provider.name = args.get('name')
-                provider.type = args.get('type')
                 provider.save()
                 return provider
         abort(404, error='No such provider')

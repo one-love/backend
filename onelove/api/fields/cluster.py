@@ -8,6 +8,8 @@ from .service import get_fields as service_fields
 fields = api.model(
     'Cluster', {
         'name': String(required=True),
+        'username': String(required=True),
+        'sshKey': String(required=True),
     }
 )
 

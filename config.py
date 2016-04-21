@@ -1,4 +1,6 @@
 from datetime import timedelta
+from onelove.plugin import load_hosting_providers, load_knowledge_sources
+from plugins import HOSTING_PROVIDERS, KNOWLEDGE_SOURCES
 import os
 
 
@@ -10,21 +12,29 @@ try:
 except ImportError:
     class BaseConfig(object):
         SECRET_KEY = 'top-secret'
-        pass
 
 
 class Config(BaseConfig):
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_MONGODB_BACKEND_SETTINGS = {
+        'database': 'onelove',
+    }
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_SEND_EVENTS = True
+    CELERY_TASK_SERIALIZER = 'json'
     DEBUG = False
     FRONTEND_LIVERELOAD = False
+    JWT_EXPIRATION_DELTA = timedelta(days=7)
+    KNOWLEDGES = load_knowledge_sources(KNOWLEDGE_SOURCES)
     MONGODB_DB = 'onelove'
+    PROVIDERS = load_hosting_providers(HOSTING_PROVIDERS)
+    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
     SECURITY_PASSWORD_HASH = 'sha512_crypt'
     SECURITY_PASSWORD_SALT = 'COmwUar8X1s4NrNN'
-    SECURITY_SEND_REGISTER_EMAIL = False
-    SECURITY_URL_PREFIX = "/admin"
     SECURITY_POST_LOGIN_VIEW = '/admin/'
     SECURITY_POST_LOGOUT_VIEW = '/admin/'
-    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
-    JWT_EXPIRATION_DELTA = timedelta(days=7)
+    SECURITY_SEND_REGISTER_EMAIL = False
+    SECURITY_URL_PREFIX = "/admin"
 
     @staticmethod
     def init_app(app):
@@ -34,7 +44,6 @@ class Config(BaseConfig):
 class DevConfig(Config):
     CELERYD_POOL_RESTARTS = True
     DEBUG = True
-    FRONTEND_LIVERELOAD = True
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
@@ -62,9 +71,7 @@ class TestConfig(Config):
 
 
 class ProdConfig(Config):
-    SECURITY_URL_PREFIX = "/admin"
-    SECURITY_POST_LOGIN_VIEW = "/admin/"
-    SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
+    pass
 
 
 configs = {

@@ -1,6 +1,6 @@
 from os import makedirs, path
 from shutil import rmtree
-from tempfile import mkdtemp
+from tempfile import mkdtemp, mkstemp
 
 import yaml
 from ansible.executor.playbook_executor import PlaybookExecutor
@@ -139,24 +139,32 @@ def generate_playbook(playbook_path, cluster, service):
         site_yml_file.write(site_yml)
 
 
-def run_playbook(playbook_path):
-    host = '192.168.33.34'
+def get_host_list(playbook_path, cluster):
+    result = []
+    for provider in cluster.providers:
+        result += [host.ip for host in provider.list()]
+    return result
+
+
+def run_playbook(playbook_path, cluster):
     playbook_file = '{playbook_path}/provision/site.yml'.format(
         playbook_path=playbook_path,
     )
-    inventory_file = '{playbook_path}/provision/inventory'.format(
-        playbook_path=playbook_path,
-    )
-    with open(inventory_file, 'w+') as inventory:
-        inventory.write(host)
     loader = DataLoader()
     variable_manager = VariableManager()
     inventory = Inventory(
         loader=loader,
         variable_manager=variable_manager,
-        host_list=[host],
+        host_list=get_host_list(playbook_path, cluster),
     )
-    options = Options(inventory=inventory_file)
+    file_handle, private_key_file = mkstemp(dir=playbook_path)
+    with open(private_key_file, 'w') as key_file:
+        key_file.write(cluster.sshKey)
+    options = Options(
+        inventory=inventory,
+        remote_user=cluster.username,
+        private_key_file=private_key_file,
+    )
     executor = PlaybookExecutor(
         playbooks=[playbook_file],
         inventory=inventory,
@@ -174,12 +182,9 @@ def run_playbook(playbook_path):
 
 @current_app.task(bind=True)
 def provision(self, cluster_id, service_id):
-    from ..models import Cluster, Task
-    task = Task(celery_id=str(self.request.id))
+    from ..models import Cluster
     playbook_path = mkdtemp()
     try:
-        task.status = 'RUNNING'
-        task.save()
         cluster = Cluster.objects.get(id=cluster_id)
         service = None
         for service_iterator in cluster.services:
@@ -192,14 +197,13 @@ def provision(self, cluster_id, service_id):
         if not service.applications:
             raise ValueError('service has no applications')
 
+        if cluster.providers == []:
+            raise ValueError('you must add at least one provider')
+
         install_service(playbook_path, cluster, service)
         generate_playbook(playbook_path, cluster, service)
-        result = run_playbook(playbook_path)
-        task.status = 'SUCCESS'
-        task.save()
-    except ValueError as e:
-        task.status = 'ERROR'
-        task.error_message = e.message
-        task.save()
+        result = run_playbook(playbook_path, cluster)
+        if result != 0:
+            raise ValueError('something went wrong')
     finally:
         rmtree(playbook_path)

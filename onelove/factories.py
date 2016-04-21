@@ -22,20 +22,7 @@ class RoleFactory(factory.Factory):
     admin = False
 
 
-class ProviderSSHFactory(factory.Factory):
-    class Meta:
-        model = models.ProviderSSH
-    name = factory.Faker('first_name')
-
-
 class ClusterFactory(factory.Factory):
     class Meta:
         model = models.Cluster
     name = factory.Faker('first_name')
-
-
-class ClusterProviderSSHFactory(factory.Factory):
-    class Meta:
-        model = models.Cluster
-    name = factory.Faker('first_name')
-    providers = factory.LazyAttribute(lambda a: [ProviderSSHFactory()])

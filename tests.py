@@ -1,4 +1,5 @@
 from unittest import TestCase
+from base64 import b64encode, b64decode
 
 import json
 
@@ -29,7 +30,6 @@ class TestAPI(TestCase):
 
     @classmethod
     def login(cls, email, password):
-        import json
         response = cls.app.post(
             '/api/v0/auth/tokens',
             data=json.dumps({'email': email, 'password': password}),
@@ -89,7 +89,11 @@ class TestAPI(TestCase):
 
         # Prepare
         url_list = '/api/v0/clusters'
-        data = {'name': 'first'}
+        data = {
+            'name': 'first',
+            'username': 'vagrant',
+            'sshKey': b64encode('fake key'),
+        }
 
         # Get empty list
         response = self.get(url=url_list)
@@ -98,11 +102,13 @@ class TestAPI(TestCase):
         # Create item
         response = self.post(url=url_list, data=data)
         self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['username'], response['username'])
+        self.assertEqual(b64decode(data['sshKey']), response['sshKey'])
 
         # Get item details
         url_detail = '/api/v0/clusters/{pk}'.format(pk=response['id'])
         response = self.get(url=url_detail)
-        cluster = Cluster(response['name'])
+        cluster = Cluster.objects.get(name=response['name'])
         roles = [
             {
                 u'admin': u'True',
@@ -121,71 +127,33 @@ class TestAPI(TestCase):
         ]
         self.assertEqual(roles, response['roles'])
         self.assertEqual(cluster.name, response['name'])
+        self.assertEqual(cluster.username, response['username'])
         self.assertEqual(cluster.services, response['services'])
         self.assertEqual(cluster.providers, response['providers'])
+        self.assertEqual(cluster.sshKey, response['sshKey'])
 
         # Change item details
-        data = {'name': 'second'}
+        data = {
+            'name': 'second',
+            'username': 'vagrant',
+            'sshKey': b64encode('another fake'),
+        }
         response = self.put(url=url_detail, data=data)
-        cluster = Cluster(response['name'])
+        cluster = Cluster.objects.get(name=response['name'])
         self.assertEqual(cluster.name, response['name'])
+        self.assertEqual(cluster.username, response['username'])
+        self.assertEqual(cluster.sshKey, response['sshKey'])
 
         # Delete item
         response = self.delete(url=url_detail)
-        self.assertEqual(data, response)
+        self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['username'], response['username'])
+        self.assertEqual(b64decode(data['sshKey']), response['sshKey'])
 
         # Cleanup
         for item in roles:
             role = Role.objects(name=item['name'])
             role.delete()
-
-    def test_host(self):
-        from onelove.factories import ClusterProviderSSHFactory
-
-        # Prepare
-        cluster = ClusterProviderSSHFactory()
-        cluster.save()
-        provider = cluster.providers[0]
-        url_list = '/api/v0/clusters/{clusterId}/providers/{name}/hosts'.format(
-            clusterId=str(cluster.pk),
-            name=provider.name,
-        )
-
-        # Get empty list
-        response = self.get(url=url_list)
-        self.assertEqual(response, [])
-
-        # Create item
-        data = {
-            'hostname': 'target',
-            'ip': '192.168.33.33',
-        }
-        response = self.post(url=url_list, data=data)
-        self.assertEqual(data['ip'], response['ip'])
-        self.assertEqual(data['hostname'], response['hostname'])
-
-        # Get item details
-        url_detail = url_list + '/{hostname}'.format(hostname=data['hostname'])
-        response = self.get(url=url_detail)
-        self.assertEqual(data['hostname'], response['hostname'])
-        self.assertEqual(data['ip'], response['ip'])
-
-        # Change item details
-        data = {
-            'hostname': 'newtarget',
-            'ip': '192.168.33.34',
-        }
-        response = self.put(url=url_detail, data=data)
-        self.assertEqual(data['hostname'], response['hostname'])
-        self.assertEqual(data['ip'], response['ip'])
-
-        # Delete item
-        url_detail = url_list + '/{hostname}'.format(hostname=data['hostname'])
-        response = self.delete(url=url_detail)
-        self.assertEqual(data, response)
-
-        # Cleanup
-        cluster.delete()
 
     def test_me(self):
         from onelove.models import User
@@ -195,49 +163,3 @@ class TestAPI(TestCase):
         api_user = User(data)
         api_user.pk = self.me.pk
         self.assertEqual(self.me, api_user)
-
-    def test_provider(self):
-        from onelove.factories import ClusterFactory
-
-        # Prepare
-        cluster = ClusterFactory()
-        cluster.save()
-        url_list = '/api/v0/clusters/{clusterId}/providers'.format(
-            clusterId=str(cluster.pk)
-        )
-
-        # Get empty list
-        response = self.get(url=url_list)
-        self.assertEqual(response, [])
-
-        # Create item
-        data = {
-            'name': 'Digital Ocean',
-            'type': 'SSH',
-        }
-        response = self.post(url=url_list, data=data)
-        self.assertEqual(data['name'], response['name'])
-        self.assertEqual(data['type'], response['type'])
-
-        # Get item details
-        url_detail = url_list + '/{name}'.format(name=data['name'])
-        response = self.get(url=url_detail)
-        self.assertEqual(data['name'], response['name'])
-        self.assertEqual(data['type'], response['type'])
-
-        # Change item details
-        data = {
-            'name': 'AWS',
-            'type': 'SSH',
-        }
-        response = self.put(url=url_detail, data=data)
-        self.assertEqual(data['name'], response['name'])
-        self.assertEqual(data['type'], response['type'])
-
-        # Delete item
-        url_detail = url_list + '/{name}'.format(name=data['name'])
-        response = self.delete(url=url_detail)
-        self.assertEqual(data, response)
-
-        # Cleanup
-        cluster.delete()

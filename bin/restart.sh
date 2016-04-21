@@ -9,8 +9,10 @@ else
     celery -A manage.celery worker --workdir /usr/src/app --loglevel INFO --pidfile /run/celery.pid --autoreload -P solo &
 fi
 
-if [ -s /run/uwsgi.pid ]; then
-    touch /usr/src/app/uwsgi.ini
+if [ -s /tmp/gunicorn.pid ]; then
+    kill -SIGHUP $(cat /tmp/gunicorn.pid)
 else
-    uwsgi --ini /usr/src/app/uwsgi.ini
+    cd /usr/src/app
+    gunicorn --config gunicorn.conf manage:app
+    cd -
 fi
