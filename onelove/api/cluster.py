@@ -34,7 +34,7 @@ class ClusterListAPI(ProtectedResource):
     @ns_cluster.marshal_with(get_fields)
     @ns_cluster.response(201, 'Cluster is created')
     def post(self):
-        """Create cluster """
+        """Create cluster"""
         args = parser.parse_args()
         cluster_name = args.get('name')
         cluster = Cluster(cluster_name)

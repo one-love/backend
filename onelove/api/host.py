@@ -69,7 +69,7 @@ class ClusterProviderHostAPI(ProtectedResource, ClusterMixin):
                 abort(404, 'No such host')
         abort(404, 'No such provider')
 
-    @ns_cluster.expect  (fields)
+    @ns_cluster.expect(fields)
     @ns_cluster.marshal_with(fields)
     @ns_cluster.response(404,'No such host or provider')
     def put(self, cluster_id, provider_name, hostname):
