@@ -28,6 +28,7 @@ class ServiceListAPI(ProtectedResource):
 
     @ns_service.doc(body=fields)
     @ns_service.marshal_with(get_fields)
+    @ns_service.response(409,'Service with that name already exists')
     def post(self):
         """Create service"""
         args = parser.parse_args()
@@ -41,9 +42,9 @@ class ServiceListAPI(ProtectedResource):
 
 
 @ns_service.route('/<id>', endpoint='services.service')
+@ns_service.response(404, 'Service not found')
 class ServiceAPI(ProtectedResource, ServiceMixin):
     @ns_service.marshal_with(get_fields)
-    @ns_service.response(404, 'Cluster not found')
     def get(self, id):
         """Show service details"""
         service = self._find_service(id)

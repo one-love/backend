@@ -47,9 +47,11 @@ class ServiceApplicationListAPI(ProtectedResource, ServiceMixin):
     '/<service_id>/applications/<application_name>',
     endpoint='services.application'
 )
+@ns_service.response(404,'No such application')
 class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
     @ns_service.marshal_with(fields)
     def get(self, service_id, application_name):
+        """Get application for the service"""
         service = self._find_service(service_id)
         for app in service.applications:
             if app.name == application_name:
@@ -59,6 +61,7 @@ class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
     @ns_service.expect(fields)
     @ns_service.marshal_with(fields)
     def put(self, service_id, application_name):
+        """Update application for the service"""
         args = parser.parse_args()
         service = Service.objects.get(id=service_id)
         for app in service.applications:
@@ -71,6 +74,7 @@ class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
 
     @ns_service.marshal_with(fields)
     def delete(self, service_id, application_name):
+        """Delete appliaction in the service"""
         service = self._find_service(service_id)
         for app in service.applications:
             if app.name == application_name:

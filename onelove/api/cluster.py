@@ -19,6 +19,7 @@ parser.add_argument('sshKey', type=str, required=True, location='json')
 class ClusterListAPI(ProtectedResource):
     @ns_cluster.marshal_with(get_fields)
     @ns_cluster.doc(parser=pagination.parser)
+    @ns_cluster.response(200,'Status OK ')
     def get(self):
         """List clusters"""
         args = pagination.parser.parse_args()
@@ -33,6 +34,7 @@ class ClusterListAPI(ProtectedResource):
 
     @ns_cluster.doc(body=fields)
     @ns_cluster.marshal_with(get_fields)
+    @ns_cluster.response(201, 'Cluster is created')
     def post(self):
         """Create cluster"""
         args = parser.parse_args()
@@ -67,9 +69,10 @@ class ClusterListAPI(ProtectedResource):
 
 
 @ns_cluster.route('/<id>', endpoint='clusters.cluster')
+@ns_cluster.doc(params={'id': 'An ID'})
+@ns_cluster.response(404, 'Cluster not found')
 class ClusterAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(get_fields)
-    @ns_cluster.response(404, 'Cluster not found')
     def get(self, id):
         """Show cluster details"""
         cluster = self._find_cluster(id)
@@ -88,6 +91,7 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
         return cluster
 
     @ns_cluster.marshal_with(fields)
+    @ns_cluster.expect(fields)
     def delete(self, id):
         """Delete the cluster."""
         cluster = self._find_cluster(id)
