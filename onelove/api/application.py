@@ -1,10 +1,12 @@
 from flask_restplus import abort
 from resources import ProtectedResource
 
-from ..models import Application, Service
 from .fields.application import fields
 from .mixins import ServiceMixin
 from .namespaces import ns_service
+
+from ..models import Application, Service
+from ..utils import check_fields
 
 
 parser = ns_service.parser()
@@ -29,6 +31,7 @@ class ServiceApplicationListAPI(ProtectedResource, ServiceMixin):
         """Create aplication for the service"""
         service = self._find_service(service_id)
         args = parser.parse_args()
+        check_fields(args)
         galaxy_role = args.get('galaxy_role')
         name = args.get('name')
         for app in service.applications:
@@ -47,7 +50,7 @@ class ServiceApplicationListAPI(ProtectedResource, ServiceMixin):
     '/<service_id>/applications/<application_name>',
     endpoint='services.application'
 )
-@ns_service.response(404,'No such application')
+@ns_service.response(404, 'No such application')
 class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
     @ns_service.marshal_with(fields)
     def get(self, service_id, application_name):
@@ -63,6 +66,7 @@ class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
     def put(self, service_id, application_name):
         """Update application for the service"""
         args = parser.parse_args()
+        check_fields(args)
         service = Service.objects.get(id=service_id)
         for app in service.applications:
             if app.name == application_name:

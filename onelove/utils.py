@@ -4,6 +4,7 @@ from os.path import abspath, splitext
 from importlib import import_module
 
 from flask import Flask
+from flask_restplus import abort
 
 from config import configs
 
@@ -57,3 +58,9 @@ def import_neighbour_modules(imported_module, package):
             real_module = '.' + splitext(module)[0]
             import_module(real_module, package)
     chdir(old_cwd)
+
+
+def check_fields(args):
+    for key in args.keys():
+        if args[key] is '':
+            abort(409, "'%s' can not be empty string" % key)

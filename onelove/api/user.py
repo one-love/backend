@@ -1,15 +1,15 @@
+import uuid
+
 from flask_security.utils import encrypt_password
 from flask_restplus import Resource, abort
 from mongoengine.queryset import NotUniqueError
 from mongoengine.errors import ValidationError
+
 from .namespaces import ns_user
 from .fields.user import body_fields, response_fields
-
-
-from ..models import User
-from resources import ProtectedResource
-import uuid
+from .resources import ProtectedResource
 from ..email import send_email
+from ..models import User
 
 
 parser = ns_user.parser()
@@ -48,6 +48,8 @@ class UserAPI(ProtectedResource):
             abort(404, message='User does not exist')
 
         args = parser.parse_args()
+        if args.get('email') is '':
+            abort(409, "'email' can not be empty string")
         user.email = args.get('email')
         user.save()
         return user
