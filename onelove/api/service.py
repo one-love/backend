@@ -1,12 +1,16 @@
 import pagination
-from ..models import Service
-from .fields.service import fields, get_fields
-from .mixins import ServiceMixin
-from .namespaces import ns_service
-from resources import ProtectedResource
+
 from flask_jwt import current_identity
 from flask_restplus import abort
 from mongoengine.queryset import NotUniqueError
+
+from .fields.service import fields, get_fields
+from .mixins import ServiceMixin
+from .namespaces import ns_service
+from .resources import ProtectedResource
+
+from ..models import Service
+from ..utils import check_fields
 
 
 parser = ns_service.parser()
@@ -32,6 +36,7 @@ class ServiceListAPI(ProtectedResource):
     def post(self):
         """Create service"""
         args = parser.parse_args()
+        check_fields(args)
         name = args.get('name')
         service = Service(name=name, user=current_identity.pk)
         try:
@@ -56,6 +61,7 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         """Update service"""
         service = self._find_service(id)
         args = parser.parse_args()
+        check_fields(args)
         service.name = args.get('name')
         service.save()
         return service

@@ -1,8 +1,9 @@
 from flask.ext.restplus import abort
-from .mixins import ClusterMixin
 from resources import ProtectedResource
 from .fields.provider import fields, put_fields
+from .mixins import ClusterMixin
 from .namespaces import ns_cluster
+from ..utils import check_fields
 
 
 parser = ns_cluster.parser()
@@ -19,12 +20,13 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
 
     @ns_cluster.expect(fields)
     @ns_cluster.marshal_with(fields)
-    @ns_cluster.response(409,'Provider with that name already exists')
-    @ns_cluster.response(400,'No such provider class')
+    @ns_cluster.response(409, 'Provider with that name already exists')
+    @ns_cluster.response(400, 'No such provider class')
     def post(self, cluster_id):
         """Create cluster provider"""
         parser.add_argument('type', type=str, required=True, location='json')
         args = parser.parse_args()
+        check_fields(args)
         cluster = self._find_cluster(cluster_id)
         provider_name = args.get('name')
         provider_type = args.get('type')
@@ -62,6 +64,7 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
     def put(self, cluster_id, provider_name):
         """Update cluster provider"""
         args = parser.parse_args()
+        check_fields(args)
         cluster = self._find_cluster(cluster_id)
         for provider in cluster.providers:
             if provider.name == provider_name:
