@@ -1,12 +1,14 @@
+import pagination
+from base64 import b64decode
+from flask import current_app
+from flask_jwt import current_identity
+
 from ..models import Cluster, User
+from ..utils import check_fields
 from .fields.cluster import fields, get_fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
 from .resources import ProtectedResource
-from flask_jwt import current_identity
-from flask import current_app
-from base64 import b64decode
-import pagination
 
 
 parser = ns_cluster.parser()
@@ -19,7 +21,7 @@ parser.add_argument('sshKey', type=str, required=True, location='json')
 class ClusterListAPI(ProtectedResource):
     @ns_cluster.marshal_with(get_fields)
     @ns_cluster.doc(parser=pagination.parser)
-    @ns_cluster.response(200,'Status OK ')
+    @ns_cluster.response(200, 'Status OK ')
     def get(self):
         """List clusters"""
         args = pagination.parser.parse_args()
@@ -38,6 +40,7 @@ class ClusterListAPI(ProtectedResource):
     def post(self):
         """Create cluster"""
         args = parser.parse_args()
+        check_fields(args)
         cluster_name = args.get('name')
         cluster_username = args.get('username')
         cluster_ssh_key = b64decode(args.get('sshKey'))
@@ -84,6 +87,7 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
         """Update cluster"""
         cluster = self._find_cluster(id)
         args = parser.parse_args()
+        check_fields(args)
         cluster.name = args.get('name')
         cluster.username = args.get('username')
         cluster.sshKey = b64decode(args.get('sshKey'))

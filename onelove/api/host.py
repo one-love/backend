@@ -1,8 +1,9 @@
 from flask_restplus import abort
-from .mixins import ClusterMixin
 from resources import ProtectedResource
 from .fields.host import fields
+from .mixins import ClusterMixin
 from .namespaces import ns_cluster
+from ..utils import check_fields
 
 
 parser = ns_cluster.parser()
@@ -36,6 +37,7 @@ class ClusterProviderHostListAPI(ProtectedResource, ClusterMixin):
     def post(self, cluster_id, provider_name):
         """Create host"""
         args = parser.parse_args()
+        check_fields(args)
         hostname = args.get('hostname')
         ip = args.get('ip')
         cluster = self._find_cluster(cluster_id)
@@ -73,6 +75,7 @@ class ClusterProviderHostAPI(ProtectedResource, ClusterMixin):
     def put(self, cluster_id, provider_name, hostname):
         """Update host info"""
         args = parser.parse_args()
+        check_fields(args)
         cluster = self._find_cluster(cluster_id)
         for provider in cluster.providers:
             if provider.name == provider_name:
