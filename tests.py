@@ -163,3 +163,11 @@ class TestAPI(TestCase):
         api_user = User(data)
         api_user.pk = self.me.pk
         self.assertEqual(self.me, api_user)
+
+    def test_task(self):
+        from onelove.models import Task
+        url_list = '/api/v0/tasks'
+
+        # Get empty list
+        response = self.get(url=url_list)
+        self.assertEqual(response, [])
