@@ -164,6 +164,23 @@ class TestAPI(TestCase):
         api_user.pk = self.me.pk
         self.assertEqual(self.me, api_user)
 
+    def test_service(self):
+        from onelove.models import Service
+        
+        # Prepare
+        url_list = '/api/v0/services'
+        data={
+            'name': 'first'
+        }
+        # Get empty list
+        response = self.get(url=url_list)
+        self.assertEqual(response, [])
+        
+        # Create item
+        response = self.post(url=url_list, data=data)
+        self.assertEqual(data['name'], response['name'])
+
+
     def test_task(self):
         from onelove.models import Task
         url_list = '/api/v0/tasks'
