@@ -50,7 +50,6 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
 @ns_cluster.response(404,'No such provider')
 class ClusterProviderAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)
-    @ns_cluster.expect(fields)
     def get(self, cluster_id, provider_name):
         """List cluster provider details"""
         cluster = self._find_cluster(cluster_id)

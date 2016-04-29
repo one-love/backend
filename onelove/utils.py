@@ -1,7 +1,8 @@
 from glob import glob
-from os import getcwd, chdir
-from os.path import abspath, splitext
+from os import getcwd, chdir, getenv, makedirs
+from os.path import abspath, splitext, exists, dirname
 from importlib import import_module
+from shutil import copy
 
 from flask import Flask
 from flask_restplus import abort
@@ -64,3 +65,22 @@ def check_fields(args):
     for key in args.keys():
         if args[key] is '':
             abort(409, "'%s' can not be empty string" % key)
+
+
+def copy_callbacks(destination):
+    project_root = abspath(dirname(__file__))
+    callbacks_root = '%s/callbacks' % project_root
+    callbacks = [
+        'onelove',
+    ]
+    for callback in callbacks:
+        callback_path = '%s/%s.py' % (callbacks_root, callback)
+        copy(callback_path, destination)
+
+
+def setup_ansible_callbacks():
+    home = abspath(getenv('HOME', ''))
+    callback_dir = '%s/%s' % (home, '.ansible/plugins/callback')
+    if not exists(callback_dir):
+        makedirs(callback_dir)
+    copy_callbacks(callback_dir)
