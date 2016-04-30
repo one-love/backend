@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-from gevent import monkey
-monkey.patch_all()
 import os
 
-from flask import redirect, url_for
+from flask import redirect, url_for, request
 from flask_script import Manager
 from onelove.tasks.monitor import create_monitor, thread
+from flask_socketio import join_room, disconnect
 
 from onelove import OneLove
 from onelove.utils import create_app
@@ -34,6 +33,26 @@ def index():
 
 
 create_monitor()
+
+
+@onelove.socketio.on('connect')
+def on_connect():
+    from onelove.models import User
+    token = request.args.get('token', None)
+    request.namespace = '/onelove'
+    if token is None:
+        disconnect()
+        return
+    try:
+        current_identity = onelove.jwt.jwt_decode_callback(token)
+    except:
+        disconnect()
+        return
+    if current_identity is None:
+        disconnect()
+        return
+    user = User.objects.get(id=current_identity['identity'])
+    join_room(user.email)
 
 
 if __name__ == '__main__':
