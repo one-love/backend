@@ -52,7 +52,7 @@ def on_connect():
         disconnect()
         return
     user = User.objects.get(id=current_identity['identity'])
-    join_room(user.email)
+    join_room(user.id)
 
 
 if __name__ == '__main__':
