@@ -163,3 +163,45 @@ class TestAPI(TestCase):
         api_user = User(data)
         api_user.pk = self.me.pk
         self.assertEqual(self.me, api_user)
+
+    def test_service(self):
+        from onelove.models import Service
+        
+        # Prepare
+        url_list = '/api/v0/services'
+        data={
+            'name': 'first'
+        }
+        # Get empty list
+        response = self.get(url=url_list)
+        self.assertEqual(response, [])
+        
+        # Create item
+        response = self.post(url=url_list, data=data)
+        self.assertEqual(data['name'], response['name'])
+
+        # Get item details
+        url_detail='/api/v0/services/{pk}'.format(pk=response['id'])
+        response = self.get(url=url_detail)
+        service = Service.objects.get(name=response['name'])
+        self.assertEqual(service.name, response['name'])
+        # Change item details
+        data = {
+            'name': 'second'
+        }
+        response = self.put(url=url_detail, data=data)
+        service = Service.objects.get(name=response['name'])
+        self.assertEqual(service.name, response['name'])
+
+        # Delete item
+        response = self.delete(url=url_detail)
+        self.assertEqual(data['name'], response['name'])
+       
+    def test_task(self):
+        from onelove.models import Task
+        url_list = '/api/v0/tasks'
+
+        # Get empty list
+        response = self.get(url=url_list)
+        self.assertEqual(response, [])
+

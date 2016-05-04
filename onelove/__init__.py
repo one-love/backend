@@ -10,6 +10,10 @@ from flask_security import Security, MongoEngineUserDatastore
 from flask_security.utils import verify_password
 from flask_socketio import SocketIO
 from .models import User, Role
+from gevent import monkey
+
+
+monkey.patch_all()
 
 
 current_app = None

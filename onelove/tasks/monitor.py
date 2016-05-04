@@ -23,9 +23,20 @@ def my_monitor():
             namespace='/onelove',
         )
 
-    def ansible_log_handler(*args, **kwargs):
-        print(args)
-        print(kwargs)
+    def ansible_log(event):
+        from .. import current_app
+        state.event(event)
+        task = AsyncResult(event['uuid'])
+        current_app.socketio.emit(
+            'task',
+            {
+                'id': task.id,
+                'status': task.status,
+                'task': event['task'],
+                'host': event['host'],
+            },
+            namespace='/onelove',
+        )
 
     with celery.connection() as connection:
         recv = celery.events.Receiver(
@@ -34,7 +45,8 @@ def my_monitor():
                 'task-started': task_state_changed,
                 'task-succeeded': task_state_changed,
                 'task-failed': task_state_changed,
-                'ansible-log': ansible_log_handler,
+                'ansible-log': ansible_log,
+                '*': state.event,
             },
             app=celery,
         )

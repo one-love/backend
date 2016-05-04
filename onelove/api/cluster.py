@@ -110,7 +110,6 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
         return cluster
 
     @ns_cluster.marshal_with(fields)
-    @ns_cluster.expect(fields)
     def delete(self, id):
         """Delete the cluster."""
         cluster = self._find_cluster(id)
