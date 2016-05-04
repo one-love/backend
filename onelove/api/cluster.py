@@ -4,7 +4,7 @@ from flask import current_app
 from flask_jwt import current_identity
 
 from ..models import Cluster, User
-from ..utils import check_fields
+from ..utils import check_fields, all_fields_optional
 from .fields.cluster import fields, get_fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
@@ -91,6 +91,21 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
         cluster.name = args.get('name')
         cluster.username = args.get('username')
         cluster.sshKey = b64decode(args.get('sshKey'))
+        cluster.save()
+        return cluster
+
+    @ns_cluster.expect(fields)
+    @ns_cluster.marshal_with(fields)
+    def patch(self, id):
+        """Update cluster"""
+        cluster = self._find_cluster(id)
+        patch_parser = all_fields_optional(parser)
+        args = patch_parser.parse_args()
+        cluster.name = args.get('name') or cluster.name
+        cluster.username = args.get('username') or cluster.username
+        sshKey = args.get('sshKey', None)
+        if sshKey is not None:
+            cluster.sshKey = b64decode(sshKey)
         cluster.save()
         return cluster
 

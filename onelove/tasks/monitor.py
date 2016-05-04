@@ -4,11 +4,11 @@ from celery.result import AsyncResult
 
 thread = None
 
+
 def my_monitor():
     from .. import current_app
     celery = current_app.celery
     state = celery.events.State()
-
 
     def task_state_changed(event):
         from .. import current_app
@@ -23,6 +23,9 @@ def my_monitor():
             namespace='/onelove',
         )
 
+    def ansible_log_handler(*args, **kwargs):
+        print(args)
+        print(kwargs)
 
     with celery.connection() as connection:
         recv = celery.events.Receiver(
@@ -31,6 +34,7 @@ def my_monitor():
                 'task-started': task_state_changed,
                 'task-succeeded': task_state_changed,
                 'task-failed': task_state_changed,
+                'ansible-log': ansible_log_handler,
             },
             app=celery,
         )

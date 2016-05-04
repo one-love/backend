@@ -11,6 +11,7 @@ from flask_security.utils import verify_password
 from flask_socketio import SocketIO
 from .models import User, Role
 
+
 current_app = None
 
 

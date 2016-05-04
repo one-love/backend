@@ -10,6 +10,7 @@ from .fields.user import body_fields, response_fields
 from .resources import ProtectedResource
 from ..email import send_email
 from ..models import User
+from ..utils import all_fields_optional
 
 
 parser = ns_user.parser()
@@ -51,6 +52,21 @@ class UserAPI(ProtectedResource):
         if args.get('email') is '':
             abort(409, "'email' can not be empty string")
         user.email = args.get('email')
+        user.save()
+        return user
+
+    @ns_user.expect(body_fields)
+    @ns_user.marshal_with(response_fields)
+    def patch(self, id):
+        """Update user"""
+        try:
+            user = User.objects.get(id=id)
+        except (User.DoesNotExist, ValidationError):
+            abort(404, message='User does not exist')
+
+        patch_parser = all_fields_optional(parser)
+        args = patch_parser.parse_args()
+        user.email = args.get('email') or user.email
         user.save()
         return user
 

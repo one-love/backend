@@ -25,7 +25,7 @@ class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
 
     @ns_cluster.doc(body=post_fields)
     @ns_cluster.marshal_with(get_fields)
-    @ns_cluster.response(409,'Service already exist')
+    @ns_cluster.response(409, 'Service already exist')
     def post(self, cluster_id):
         """Create cluster service"""
         args = parser.parse_args()
@@ -57,7 +57,7 @@ class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
 )
 class ClusterServiceAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(get_fields)
-    @ns_cluster.response(404,'Service not found')
+    @ns_cluster.response(404, 'Service not found')
     @ns_cluster.expect(get_fields)
     def delete(self, cluster_id, service_id):
         """Delete service"""

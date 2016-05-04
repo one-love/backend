@@ -3,7 +3,7 @@ from resources import ProtectedResource
 from .fields.provider import fields, put_fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
-from ..utils import check_fields
+from ..utils import check_fields, all_fields_optional
 
 
 parser = ns_cluster.parser()
@@ -47,7 +47,7 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
     '/<cluster_id>/providers/<provider_name>',
     endpoint='clusters.provider',
 )
-@ns_cluster.response(404,'No such provider')
+@ns_cluster.response(404, 'No such provider')
 class ClusterProviderAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)
     @ns_cluster.expect(fields)
@@ -69,6 +69,20 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
         for provider in cluster.providers:
             if provider.name == provider_name:
                 provider.name = args.get('name')
+                provider.save()
+                return provider
+        abort(404, error='No such provider')
+
+    @ns_cluster.expect(put_fields)
+    @ns_cluster.marshal_with(fields)
+    def patch(self, cluster_id, provider_name):
+        """Update cluster provider"""
+        patch_parser = all_fields_optional(parser)
+        args = patch_parser.parse_args()
+        cluster = self._find_cluster(cluster_id)
+        for provider in cluster.providers:
+            if provider.name == provider_name:
+                provider.name = args.get('name') or provider.name
                 provider.save()
                 return provider
         abort(404, error='No such provider')
