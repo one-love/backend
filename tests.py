@@ -154,6 +154,36 @@ class TestAPI(TestCase):
         for item in roles:
             role = Role.objects(name=item['name'])
             role.delete()
+        
+    def test_cluster_service(self):
+        from onelove import factories
+        from onelove.models import Cluster
+        
+        # Prepare
+        cluster = factories.ClusterFactory.create()
+        cluster.save()
+        service = factories.ServiceFactory.create(user=self.me)
+        service.save()
+        url_list='/api/v0/clusters/{pk}/services'.format(pk=cluster.pk)
+        data={
+            'service_id': str(service.pk),
+        }
+
+        # Get empty list
+        response = self.get(url=url_list)
+        self.assertEqual(response, [])
+
+        # Create item
+        response = self.post(url=url_list, data=data)
+        self.assertEqual(data['service_id'], response['id'])
+
+        # Delete item
+        url_detail='/api/v0/clusters/{pk}/services/{ps}'.format(pk=cluster.pk, ps=response['id'])
+        response = self.delete(url=url_detail)
+        self.assertEqual(data['service_id'],response['id'])
+
+        cluster.delete()
+        service.delete()
 
     def test_me(self):
         from onelove.models import User
@@ -204,4 +234,3 @@ class TestAPI(TestCase):
         # Get empty list
         response = self.get(url=url_list)
         self.assertEqual(response, [])
-
