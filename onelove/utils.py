@@ -1,3 +1,4 @@
+from copy import deepcopy
 from glob import glob
 from os import getcwd, chdir, getenv, makedirs
 from os.path import abspath, splitext, exists, dirname
@@ -65,6 +66,13 @@ def check_fields(args):
     for key in args.keys():
         if args[key] is '':
             abort(409, "'%s' can not be empty string" % key)
+
+
+def all_fields_optional(parser):
+    new_parser = deepcopy(parser)
+    for arg in new_parser.args:
+        arg.required = False
+    return new_parser
 
 
 def copy_callbacks(destination):

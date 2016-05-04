@@ -10,7 +10,7 @@ from .namespaces import ns_service
 from .resources import ProtectedResource
 
 from ..models import Service
-from ..utils import check_fields
+from ..utils import check_fields, all_fields_optional
 
 
 parser = ns_service.parser()
@@ -32,7 +32,7 @@ class ServiceListAPI(ProtectedResource):
 
     @ns_service.doc(body=fields)
     @ns_service.marshal_with(get_fields)
-    @ns_service.response(409,'Service with that name already exists')
+    @ns_service.response(409, 'Service with that name already exists')
     def post(self):
         """Create service"""
         args = parser.parse_args()
@@ -63,6 +63,17 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
         args = parser.parse_args()
         check_fields(args)
         service.name = args.get('name')
+        service.save()
+        return service
+
+    @ns_service.expect(fields)
+    @ns_service.marshal_with(get_fields)
+    def patch(self, id):
+        """Update service"""
+        service = self._find_service(id)
+        patch_parser = all_fields_optional(parser)
+        args = patch_parser.parse_args()
+        service.name = args.get('name') or service.name
         service.save()
         return service
 

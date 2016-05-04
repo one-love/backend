@@ -22,6 +22,7 @@ class Config(BaseConfig):
     CELERY_RESULT_SERIALIZER = 'json'
     CELERY_SEND_EVENTS = True
     CELERY_TASK_SERIALIZER = 'json'
+    CELERY_REDIRECT_STDOUTS = True
     DEBUG = False
     FRONTEND_LIVERELOAD = False
     JWT_EXPIRATION_DELTA = timedelta(days=7)

@@ -6,7 +6,7 @@ from .mixins import ServiceMixin
 from .namespaces import ns_service
 
 from ..models import Application, Service
-from ..utils import check_fields
+from ..utils import check_fields, all_fields_optional
 
 
 parser = ns_service.parser()
@@ -72,6 +72,21 @@ class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
             if app.name == application_name:
                 app.name = args.get('name')
                 app.galaxy_role = args.get('galaxy_role')
+                service.save()
+                return app
+        abort(404, error='No such application')
+
+    @ns_service.expect(fields)
+    @ns_service.marshal_with(fields)
+    def patch(self, service_id, application_name):
+        """Update application for the service"""
+        patch_parser = all_fields_optional(parser)
+        args = patch_parser.parse_args()
+        service = Service.objects.get(id=service_id)
+        for app in service.applications:
+            if app.name == application_name:
+                app.name = args.get('name') or app.name
+                app.galaxy_role = args.get('galaxy_role') or app.galaxy_role
                 service.save()
                 return app
         abort(404, error='No such application')
