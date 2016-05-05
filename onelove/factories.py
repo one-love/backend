@@ -25,4 +25,12 @@ class RoleFactory(factory.Factory):
 class ClusterFactory(factory.Factory):
     class Meta:
         model = models.Cluster
+    
     name = factory.Faker('first_name')
+
+class ServiceFactory(factory.Factory):
+    class Meta:
+        model = models.Service
+    
+    name = factory.Faker('name')
+    user = factory.SubFactory(UserFactory)
