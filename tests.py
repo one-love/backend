@@ -178,7 +178,7 @@ class TestAPI(TestCase):
         self.assertEqual(data['service_id'], response['id'])
 
         # Delete item
-        url_detail='/api/v0/clusters/{pk}/services/{ps}'.format(pk=cluster.pk, ps=response['id'])
+        url_detail = '/api/v0/clusters/{pk}/services/{ps}'.format(pk=cluster.pk, ps=response['id'])
         response = self.delete(url=url_detail)
         self.assertEqual(data['service_id'],response['id'])
 
@@ -196,10 +196,10 @@ class TestAPI(TestCase):
 
     def test_service(self):
         from onelove.models import Service
-        
+
         # Prepare
         url_list = '/api/v0/services'
-        data={
+        data = {
             'name': 'first'
         }
         # Get empty list
@@ -215,6 +215,7 @@ class TestAPI(TestCase):
         response = self.get(url=url_detail)
         service = Service.objects.get(name=response['name'])
         self.assertEqual(service.name, response['name'])
+        
         # Change item details
         data = {
             'name': 'second'
@@ -226,7 +227,53 @@ class TestAPI(TestCase):
         # Delete item
         response = self.delete(url=url_detail)
         self.assertEqual(data['name'], response['name'])
-       
+    
+    def test_service_applications(self):
+        from onelove.models import Service
+        from onelove import factories
+
+        # Prepare
+        service = factories.ServiceFactory.create(user=self.me)
+        service.save()
+        url_list = '/api/v0/services/{pk}/applications'.format(pk=str(service.pk))
+        data = {
+            'galaxy_role': 'super',
+            'name': 'first'
+        }
+
+        # Get empty list
+        response = self.get(url_list)
+        self.assertEqual(response,[])
+
+        # Create item
+        response = self.post(url=url_list, data=data)
+        self.assertEqual(data['galaxy_role'],response['galaxy_role'])
+        self.assertEqual(data['name'], response['name'])
+        
+        # Get item details
+        url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(pk=str(service.pk),ps=response['name'])
+        response = self.get(url_detail)
+        self.assertEqual(data['name'],response['name'])
+        self.assertEqual(data['galaxy_role'],response['galaxy_role'])
+
+        # Change item details
+        data = {
+            'galaxy_role': 'Extra',
+            'name': 'second',
+        }
+        response = self.put(url_detail,data=data)
+        self.assertEqual(response['name'],data['name'])
+        self.assertEqual(response['galaxy_role'],data['galaxy_role'])
+        
+        # Delete item
+        url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(pk=str(service.pk),ps=response['name'])
+        response = self.delete(url=url_detail)
+        self.assertEqual(data['galaxy_role'],response['galaxy_role'])
+        self.assertEqual(data['name'],response['name'])
+        
+
+        service.delete()
+
     def test_task(self):
         from onelove.models import Task
         url_list = '/api/v0/tasks'
