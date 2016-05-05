@@ -12,6 +12,8 @@ COPY ssh_config ~/.ssh/config
 RUN apt-get update && \
     apt-get install --no-install-recommends -y build-essential \
     ca-certificates \
+    libffi-dev \
+    libssl-dev \
     libyaml-dev \
     python-dev \
     sshpass \
