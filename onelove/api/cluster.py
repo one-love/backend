@@ -95,7 +95,7 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
         return cluster
 
     @ns_cluster.expect(fields)
-    @ns_cluster.marshal_with(fields)
+    @ns_cluster.marshal_with(get_fields)
     def patch(self, id):
         """Update cluster"""
         cluster = self._find_cluster(id)
