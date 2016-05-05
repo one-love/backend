@@ -56,9 +56,6 @@ def on_connect():
 
 
 if __name__ == '__main__':
-    from onelove.utils import reload_celery, reload_frontend
-    reload_celery(onelove.celery)
-    reload_frontend()
     app.debug = True
     manager.run()
     thread.stop()
