@@ -73,6 +73,18 @@ class TestAPI(TestCase):
         )
         self.assertLess(response.status_code, 400)
         return json.loads(response.data)
+    
+    def patch(self, url, data):
+        response = self.app.patch(
+            url,
+            data=json.dumps(data),
+            headers={
+                'Authorization': 'JWT {token}'.format(token=self.token),
+                'Content-Type': 'application/json',
+            },
+        )
+        self.assertLess(response.status_code, 400)
+        return json.loads(response.data)
 
     def delete(self, url):
         response = self.app.delete(
@@ -144,7 +156,40 @@ class TestAPI(TestCase):
         self.assertEqual(cluster.username, response['username'])
         self.assertEqual(cluster.sshKey, response['sshKey'])
 
+        # Change item details
+        data = {
+            'name': 'third',
+        }
+        response = self.patch(url=url_detail, data=data)
+        cluster = Cluster.objects.get(name=response['name'])
+        self.assertEqual(cluster.name, response['name'])
+        self.assertEqual(cluster.username, response['username'])
+        self.assertEqual(cluster.sshKey, response['sshKey'])
+        
+        data = {
+            'username': 'example'
+        }
+        response = self.patch(url=url_detail, data=data)
+        cluster = Cluster.objects.get(name=response['name'])
+        self.assertEqual(cluster.name, response['name'])
+        self.assertEqual(cluster.username, response['username'])
+        self.assertEqual(cluster.sshKey, response['sshKey'])
+        
+        data = {
+            'sshKey': b64encode('example fake'),
+        }
+        response = self.patch(url=url_detail, data=data)
+        cluster = Cluster.objects.get(name=response['name'])
+        self.assertEqual(cluster.name, response['name'])
+        self.assertEqual(cluster.username, response['username'])
+        self.assertEqual(cluster.sshKey, response['sshKey'])
+
         # Delete item
+        data = {
+            'name': 'third',
+            'username': 'example',
+            'sshKey': b64encode('example fake'),
+        }
         response = self.delete(url=url_detail)
         self.assertEqual(data['name'], response['name'])
         self.assertEqual(data['username'], response['username'])
@@ -224,6 +269,14 @@ class TestAPI(TestCase):
         service = Service.objects.get(name=response['name'])
         self.assertEqual(service.name, response['name'])
 
+        # Change item details
+        data = {
+            'name': 'third',
+        }
+        response = self.patch(url=url_detail, data=data)
+        service = Service.objects.get(name=response['name'])
+        self.assertEqual(service.name, response['name'])
+
         # Delete item
         response = self.delete(url=url_detail)
         self.assertEqual(data['name'], response['name'])
@@ -258,14 +311,43 @@ class TestAPI(TestCase):
 
         # Change item details
         data = {
-            'galaxy_role': 'Extra',
+            'galaxy_role': 'extra',
             'name': 'second',
         }
         response = self.put(url_detail,data=data)
         self.assertEqual(response['name'],data['name'])
         self.assertEqual(response['galaxy_role'],data['galaxy_role'])
-        
+
+        # Change item details
+        url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(pk=str(service.pk),ps=response['name'])
+        data={
+            'galaxy_role': 'turbo',
+        }
+        response = self.patch(url_detail, data=data)
+        data = {
+            'galaxy_role': 'turbo',
+            'name': 'second',
+        }
+        self.assertEqual(response['name'],data['name'])
+        self.assertEqual(response['galaxy_role'],data['galaxy_role'])
+
+        data={
+            'name': 'third'
+        }
+        response = self.patch(url_detail,data=data)
+        data = {
+            'galaxy_role': 'turbo',
+            'name': 'third',
+        }
+        self.assertEqual(response['name'],data['name'])
+        self.assertEqual(response['galaxy_role'],data['galaxy_role'])
+
+
         # Delete item
+        data = {
+            'galaxy_role': 'turbo',
+            'name': 'third'
+        }
         url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(pk=str(service.pk),ps=response['name'])
         response = self.delete(url=url_detail)
         self.assertEqual(data['galaxy_role'],response['galaxy_role'])
@@ -273,6 +355,13 @@ class TestAPI(TestCase):
         
 
         service.delete()
+    def test_user(self):
+        from onelove.models import User
+
+        # Prepare
+        url_list = 'api/v0/users'
+
+        # Get empty list 
 
     def test_task(self):
         from onelove.models import Task
