@@ -1,5 +1,4 @@
 ansible
-celery
 flask-collect
 flask-cors
 flask-jwt
@@ -11,4 +10,5 @@ flask-socketio
 gevent-websocket
 gunicorn
 mongoengine
+pyzmq
 setproctitle
