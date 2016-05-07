@@ -1,4 +1,3 @@
-from celery import Celery
 from flask import Blueprint
 from flask_collect import Collect
 from flask_cors import CORS
@@ -28,7 +27,6 @@ class OneLove(object):
     api = None
     app = None
     blueprint = None
-    celery = Celery('onelove')
     collect = Collect()
     db = MongoEngine()
     jwt = JWT()
@@ -77,10 +75,6 @@ class OneLove(object):
 
         self.app.register_blueprint(api_v0, url_prefix='/api/v0')
         self.app.register_blueprint(apidoc.apidoc)
-
-        self.celery.conf.update(self.app.config)
-        self.celery.set_default()
-        self.celery.set_current()
 
         self.mail.init_app(self.app)
 

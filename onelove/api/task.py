@@ -1,4 +1,4 @@
-from celery.result import AsyncResult
+from flask_restplus import abort
 
 from ..models import Task
 from .fields.task import fields
@@ -10,9 +10,7 @@ from .resources import ProtectedResource
 class TaskListAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
     def get(self):
-    	"""Get list of tasks"""
-        from .. import current_app
-        current_app.socketio.emit('response', 'flask', namespace='/onelove')
+        """Get list of tasks"""
         return [task for task in Task.objects.all()]
 
 
@@ -21,5 +19,8 @@ class TaskAPI(ProtectedResource):
     @ns_task.marshal_with(fields)
     def get(self, id):
         """Find task by id"""
-        task = AsyncResult(id)
+        try:
+            task = Task.objects.get(id=id)
+        except:
+            abort(404, 'No such task')
         return task

@@ -1,10 +1,4 @@
 class BaseConfig(object):
     {{ range service "mongo" }}MONGODB_HOST = '{{.Address}}'
     MONGODB_PORT = {{.Port}}
-    CELERY_RESULT_BACKEND = 'mongodb://{{.Address}}:{{.Port}}/'{{ end }}
-    CELERY_MONGODB_BACKEND_SETTINGS = {
-        'database': 'onelove',
-    }
-
-    {{ range service "rabbitmq-5672" }}BROKER_URL = 'amqp://guest@{{.Address}}:{{.Port}}//'{{ end }}
     SECRET_KEY = '{{ key "onelove/secret_key" }}'

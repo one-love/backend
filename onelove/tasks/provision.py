@@ -9,7 +9,6 @@ from ansible.galaxy.role import GalaxyRole
 from ansible.inventory import Inventory
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars import VariableManager
-from celery import current_app
 from jinja2 import Environment, PackageLoader
 
 
@@ -176,33 +175,15 @@ def run_playbook(playbook_path, cluster):
             'conn_pass': 'vagrant',
         },
     )
-    result = executor.run()
-    return result
+    return executor.run()
 
 
-@current_app.task(bind=True)
-def provision(self, cluster_id, service_id):
-    from ..models import Cluster
+def provision(task):
     playbook_path = mkdtemp()
     try:
-        cluster = Cluster.objects.get(id=cluster_id)
-        service = None
-        for service_iterator in cluster.services:
-            if str(service_iterator.id) == service_id:
-                service = service_iterator
-
-        if service is None:
-            raise ValueError('no such service')
-
-        if not service.applications:
-            raise ValueError('service has no applications')
-
-        if cluster.providers == []:
-            raise ValueError('you must add at least one provider')
-
-        install_service(playbook_path, cluster, service)
-        generate_playbook(playbook_path, cluster, service)
-        result = run_playbook(playbook_path, cluster)
+        install_service(playbook_path, task.cluster, task.service)
+        generate_playbook(playbook_path, task.cluster, task.service)
+        result = run_playbook(playbook_path, task.cluster)
         if result != 0:
             raise ValueError('something went wrong')
     finally:

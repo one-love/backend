@@ -6,6 +6,7 @@ from resources import ProtectedResource
 from .fields.task import fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
+from ..models import Cluster, Service, Task
 
 
 @ns_cluster.route(
@@ -17,11 +18,23 @@ class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.response(404, 'Service not found')
     def get(self, cluster_id, service_id):
         """Run provision"""
+        try:
+            cluster = Cluster.objects.get(id=cluster_id)
+        except:
+            abort(404, 'No such cluster')
+
+        try:
+            service = Service.objects.get(id=service_id)
+        except:
+            abort(404, 'No such service')
+        task = Task(cluster=cluster, service=service)
+        task.save()
         context = zmq.Context()
-        print('Connecting to hello world server ...')
         socket = context.socket(zmq.REQ)
         socket.connect('tcp://worker:5555')
-        print('Sending request')
-        socket.send(b'Hello')
+        message = str(task.pk)
+        socket.send(message)
         message = socket.recv()
-        print('Received reply: %s' % message)
+        socket.close()
+        context.term()
+        return task

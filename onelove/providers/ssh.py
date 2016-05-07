@@ -16,7 +16,6 @@ class HostSSH(EmbeddedDocument):
 
 class ProviderSSH(Provider):
     type = 'SSH'
-    private_key = StringField(max_length=4096)
     hosts = EmbeddedDocumentListField(HostSSH)
 
     def list(self):
