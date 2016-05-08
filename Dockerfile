@@ -15,6 +15,7 @@ RUN apt-get update && \
     libffi-dev \
     libssl-dev \
     libyaml-dev \
+    openssh-client \
     python-dev \
     sshpass \
     tar \
