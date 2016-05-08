@@ -1,6 +1,8 @@
 import factory
-import models
 from flask_security.utils import encrypt_password
+
+import models
+from providers import ssh
 
 
 class UserFactory(factory.Factory):
@@ -25,12 +27,33 @@ class RoleFactory(factory.Factory):
 class ClusterFactory(factory.Factory):
     class Meta:
         model = models.Cluster
-    
     name = factory.Faker('first_name')
+    username = 'vagrant'
+
 
 class ServiceFactory(factory.Factory):
     class Meta:
         model = models.Service
-    
-    name = factory.Faker('name')
+    name = factory.Faker('first_name')
     user = factory.SubFactory(UserFactory)
+    applications = factory.LazyAttribute(lambda a: [ApplicationFactory()])
+
+
+class ApplicationFactory(factory.Factory):
+    class Meta:
+        model = models.Application
+    name = factory.Faker('first_name')
+    galaxy_role = 'onelove-roles.common'
+
+
+class ProviderSSHFactory(factory.Factory):
+    class Meta:
+        model = ssh.ProviderSSH
+    hosts = factory.LazyAttribute(lambda a: [HostSSHFactory()])
+
+
+class HostSSHFactory(factory.Factory):
+    class Meta:
+        model = ssh.HostSSH
+    ip = '192.168.33.34'
+    hostname = 'target.vagrant'
