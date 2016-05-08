@@ -152,10 +152,6 @@ class Cluster(Document):
 
 
 class Task(Document):
-    id = UUIDField(primary_key=True, binary=False)
-    meta = {'collection': 'celery_taskmeta'}
     status = StringField(max_length=63, default='PENDING')
-    date_done = DateTimeField()
-    traceback = StringField()
-    children = StringField()
-    result = StringField()
+    cluster = ReferenceField(Cluster)
+    service = ReferenceField(Service)

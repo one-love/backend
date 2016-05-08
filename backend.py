@@ -3,7 +3,6 @@ import os
 
 from flask import redirect, url_for, request
 from flask_script import Manager
-from onelove.tasks.monitor import create_monitor, thread
 from flask_socketio import join_room, disconnect
 
 from onelove import OneLove
@@ -32,9 +31,6 @@ def index():
     return redirect(url_for(onelove.api.endpoint('doc')))
 
 
-create_monitor()
-
-
 @onelove.socketio.on('connect')
 def on_connect():
     from onelove.models import User
@@ -58,5 +54,3 @@ def on_connect():
 if __name__ == '__main__':
     app.debug = True
     manager.run()
-    thread.stop()
-    thread = None

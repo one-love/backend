@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from flask_security.utils import encrypt_password
 
-from manage import onelove
+from backend import onelove
 from onelove.models import User
 
 

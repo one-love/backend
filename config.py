@@ -15,18 +15,9 @@ except ImportError:
 
 
 class Config(BaseConfig):
-    CELERY_ACCEPT_CONTENT = ['json']
-    CELERY_MONGODB_BACKEND_SETTINGS = {
-        'database': 'onelove',
-    }
-    CELERY_RESULT_SERIALIZER = 'json'
-    CELERY_SEND_EVENTS = True
-    CELERY_TASK_SERIALIZER = 'json'
-    CELERY_REDIRECT_STDOUTS = True
     DEBUG = False
-    FRONTEND_LIVERELOAD = False
     JWT_EXPIRATION_DELTA = timedelta(days=7)
-    KNOWLEDGES = load_knowledge_sources(KNOWLEDGE_SOURCES)
+    KNOWLEDGE_SOURCES = load_knowledge_sources(KNOWLEDGE_SOURCES)
     MONGODB_DB = 'onelove'
     PROVIDERS = load_hosting_providers(HOSTING_PROVIDERS)
     SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
@@ -43,7 +34,6 @@ class Config(BaseConfig):
 
 
 class DevConfig(Config):
-    CELERYD_POOL_RESTARTS = True
     DEBUG = True
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
