@@ -42,7 +42,7 @@ def run(project_root):
     setup_ssh(project_root)
     worker_process = Process(target=worker, args=(queue,))
     worker_process.start()
-    connect('onelove', host='db')
+    connect('onelove', host='mongodb')
     while True:
         task_id = queue.get()
         task = Task.objects.get(id=task_id)
