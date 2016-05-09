@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from create_default_admin import user, admin_role
 from onelove.factories import ClusterFactory, ServiceFactory
-from onelove.utils import eprint
 
 
 cluster = ClusterFactory()
@@ -11,7 +10,6 @@ service.save()
 
 with open('keys/onelove') as mykey:
     cluster.sshKey = mykey.read()
-    eprint(cluster.sshKey)
 
 cluster.services.append(service)
 cluster.save()
