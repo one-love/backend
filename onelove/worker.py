@@ -14,18 +14,22 @@ from plugins import HOSTING_PROVIDERS
 
 
 queue = Queue()
+context = zmq.Context()
 load_hosting_providers(HOSTING_PROVIDERS)
 
 
-def worker(queue):
-    context = zmq.Context()
-    socket = context.socket(zmq.REP)
-    socket.bind('tcp://*:5555')
+def listener():
+    frontend = context.socket(zmq.REP)
+    frontend.bind('tcp://*:5555')
+    poll = zmq.Poller()
+    poll.register(frontend)
     while True:
-        task_id = socket.recv()
-        queue.put(task_id)
-        socket.send('ok')
-        time.sleep(0.1)
+        sockets = dict(poll.poll(1000))
+        if frontend in sockets and sockets[frontend] == zmq.POLLIN:
+            task_id = frontend.recv()
+            queue.put(task_id)
+            frontend.send('ok')
+            time.sleep(0.1)
 
 
 def setup_ssh(project_root):
@@ -40,7 +44,7 @@ def setup_ssh(project_root):
 
 def run(project_root):
     setup_ssh(project_root)
-    worker_process = Process(target=worker, args=(queue,))
+    worker_process = Process(target=listener)
     worker_process.start()
     connect('onelove', host='mongodb')
     while True:
