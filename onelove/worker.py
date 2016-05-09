@@ -1,31 +1,15 @@
 import os
-import time
 import zmq
-from mongoengine import connect
-from multiprocessing import Process, Queue
 from shutil import copyfile
-from traceback import print_exc
+from multiprocessing import Process
 
-from onelove.models import Task
 from onelove.plugin import load_hosting_providers
-from onelove.tasks import provision
-from onelove.utils import eprint
+from onelove.tasks.provision import provision
 from plugins import HOSTING_PROVIDERS
 
 
-queue = Queue()
+context = zmq.Context()
 load_hosting_providers(HOSTING_PROVIDERS)
-
-
-def worker(queue):
-    context = zmq.Context()
-    socket = context.socket(zmq.REP)
-    socket.bind('tcp://*:5555')
-    while True:
-        task_id = socket.recv()
-        queue.put(task_id)
-        socket.send('ok')
-        time.sleep(0.1)
 
 
 def setup_ssh(project_root):
@@ -38,20 +22,13 @@ def setup_ssh(project_root):
     copyfile(ssh_config_template, ssh_config)
 
 
-def run(project_root):
+def run(project_root, config):
     setup_ssh(project_root)
-    worker_process = Process(target=worker, args=(queue,))
-    worker_process.start()
-    connect('onelove', host='mongodb')
+    socket = context.socket(zmq.REP)
+    socket.bind('tcp://*:5555')
+
     while True:
-        task_id = queue.get()
-        task = Task.objects.get(id=task_id)
-        task.status = 'STARTED'
-        task.save()
-        try:
-            provision(task)
-        except:
-            print_exc()
-            eprint('Task %s failed' % task_id)
-            task.status = 'FAILED'
-            task.save()
+        task_id = socket.recv()
+        worker = Process(target=provision, args=(task_id, config))
+        worker.start()
+        socket.send(task_id)

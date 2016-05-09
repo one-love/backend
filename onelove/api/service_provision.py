@@ -29,12 +29,13 @@ class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
             abort(404, 'No such service')
         task = Task(cluster=cluster, service=service)
         task.save()
+
         context = zmq.Context()
         socket = context.socket(zmq.REQ)
         socket.connect('tcp://worker:5555')
-        message = str(task.pk)
-        socket.send(message)
-        message = socket.recv()
+        socket.send(str(task.pk))
+        socket.recv()
+
         socket.close()
         context.term()
         return task

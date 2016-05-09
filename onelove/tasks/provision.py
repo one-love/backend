@@ -178,13 +178,18 @@ def run_playbook(playbook_path, cluster):
     return executor.run()
 
 
-def provision(task):
+def provision(task_id, config):
+    from mongoengine import connect
+    from mongoengine.connection import disconnect
+    connect('onelove', host=config.MONGODB_HOST)
+    from ..models import Task
+
     playbook_path = mkdtemp()
+    task = Task.objects.get(id=task_id)
     try:
         install_service(playbook_path, task.cluster, task.service)
         generate_playbook(playbook_path, task.cluster, task.service)
-        result = run_playbook(playbook_path, task.cluster)
-        if result != 0:
-            raise ValueError('something went wrong')
+        return run_playbook(playbook_path, task.cluster)
     finally:
+        disconnect()
         rmtree(playbook_path)
