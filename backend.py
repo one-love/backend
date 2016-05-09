@@ -39,11 +39,13 @@ def on_connect():
     if token is None:
         disconnect()
         return
+
+    current_identity = None
     try:
         current_identity = onelove.jwt.jwt_decode_callback(token)
     except:
         disconnect()
-        return
+
     if current_identity is None:
         disconnect()
         return
