@@ -29,6 +29,7 @@ class ClusterFactory(factory.Factory):
         model = models.Cluster
     name = factory.Faker('first_name')
     username = 'vagrant'
+    providers = factory.LazyAttribute(lambda a: [ProviderSSHFactory()])
 
 
 class ServiceFactory(factory.Factory):
@@ -49,6 +50,7 @@ class ApplicationFactory(factory.Factory):
 class ProviderSSHFactory(factory.Factory):
     class Meta:
         model = ssh.ProviderSSH
+    name = factory.Faker('first_name')
     hosts = factory.LazyAttribute(lambda a: [HostSSHFactory()])
 
 
