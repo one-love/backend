@@ -191,11 +191,11 @@ def provision(task_id, config):
     try:
         install_service(playbook_path, task.cluster, task.service)
         generate_playbook(playbook_path, task.cluster, task.service)
-        success = run_playbook(playbook_path, task.cluster)
-        if (success):
-            task.status = 'SUCCESS'
-        else:
+        fail = run_playbook(playbook_path, task.cluster)
+        if (fail):
             task.status = 'FAILED'
+        else:
+            task.status = 'SUCCESS'
     except:
         task.status = 'FAILED'
     finally:
