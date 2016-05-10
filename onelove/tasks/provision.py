@@ -186,10 +186,19 @@ def provision(task_id, config):
 
     playbook_path = mkdtemp()
     task = Task.objects.get(id=task_id)
+    task.status = 'RUNNING'
+    task.save()
     try:
         install_service(playbook_path, task.cluster, task.service)
         generate_playbook(playbook_path, task.cluster, task.service)
-        return run_playbook(playbook_path, task.cluster)
+        success = run_playbook(playbook_path, task.cluster)
+        if (success):
+            task.status = 'SUCCESS'
+        else:
+            task.status = 'FAILED'
+    except:
+        task.status = 'FAILED'
     finally:
+        task.save()
         disconnect()
         rmtree(playbook_path)
