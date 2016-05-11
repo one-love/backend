@@ -1,3 +1,4 @@
+import zmq.green as zmq
 from os import makedirs, path
 from shutil import rmtree
 from tempfile import mkdtemp, mkstemp
@@ -181,13 +182,24 @@ def run_playbook(playbook_path, cluster):
 def provision(task_id, config):
     from mongoengine import connect
     from mongoengine.connection import disconnect
-    connect('onelove', host=config.MONGODB_HOST)
+    connect(config.MONGODB_DB, host=config.MONGODB_HOST)
     from ..models import Task
 
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect('tcp://backend:5500')
     playbook_path = mkdtemp()
     task = Task.objects.get(id=task_id)
     task.status = 'RUNNING'
     task.save()
+    socket.send_json(
+        {
+            'id': str(task.id),
+            'status': task.status,
+            'room': task.room,
+        }
+    )
+    socket.recv_json()
     try:
         install_service(playbook_path, task.cluster, task.service)
         generate_playbook(playbook_path, task.cluster, task.service)
@@ -200,5 +212,13 @@ def provision(task_id, config):
         task.status = 'FAILED'
     finally:
         task.save()
+        socket.send_json(
+            {
+                'id': str(task.id),
+                'status': task.status,
+                'room': task.room,
+            }
+        )
+        socket.recv_json()
         disconnect()
         rmtree(playbook_path)

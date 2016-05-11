@@ -4,8 +4,10 @@ import os
 from flask import redirect, url_for, request
 from flask_script import Manager
 from flask_socketio import join_room, disconnect
+from gevent import Greenlet
 
 from onelove import OneLove
+from onelove.monitor import monitor
 from onelove.utils import create_app
 
 
@@ -20,6 +22,7 @@ def runserver():
     onelove.socketio.run(
         app,
         host="0.0.0.0",
+        debug=True,
         use_reloader=True,
     )
 
@@ -53,6 +56,9 @@ def on_connect():
     join_room(user.id)
 
 
+if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+    Greenlet.spawn(monitor)
+
+
 if __name__ == '__main__':
-    app.debug = True
     manager.run()

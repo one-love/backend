@@ -1,8 +1,8 @@
 from flask_mongoengine import Document
+from flask_security import UserMixin, RoleMixin
 from mongoengine.fields import (
     BaseField,
     BooleanField,
-    DateTimeField,
     EmailField,
     EmbeddedDocument,
     EmbeddedDocumentField,
@@ -12,7 +12,6 @@ from mongoengine.fields import (
     StringField,
     UUIDField,
 )
-from flask_security import UserMixin, RoleMixin
 
 
 field_types = {
@@ -155,3 +154,4 @@ class Task(Document):
     status = StringField(max_length=63, default='PENDING')
     cluster = ReferenceField(Cluster)
     service = ReferenceField(Service)
+    room = StringField()
