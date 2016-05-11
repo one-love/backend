@@ -15,6 +15,7 @@ def monitor():
                 'status': task['status'],
             },
             namespace='/onelove',
+            room=task['room'],
         )
         socket.send_json({'status': 'ok'})
     socket.close()

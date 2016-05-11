@@ -53,7 +53,7 @@ def on_connect():
         disconnect()
         return
     user = User.objects.get(id=current_identity['identity'])
-    join_room(user.id)
+    join_room(str(user.id))
 
 
 if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
