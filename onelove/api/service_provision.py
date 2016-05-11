@@ -1,11 +1,12 @@
 import zmq
 
 from flask_restplus import abort
-from resources import ProtectedResource
+from flask_jwt import current_identity
 
 from .fields.task import fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
+from .resources import ProtectedResource
 from ..models import Cluster, Service, Task
 
 
@@ -27,7 +28,12 @@ class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
             service = Service.objects.get(id=service_id)
         except:
             abort(404, 'No such service')
-        task = Task(cluster=cluster, service=service)
+
+        task = Task(
+            cluster=cluster,
+            service=service,
+            room=str(current_identity.pk),
+        )
         task.save()
 
         context = zmq.Context()

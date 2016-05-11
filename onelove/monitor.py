@@ -1,34 +1,21 @@
-import json
-import time
-import zmq
-from threading import Thread
-
-from . import current_app
-
-
-thread = None
+import zmq.green as zmq
 
 
 def monitor():
+    from . import current_app
     context = zmq.Context()
     socket = context.socket(zmq.REP)
-    socket.bind('tcp://*:5555')
+    socket.bind('tcp://*:5500')
     while True:
-        task = json.loads(socket.recv())
+        task = socket.recv_json()
         current_app.socketio.emit(
             'task',
             {
                 'id': task['id'],
                 'status': task['status'],
-            }
+            },
+            namespace='/onelove',
         )
-        socket.send('ok')
-        time.sleep(0.1)
-
-
-def setup_monitor():
-    global thread
-    if thread is None:
-        thread = Thread(target=monitor)
-        thread.daemon = True
-        thread.start()
+        socket.send_json({'status': 'ok'})
+    socket.close()
+    context.tern()
