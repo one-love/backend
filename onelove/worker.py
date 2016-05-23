@@ -12,6 +12,16 @@ context = zmq.Context()
 load_hosting_providers(HOSTING_PROVIDERS)
 
 
+def setup_ansible_callbacks(project_root):
+    home = os.getenv('HOME', '')
+    ansible_callback_dir = '%s/.ansible/plugins/callback' % home
+    callback_file = '%s/onelove/callbacks/onelove.py' % project_root
+    ansible_callback_file = '%s/onelove.py' % ansible_callback_dir
+    if not os.path.exists(ansible_callback_dir):
+        os.makedirs(ansible_callback_dir)
+    copyfile(callback_file, ansible_callback_file)
+
+
 def setup_ssh(project_root):
     home = os.getenv('HOME', '')
     ssh_dir = '%s/.ssh' % home
@@ -24,6 +34,7 @@ def setup_ssh(project_root):
 
 def run(project_root, config):
     setup_ssh(project_root)
+    setup_ansible_callbacks(project_root)
     socket = context.socket(zmq.REP)
     socket.bind('tcp://*:5555')
 

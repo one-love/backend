@@ -17,5 +17,4 @@ script:
   - nosetests --with-coverage --cover-branches --cover-erase --cover-xml --cover-xml-file=shippable/codecoverage/coverage.xml --cover-package onelove --with-xunit --xunit-file=shippable/testresults/nosetests.xml
 
 install:
-  - pip install -r requirements.txt
   - pip install -r requirements_dev.txt

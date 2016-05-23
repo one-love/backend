@@ -1,4 +1,6 @@
+-r requirements.txt
 coverage
+docker-compose
 factory-boy
 flask-admin
 flask-debug-api
