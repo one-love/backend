@@ -41,20 +41,6 @@ class UserAPI(ProtectedResource):
 
     @ns_user.expect(body_fields)
     @ns_user.marshal_with(response_fields)
-    def put(self, id):
-        """Update user"""
-        try:
-            user = User.objects.get(id=id)
-        except (User.DoesNotExist, ValidationError):
-            abort(404, message='User does not exist')
-
-        args = parser.parse_args()
-        if args.get('email') is '':
-            abort(409, "'email' can not be empty string")
-        user.email = args.get('email')
-        user.save()
-        return user
-
     @ns_user.expect(body_fields)
     @ns_user.marshal_with(response_fields)
     def patch(self, id):

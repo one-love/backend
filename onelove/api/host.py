@@ -72,23 +72,6 @@ class ClusterProviderHostAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.expect(fields)
     @ns_cluster.marshal_with(fields)
     @ns_cluster.response(404, 'No such host or provider')
-    def put(self, cluster_id, provider_name, hostname):
-        """Update host info"""
-        args = parser.parse_args()
-        check_fields(args)
-        cluster = self._find_cluster(cluster_id)
-        for provider in cluster.providers:
-            if provider.name == provider_name:
-                for host in provider.hosts:
-                    if host.hostname == hostname:
-                        host.hostname = args.get('hostname')
-                        host.ip = args.get('ip')
-                        provider.save()
-                        cluster.save()
-                        return host
-                abort(404, 'No such host')
-        abort(404, 'No such provider')
-
     @ns_cluster.expect(fields)
     @ns_cluster.marshal_with(fields)
     @ns_cluster.response(404, 'No such host or provider')

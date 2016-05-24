@@ -63,19 +63,6 @@ class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
 
     @ns_service.expect(fields)
     @ns_service.marshal_with(fields)
-    def put(self, service_id, application_name):
-        """Update application for the service"""
-        args = parser.parse_args()
-        check_fields(args)
-        service = Service.objects.get(id=service_id)
-        for app in service.applications:
-            if app.name == application_name:
-                app.name = args.get('name')
-                app.galaxy_role = args.get('galaxy_role')
-                service.save()
-                return app
-        abort(404, error='No such application')
-
     @ns_service.expect(fields)
     @ns_service.marshal_with(fields)
     def patch(self, service_id, application_name):

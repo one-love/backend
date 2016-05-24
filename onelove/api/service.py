@@ -57,15 +57,6 @@ class ServiceAPI(ProtectedResource, ServiceMixin):
 
     @ns_service.expect(fields)
     @ns_service.marshal_with(get_fields)
-    def put(self, id):
-        """Update service"""
-        service = self._find_service(id)
-        args = parser.parse_args()
-        check_fields(args)
-        service.name = args.get('name')
-        service.save()
-        return service
-
     @ns_service.expect(fields)
     @ns_service.marshal_with(get_fields)
     def patch(self, id):

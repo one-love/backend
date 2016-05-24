@@ -83,17 +83,6 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
 
     @ns_cluster.expect(fields)
     @ns_cluster.marshal_with(fields)
-    def put(self, id):
-        """Update cluster"""
-        cluster = self._find_cluster(id)
-        args = parser.parse_args()
-        check_fields(args)
-        cluster.name = args.get('name')
-        cluster.username = args.get('username')
-        cluster.sshKey = b64decode(args.get('sshKey'))
-        cluster.save()
-        return cluster
-
     @ns_cluster.expect(fields)
     @ns_cluster.marshal_with(get_fields)
     def patch(self, id):
