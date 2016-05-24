@@ -17,6 +17,12 @@ curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' http:/
 
 
 ```
+To use the token to get list of clusters:
+```bash
+curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Authorization: JWT <token>' http://onelove.vagrant:5000/api/v0/clusters
+```
+
+In the same way you can get other resorces/endpoints
 
 ### Testing
 In order to run a test. Run the following command in the repo directory.
@@ -31,12 +37,6 @@ When the testing is finished you can get one of the following results:
 
 
 
-To use the token to get list of clusters:
-```bash
-curl -k -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Authorization: JWT <token>' http://onelove.vagrant:5000/api/v0/clusters
-```
-
-In the same way you can get other resorces/endpoints
-
 ### Swagger
 To use swagger open [Swagger UI](http://onelove.vagrant:5000/api/v0/doc/)
+
