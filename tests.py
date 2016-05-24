@@ -322,13 +322,12 @@ class TestAPI(TestCase):
 
 
         service.delete()
+
     def test_user(self):
         from onelove.models import User
 
         # Prepare
         url_list = 'api/v0/users'
-
-        # Get empty list
 
     def test_task(self):
         from onelove.models import Task

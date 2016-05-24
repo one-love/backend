@@ -1,5 +1,5 @@
 import zmq.green as zmq
-from os import makedirs, path
+from os import makedirs, path, putenv, environ
 from shutil import rmtree
 from tempfile import mkdtemp, mkstemp
 
@@ -191,6 +191,7 @@ def provision(task_id, config):
     playbook_path = mkdtemp()
     task = Task.objects.get(id=task_id)
     task.status = 'RUNNING'
+    environ['TASK_ID'] = str(task.pk)
     task.save()
     socket.send_json(
         {

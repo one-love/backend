@@ -154,4 +154,4 @@ class Task(Document):
     status = StringField(max_length=63, default='PENDING')
     cluster = ReferenceField(Cluster)
     service = ReferenceField(Service)
-    room = StringField()
+    user = ReferenceField(User)
