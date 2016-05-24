@@ -32,7 +32,7 @@ class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
         task = Task(
             cluster=cluster,
             service=service,
-            room=str(current_identity.pk),
+            user=current_identity,
         )
         task.save()
 

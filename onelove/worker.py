@@ -1,5 +1,5 @@
 import os
-import zmq
+import zmq.green as zmq
 from shutil import copyfile
 from multiprocessing import Process
 
