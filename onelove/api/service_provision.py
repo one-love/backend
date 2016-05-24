@@ -7,7 +7,7 @@ from .fields.task import fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
 from .resources import ProtectedResource
-from ..models import Cluster, Service, Task
+from ..models import Cluster, Service, Task, User
 
 
 @ns_cluster.route(
@@ -29,10 +29,12 @@ class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
         except:
             abort(404, 'No such service')
 
+        user_id = str(current_identity['id'])
+        user = User.objects.get(id=user_id)
         task = Task(
             cluster=cluster,
             service=service,
-            user=current_identity,
+            user=user,
         )
         task.save()
 

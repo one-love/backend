@@ -1,5 +1,5 @@
 import zmq.green as zmq
-from os import makedirs, path, putenv, environ
+from os import makedirs, path, environ
 from shutil import rmtree
 from tempfile import mkdtemp, mkstemp
 
@@ -185,19 +185,19 @@ def provision(task_id, config):
     connect(config.MONGODB_DB, host=config.MONGODB_HOST)
     from ..models import Task
 
+    playbook_path = mkdtemp()
+    task = Task.objects.get(pk=task_id)
+    task.status = 'RUNNING'
+    task.save()
+    environ['TASK_ID'] = str(task.pk)
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
     socket.connect('tcp://backend:5500')
-    playbook_path = mkdtemp()
-    task = Task.objects.get(id=task_id)
-    task.status = 'RUNNING'
-    environ['TASK_ID'] = str(task.pk)
-    task.save()
     socket.send_json(
         {
             'id': str(task.id),
             'status': task.status,
-            'room': task.room,
+            'type': 'task',
         }
     )
     socket.recv_json()
@@ -217,7 +217,7 @@ def provision(task_id, config):
             {
                 'id': str(task.id),
                 'status': task.status,
-                'room': task.room,
+                'type': 'task',
             }
         )
         socket.recv_json()

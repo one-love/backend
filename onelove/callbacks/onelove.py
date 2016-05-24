@@ -1,16 +1,25 @@
 import os
+import zmq.green as zmq
 from ansible.plugins.callback import CallbackBase
 
+
 context = zmq.Context()
+
 
 class CallbackModule(CallbackBase):
     def log(self, result, status):
         task_id = os.getenv('TASK_ID')
         with open('/usr/src/app/provision.txt', 'w+') as log_file:
             log_file.write('task [%s], status [%s]' % (task_id, status))
+        data = {
+            'id': task_id,
+            'status': status,
+            'type': 'log',
+            'log': 'cvrc',
+        }
         socket = context.socket(zmq.REQ)
         socket.connect('tcp://backend:5500')
-        socket.send_json({'task': task_id, 'status': status})
+        socket.send_json(data)
         socket.recv_json()
         socket.close()
 
