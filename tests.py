@@ -62,18 +62,6 @@ class TestAPI(TestCase):
         self.assertLess(response.status_code, 400)
         return json.loads(response.data)
 
-    def put(self, url, data):
-        response = self.app.put(
-            url,
-            data=json.dumps(data),
-            headers={
-                'Authorization': 'JWT {token}'.format(token=self.token),
-                'Content-Type': 'application/json',
-            },
-        )
-        self.assertLess(response.status_code, 400)
-        return json.loads(response.data)
-
     def patch(self, url, data):
         response = self.app.patch(
             url,
@@ -141,17 +129,6 @@ class TestAPI(TestCase):
         self.assertEqual(cluster.username, response['username'])
         self.assertEqual(cluster.services, response['services'])
         self.assertEqual(cluster.providers, response['providers'])
-
-        # Change item details
-        data = {
-            'name': 'second',
-            'username': 'vagrant',
-            'sshKey': b64encode('another fake'),
-        }
-        response = self.put(url=url_detail, data=data)
-        cluster = Cluster.objects.get(name=response['name'])
-        self.assertEqual(cluster.name, response['name'])
-        self.assertEqual(cluster.username, response['username'])
 
         # Change item details
         data = {
@@ -264,14 +241,6 @@ class TestAPI(TestCase):
 
         # Change item details
         data = {
-            'name': 'second'
-        }
-        response = self.put(url=url_detail, data=data)
-        service = Service.objects.get(name=response['name'])
-        self.assertEqual(service.name, response['name'])
-
-        # Change item details
-        data = {
             'name': 'third',
         }
         response = self.patch(url=url_detail, data=data)
@@ -319,15 +288,6 @@ class TestAPI(TestCase):
         self.assertEqual(data['galaxy_role'],response['galaxy_role'])
 
         # Change item details
-        data = {
-            'galaxy_role': 'extra',
-            'name': 'second',
-        }
-        response = self.put(url_detail,data=data)
-        self.assertEqual(response['name'],data['name'])
-        self.assertEqual(response['galaxy_role'],data['galaxy_role'])
-
-        # Change item details
         url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(pk=str(service.pk),ps=response['name'])
         data={
             'galaxy_role': 'turbo',
@@ -337,8 +297,6 @@ class TestAPI(TestCase):
             'galaxy_role': 'turbo',
             'name': 'second',
         }
-        self.assertEqual(response['name'],data['name'])
-        self.assertEqual(response['galaxy_role'],data['galaxy_role'])
 
         data={
             'name': 'third'
