@@ -9,13 +9,13 @@ context = zmq.Context()
 class CallbackModule(CallbackBase):
     def log(self, result, status):
         task_id = os.getenv('TASK_ID')
-        with open('/usr/src/app/provision.txt', 'w+') as log_file:
-            log_file.write('task [%s], status [%s]' % (task_id, status))
         data = {
             'id': task_id,
             'status': status,
             'type': 'log',
-            'log': 'cvrc',
+            'log': result._result.get('msg'),
+            'host': result._host.get_name(),
+            'task': result._task.get_name(),
         }
         socket = context.socket(zmq.REQ)
         socket.connect('tcp://backend:5500')

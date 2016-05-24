@@ -24,6 +24,8 @@ def monitor():
                 'id': task_json['id'],
                 'status': task_json['status'],
                 'log': task_json['log'],
+                'host': task_json['host'],
+                'task': task_json['task'],
             }
         else:
             continue
