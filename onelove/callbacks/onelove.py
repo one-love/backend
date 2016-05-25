@@ -1,6 +1,7 @@
 import os
 import zmq.green as zmq
 from ansible.plugins.callback import CallbackBase
+from datetime import datetime
 
 
 context = zmq.Context()
@@ -16,6 +17,7 @@ class CallbackModule(CallbackBase):
             'log': result._result.get('msg'),
             'host': result._host.get_name(),
             'task': result._task.get_name(),
+            'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S:%f'),
         }
         socket = context.socket(zmq.REQ)
         socket.connect('tcp://backend:5500')
