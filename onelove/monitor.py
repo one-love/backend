@@ -23,10 +23,12 @@ def monitor():
             data = {
                 'id': task_json['id'],
                 'status': task_json['status'],
-                'log': task_json['log'],
                 'host': task_json['host'],
                 'task': task_json['task'],
+                'timestamp': task_json['timestamp'],
             }
+            if task_json['log'] is not None:
+                data['log'] = task_json['log']
         else:
             continue
         current_app.socketio.emit(
