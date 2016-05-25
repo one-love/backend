@@ -1,4 +1,4 @@
-ansible
+ansible==2.0.2.0
 flask-collect
 flask-cors
 flask-jwt
