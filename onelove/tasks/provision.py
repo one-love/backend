@@ -2,6 +2,7 @@ import zmq.green as zmq
 from os import makedirs, path, environ
 from shutil import rmtree
 from tempfile import mkdtemp, mkstemp
+from traceback import print_exc
 
 import yaml
 from ansible.executor.playbook_executor import PlaybookExecutor
@@ -77,10 +78,10 @@ def fetch_role(playbook_path, role_name):
     options.roles_path = '{playbook_path}/provision/roles'.format(
         playbook_path=playbook_path,
     )
-    if not path.exists:
+    if not path.exists(options.roles_path):
         makedirs(options.roles_path)
     galaxy = Galaxy(options)
-    role = GalaxyRole(galaxy, role_name)
+    role = GalaxyRole(galaxy, role_name, path=options.roles_path)
     role.install()
     dependencies = get_application_dependencies(
         playbook_path,
@@ -211,6 +212,7 @@ def provision(task_id, config):
             task.status = 'SUCCESS'
     except:
         task.status = 'FAILED'
+        print_exc()
     finally:
         task.save()
         socket.send_json(
