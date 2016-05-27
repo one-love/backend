@@ -1,17 +1,15 @@
 from flask_restplus.fields import String
 from .. import api
 
-
-put_fields = api.model(
-    'Put Provider',
-    {
-        'name': String(required=True),
-    },
+patch_fields = api.model(
+     'Patch provider',
+      {
+          'name': String(required=True),
+      },
 )
-
 fields = api.clone(
     'Provider',
-    put_fields,
+    patch_fields,
     {
         'type': String(required=True),
     },
