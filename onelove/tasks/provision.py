@@ -184,10 +184,10 @@ def provision(task_id, config):
     from mongoengine import connect
     from mongoengine.connection import disconnect
     connect(config.MONGODB_DB, host=config.MONGODB_HOST)
-    from ..models import Task
+    from ..models import Provision
 
     playbook_path = mkdtemp()
-    task = Task.objects.get(pk=task_id)
+    task = Provision.objects.get(pk=task_id)
     task.status = 'RUNNING'
     task.save()
     environ['TASK_ID'] = str(task.pk)

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from base64 import b64encode, b64decode
+from base64 import b64encode
 
 import json
 
@@ -177,15 +177,14 @@ class TestAPI(TestCase):
 
     def test_cluster_service(self):
         from onelove import factories
-        from onelove.models import Cluster
 
         # Prepare
         cluster = factories.ClusterFactory.create()
         cluster.save()
         service = factories.ServiceFactory.create(user=self.me)
         service.save()
-        url_list='/api/v0/clusters/{pk}/services'.format(pk=cluster.pk)
-        data={
+        url_list = '/api/v0/clusters/{pk}/services'.format(pk=cluster.pk)
+        data = {
             'service_id': str(service.pk),
         }
 
@@ -198,9 +197,12 @@ class TestAPI(TestCase):
         self.assertEqual(data['service_id'], response['id'])
 
         # Delete item
-        url_detail = '/api/v0/clusters/{pk}/services/{ps}'.format(pk=cluster.pk, ps=response['id'])
+        url_detail = '/api/v0/clusters/{pk}/services/{ps}'.format(
+            pk=cluster.pk,
+            ps=response['id'],
+        )
         response = self.delete(url=url_detail)
-        self.assertEqual(data['service_id'],response['id'])
+        self.assertEqual(data['service_id'], response['id'])
 
         cluster.delete()
         service.delete()
@@ -234,7 +236,7 @@ class TestAPI(TestCase):
         self.assertEqual(data['name'], response['name'])
 
         # Get item details
-        url_detail='/api/v0/services/{pk}'.format(pk=response['id'])
+        url_detail = '/api/v0/services/{pk}'.format(pk=response['id'])
         response = self.get(url=url_detail)
         service = Service.objects.get(name=response['name'])
         self.assertEqual(service.name, response['name'])
@@ -274,22 +276,28 @@ class TestAPI(TestCase):
 
         # Get empty list
         response = self.get(url_list)
-        self.assertEqual(response,[])
+        self.assertEqual(response, [])
 
         # Create item
         response = self.post(url=url_list, data=data)
-        self.assertEqual(data['galaxy_role'],response['galaxy_role'])
+        self.assertEqual(data['galaxy_role'], response['galaxy_role'])
         self.assertEqual(data['name'], response['name'])
 
         # Get item details
-        url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(pk=str(service.pk),ps=response['name'])
+        url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(
+            pk=str(service.pk),
+            ps=response['name'],
+        )
         response = self.get(url_detail)
-        self.assertEqual(data['name'],response['name'])
-        self.assertEqual(data['galaxy_role'],response['galaxy_role'])
+        self.assertEqual(data['name'], response['name'])
+        self.assertEqual(data['galaxy_role'], response['galaxy_role'])
 
         # Change item details
-        url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(pk=str(service.pk),ps=response['name'])
-        data={
+        url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(
+            pk=str(service.pk),
+            ps=response['name'],
+        )
+        data = {
             'galaxy_role': 'turbo',
         }
         response = self.patch(url_detail, data=data)
@@ -298,40 +306,34 @@ class TestAPI(TestCase):
             'name': 'second',
         }
 
-        data={
+        data = {
             'name': 'third'
         }
-        response = self.patch(url_detail,data=data)
+        response = self.patch(url_detail, data=data)
         data = {
             'galaxy_role': 'turbo',
             'name': 'third',
         }
-        self.assertEqual(response['name'],data['name'])
-        self.assertEqual(response['galaxy_role'],data['galaxy_role'])
-
+        self.assertEqual(response['name'], data['name'])
+        self.assertEqual(response['galaxy_role'], data['galaxy_role'])
 
         # Delete item
         data = {
             'galaxy_role': 'turbo',
             'name': 'third'
         }
-        url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(pk=str(service.pk),ps=response['name'])
+        url_detail = '/api/v0/services/{pk}/applications/{ps}'.format(
+            pk=str(service.pk),
+            ps=response['name'],
+        )
         response = self.delete(url=url_detail)
-        self.assertEqual(data['galaxy_role'],response['galaxy_role'])
-        self.assertEqual(data['name'],response['name'])
-
+        self.assertEqual(data['galaxy_role'], response['galaxy_role'])
+        self.assertEqual(data['name'], response['name'])
 
         service.delete()
 
-    def test_user(self):
-        from onelove.models import User
-
-        # Prepare
-        url_list = 'api/v0/users'
-
-    def test_task(self):
-        from onelove.models import Task
-        url_list = '/api/v0/tasks'
+    def test_provision(self):
+        url_list = '/api/v0/provisions'
 
         # Get empty list
         response = self.get(url=url_list)

@@ -150,7 +150,7 @@ class Cluster(Document):
         return '<Cluster %r>' % self.name
 
 
-class Task(Document):
+class Provision(Document):
     status = StringField(max_length=63, default='PENDING')
     cluster = ReferenceField(Cluster)
     service = ReferenceField(Service)

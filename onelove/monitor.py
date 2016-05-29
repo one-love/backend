@@ -3,7 +3,7 @@ import zmq.green as zmq
 
 def monitor():
     from . import current_app
-    from .models import Task
+    from .models import Provision
 
     context = zmq.Context()
     socket = context.socket(zmq.REP)
@@ -11,13 +11,13 @@ def monitor():
     while True:
         task_json = socket.recv_json()
         socket.send_json({'status': 'ok'})
-        task = Task.objects.get(pk=task_json['id'])
+        provision = Provision.objects.get(pk=task_json['id'])
         data = {}
         message_type = task_json['type']
         if task_json['type'] == 'task':
             data = {
                 'id': task_json['id'],
-                'status': task.status,
+                'status': provision.status,
             }
         elif task_json['type'] == 'log':
             data = {
@@ -35,7 +35,7 @@ def monitor():
             message_type,
             data,
             namespace='/onelove',
-            room=str(task.user.pk),
+            room=str(provision.user.pk),
         )
     socket.close()
     context.tern()

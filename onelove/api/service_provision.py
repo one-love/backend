@@ -3,11 +3,11 @@ import zmq
 from flask_restplus import abort
 from flask_jwt import current_identity
 
-from .fields.task import fields
+from .fields.provision import fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster
 from .resources import ProtectedResource
-from ..models import Cluster, Service, Task, User
+from ..models import Cluster, Service, Provision, User
 
 
 @ns_cluster.route(
@@ -31,19 +31,19 @@ class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
 
         user_id = str(current_identity['id'])
         user = User.objects.get(id=user_id)
-        task = Task(
+        provision = Provision(
             cluster=cluster,
             service=service,
             user=user,
         )
-        task.save()
+        provision.save()
 
         context = zmq.Context()
         socket = context.socket(zmq.REQ)
         socket.connect('tcp://worker:5555')
-        socket.send(str(task.pk))
+        socket.send(str(provision.pk))
         socket.recv()
 
         socket.close()
         context.term()
-        return task
+        return provision
