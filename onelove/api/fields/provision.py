@@ -3,7 +3,7 @@ from .. import api
 
 
 fields = api.model(
-    'Task',
+    'Provision',
     {
         'id': String(),
         'status': String(),
