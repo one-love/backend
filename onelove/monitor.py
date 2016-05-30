@@ -14,7 +14,7 @@ def monitor():
         provision = Provision.objects.get(pk=task_json['id'])
         data = {}
         message_type = task_json['type']
-        if task_json['type'] == 'task':
+        if task_json['type'] == 'provision':
             data = {
                 'id': task_json['id'],
                 'status': provision.status,

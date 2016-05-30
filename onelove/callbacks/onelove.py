@@ -9,7 +9,7 @@ context = zmq.Context()
 
 class CallbackModule(CallbackBase):
     def log(self, result, status):
-        task_id = os.getenv('TASK_ID')
+        task_id = os.getenv('PROVISION_ID')
         data = {
             'id': task_id,
             'status': status,
