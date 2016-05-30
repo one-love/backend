@@ -180,46 +180,46 @@ def run_playbook(playbook_path, cluster):
     return executor.run()
 
 
-def provision(task_id, config):
+def provision(provision_id, config):
     from mongoengine import connect
     from mongoengine.connection import disconnect
     connect(config.MONGODB_DB, host=config.MONGODB_HOST)
     from ..models import Provision
 
     playbook_path = mkdtemp()
-    task = Provision.objects.get(pk=task_id)
-    task.status = 'RUNNING'
-    task.save()
-    environ['TASK_ID'] = str(task.pk)
+    provision = Provision.objects.get(pk=provision_id)
+    provision.status = 'RUNNING'
+    provision.save()
+    environ['PROVISION_ID'] = str(provision.pk)
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
     socket.connect('tcp://backend:5500')
     socket.send_json(
         {
-            'id': str(task.id),
-            'status': task.status,
-            'type': 'task',
+            'id': str(provision.id),
+            'status': provision.status,
+            'type': 'provision',
         }
     )
     socket.recv_json()
     try:
-        install_service(playbook_path, task.cluster, task.service)
-        generate_playbook(playbook_path, task.cluster, task.service)
-        fail = run_playbook(playbook_path, task.cluster)
+        install_service(playbook_path, provision.cluster, provision.service)
+        generate_playbook(playbook_path, provision.cluster, provision.service)
+        fail = run_playbook(playbook_path, provision.cluster)
         if (fail):
-            task.status = 'FAILED'
+            provision.status = 'FAILED'
         else:
-            task.status = 'SUCCESS'
+            provision.status = 'SUCCESS'
     except:
-        task.status = 'FAILED'
+        provision.status = 'FAILED'
         print_exc()
     finally:
-        task.save()
+        provision.save()
         socket.send_json(
             {
-                'id': str(task.id),
-                'status': task.status,
-                'type': 'task',
+                'id': str(provision.id),
+                'status': provision.status,
+                'type': 'provision',
             }
         )
         socket.recv_json()
