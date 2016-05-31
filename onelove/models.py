@@ -141,8 +141,7 @@ class Cluster(Document):
     name = StringField(max_length=512, blank=False)
     username = StringField(max_length=64)
     sshKey = StringField()
-    applications = ListField(EmbeddedDocumentField(Application))
-    providers = ListField(EmbeddedDocumentField(Provider))
+    providers = ListField(EmbeddedDocumentField(Provider), default=[])
     roles = ListField(ReferenceField(Role), default=[])
     services = ListField(ReferenceField(Service), default=[])
 

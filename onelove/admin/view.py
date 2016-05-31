@@ -46,7 +46,7 @@ class UserView(BaseView):
 
 
 class ClusterView(BaseView):
-    column_list = ('id', 'name', 'applications', 'providers', 'roles')
+    column_list = ('id', 'name', 'providers', 'roles')
     column_filters = ['name']
 
     column_searchable_list = ('name',)
@@ -59,18 +59,6 @@ class ClusterView(BaseView):
     }
 
     form_subdocuments = {
-        'applications': {
-            'form_subdocuments': {
-                None: {
-                    'form_rules': ('name', 'galaxy_role'),
-                    'form_widget_args': {
-                        'name': {
-                            'style': 'color: red'
-                        }
-                    }
-                }
-            }
-        },
         'providers': {
             'form_subdocuments': {
                 None: {
