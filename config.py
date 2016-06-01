@@ -23,8 +23,6 @@ class Config(BaseConfig):
     SECURITY_LOGIN_USER_TEMPLATE = 'security/login.html'
     SECURITY_PASSWORD_HASH = 'sha512_crypt'
     SECURITY_PASSWORD_SALT = 'COmwUar8X1s4NrNN'
-    SECURITY_POST_LOGIN_VIEW = '/admin/'
-    SECURITY_POST_LOGOUT_VIEW = '/admin/'
     SECURITY_SEND_REGISTER_EMAIL = False
     SECURITY_URL_PREFIX = "/admin"
 

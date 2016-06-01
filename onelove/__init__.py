@@ -39,16 +39,7 @@ class OneLove(object):
     def __init__(self, app=None):
         if app is not None:
             if app.config['DEBUG']:
-                from flask_admin import Admin, AdminIndexView
                 self.cors = CORS()
-                self.admin = Admin(
-                    name='One Love',
-                    base_template='admin_master.html',
-                    template_mode='bootstrap3',
-                    index_view=AdminIndexView(
-                        template='admin/onelove_index.html',
-                    ),
-                )
             self.init_app(app)
 
     def init_app(self, app):
@@ -90,11 +81,6 @@ class OneLove(object):
             self.user_datastore,
         )
 
-        if app.config['DEBUG']:
-            from .admin import register_admin_views
-            register_admin_views(self.admin)
-            self.admin.init_app(self.app)
-
         self.jwt.init_app(self.app)
         self.collect.init_app(self.app)
 
@@ -103,17 +89,6 @@ class OneLove(object):
             from flask_debug_api import DebugAPIExtension
             self.toolbar = DebugToolbarExtension(self.app)
             self.toolbar = DebugAPIExtension(self.app)
-
-        if self.app.config.get('DEBUG', False):
-            from flask_admin import helpers as admin_helpers
-
-            @self.app.context_processor
-            def security_context_processor():
-                return dict(
-                    admin_base_template=self.admin.base_template,
-                    admin_view=self.admin.index_view,
-                    h=admin_helpers,
-                )
 
         self.socketio = SocketIO(self.app, logger=True)
         self.app.onelove = self

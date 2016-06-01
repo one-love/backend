@@ -2,7 +2,6 @@
 coverage
 docker-compose
 factory-boy
-flask-admin
 flask-debug-api
 flask-debugtoolbar
 ipdb
