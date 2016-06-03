@@ -16,6 +16,7 @@ class TestAPI(TestCase):
 
         from onelove import factories
         cls.me = factories.UserFactory.create()
+        cls.me.save()
 
         admin_role = cls.onelove.user_datastore.find_or_create_role(
             name="admin",
@@ -331,6 +332,94 @@ class TestAPI(TestCase):
         self.assertEqual(data['name'], response['name'])
 
         service.delete()
+
+    def test_user(self):
+        from onelove import factories
+
+        # Prepare   
+        user = factories.UserFactory.create()
+        user.save()
+
+        # Get details
+        url_detail = 'api/v0/users/{pk}'.format(pk=str(user.id))
+        response = self.get(url=url_detail)
+
+        self.assertEqual(response['first_name'],str(user.first_name))
+        self.assertEqual(response['last_name'],str(user.last_name))
+        self.assertEqual(response['email'],str(user.email))
+        self.assertEqual(response['username'],str(user.username))
+
+        # Change item details
+        data = {
+            'email': 'example@tilda.com'
+        }
+
+        response = self.patch(url_detail, data=data)
+
+        self.assertEqual(response['first_name'],str(user.first_name))
+        self.assertEqual(response['last_name'],str(user.last_name))
+        self.assertEqual(response['email'],data['email'])
+        self.assertEqual(response['username'],str(user.username))
+
+        data = {
+            'first_name': 'first'
+        }
+
+        response = self.patch(url_detail, data=data)
+
+        data = {
+            'email': 'example@tilda.com',
+            'first_name': 'first',
+        }
+
+        self.assertEqual(response['first_name'],data['first_name'])
+        self.assertEqual(response['last_name'],str(user.last_name))
+        self.assertEqual(response['email'],data['email'])
+        self.assertEqual(response['username'],str(user.username))
+
+        data = {
+            'last_name': 'last'
+        }
+
+        response = self.patch(url_detail, data=data)
+
+        data = {
+            'email': 'example@tilda.com',
+            'first_name': 'first',
+            'last_name': 'last',
+        }
+
+        self.assertEqual(response['first_name'],data['first_name'])
+        self.assertEqual(response['last_name'],data['last_name'])
+        self.assertEqual(response['email'],data['email'])
+        self.assertEqual(response['username'],str(user.username))
+
+
+        data = {
+            'username': 'user'
+        }
+
+        response = self.patch(url_detail, data=data)
+
+        data = {
+            'email': 'example@tilda.com',
+            'first_name': 'first',
+            'last_name': 'last',
+            'username': 'user',
+        }
+
+        self.assertEqual(response['first_name'],data['first_name'])
+        self.assertEqual(response['last_name'],data['last_name'])
+        self.assertEqual(response['email'],data['email'])
+        self.assertEqual(response['username'],data['username'])
+
+        # Delete item
+        response = self.delete(url=url_detail)
+
+        self.assertEqual(response['first_name'],data['first_name'])
+        self.assertEqual(response['last_name'],data['last_name'])
+        self.assertEqual(response['email'],data['email'])
+        self.assertEqual(response['username'],data['username'])
 
     def test_provision(self):
         url_list = '/api/v0/provisions'

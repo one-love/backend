@@ -15,6 +15,7 @@ from ..utils import all_fields_optional
 
 parser = ns_user.parser()
 parser.add_argument('email', type=str, required=True, location='json')
+parser.add_argument('username', type=str, required=False, location='json')
 parser.add_argument('first_name', type=str, required=False, location='json')
 parser.add_argument('last_name', type=str, required=False, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
@@ -53,6 +54,9 @@ class UserAPI(ProtectedResource):
         patch_parser = all_fields_optional(parser)
         args = patch_parser.parse_args()
         user.email = args.get('email') or user.email
+        user.first_name = args.get('first_name') or user.first_name
+        user.last_name = args.get('last_name') or user.last_name
+        user.username = args.get('username') or user.username
         user.save()
         return user
 
