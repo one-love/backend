@@ -3,6 +3,7 @@ from flask_security.utils import encrypt_password
 
 import models
 from providers import ssh
+from bson.objectid import ObjectId
 
 
 class UserFactory(factory.Factory):
@@ -14,7 +15,8 @@ class UserFactory(factory.Factory):
     email = factory.Faker('email')
     password = encrypt_password('Sekrit')
     active = True
-
+    username = factory.Faker('name')
+    id = factory.LazyAttribute(lambda obj: '%s' % ObjectId())
 
 class RoleFactory(factory.Factory):
     class Meta:
