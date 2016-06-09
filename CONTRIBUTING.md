@@ -96,7 +96,7 @@ its own line
 
 _Correct:_
 
-- `some_func(short='arguments')`
+`some_func(short='arguments')`
 ```
 some_func(
     long='arguments',
@@ -105,6 +105,8 @@ some_func(
 ```
 
 _Incorrect:_
-- `some_func(arg1=1, arg2=2,
-    arg3=3, arg4=4
-)`
+```
+some_func(arg1=1, arg2=2,
+  arg3=3, arg4=4
+)
+```
