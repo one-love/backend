@@ -1,4 +1,5 @@
 import zmq.green as zmq
+from .models import Log, Provision
 
 
 def monitor():
@@ -21,7 +22,6 @@ def monitor():
             }
         elif task_json['type'] == 'log':
             data = {
-                'id': task_json['id'],
                 'status': task_json['status'],
                 'host': task_json['host'],
                 'task': task_json['task'],
@@ -29,8 +29,15 @@ def monitor():
             }
             if task_json['log'] is not None:
                 data['log'] = task_json['log']
+                log.log = data['log']
+            log = Log(**data)
+            data['id'] = task_json['id']
         else:
             continue
+
+        provision = Provision.objects.get(id=data['id'])
+        provision.logs.append(log)
+        provision.save()
         current_app.socketio.emit(
             message_type,
             data,
