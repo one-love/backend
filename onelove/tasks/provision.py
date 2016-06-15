@@ -174,7 +174,6 @@ def run_playbook(playbook_path, cluster):
         options=options,
         passwords={
             'become_pass': 'vagrant',
-            'conn_pass': 'vagrant',
         },
     )
     return executor.run()
