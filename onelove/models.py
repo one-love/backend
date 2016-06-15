@@ -149,8 +149,17 @@ class Cluster(Document):
         return '<Cluster %r>' % self.name
 
 
+class Log(EmbeddedDocument):
+    status = StringField(default=None)
+    host = StringField(default=None)
+    task = StringField(default=None)
+    timestamp = StringField(default=None)
+    log = StringField(default=None)
+
+
 class Provision(Document):
     status = StringField(max_length=63, default='PENDING')
     cluster = ReferenceField(Cluster)
     service = ReferenceField(Service)
     user = ReferenceField(User)
+    logs = ListField(EmbeddedDocumentField(Log), default=[])

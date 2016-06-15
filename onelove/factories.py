@@ -18,6 +18,7 @@ class UserFactory(factory.Factory):
     username = factory.Faker('name')
     id = factory.LazyAttribute(lambda obj: '%s' % ObjectId())
 
+
 class RoleFactory(factory.Factory):
     class Meta:
         model = models.Role
