@@ -72,7 +72,6 @@ class ClusterListAPI(ProtectedResource):
 
 
 @ns_cluster.route('/<id>', endpoint='clusters.cluster')
-@ns_cluster.doc(params={'id': 'An ID'})
 @ns_cluster.response(404, 'Cluster not found')
 class ClusterAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(get_fields)
@@ -81,8 +80,6 @@ class ClusterAPI(ProtectedResource, ClusterMixin):
         cluster = self._find_cluster(id)
         return cluster
 
-    @ns_cluster.expect(fields)
-    @ns_cluster.marshal_with(fields)
     @ns_cluster.expect(fields)
     @ns_cluster.marshal_with(get_fields)
     def patch(self, id):

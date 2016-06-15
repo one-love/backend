@@ -1,4 +1,4 @@
-from flask.ext.restplus import abort
+from flask_restplus import abort
 from resources import ProtectedResource
 from .fields.provider import fields, patch_fields
 from .mixins import ClusterMixin
@@ -57,19 +57,7 @@ class ClusterProviderAPI(ProtectedResource, ClusterMixin):
             if provider.name == provider_name:
                 return provider
         abort(404, 'No such provider')
-    @ns_cluster.expect(patch_fields)
-    @ns_cluster.marshal_with(fields)
-    def patch(self, cluster_id, provider_name):
-        """"Update cluster provider"""
-        args = parser.parse_args()
-        check_fields(args)
-        cluster = self._find_cluster(cluster_id)
-        for provider in cluster.providers:
-            if provider.name == provider_name:
-             provider.name = args.get('name')
-             provider.save()
-             return provider
-        abort(404, error='No such provider')
+
     @ns_cluster.expect(patch_fields)
     @ns_cluster.marshal_with(fields)
     def patch(self, cluster_id, provider_name):
