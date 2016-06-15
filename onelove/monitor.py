@@ -15,6 +15,7 @@ def monitor():
         provision = Provision.objects.get(pk=task_json['id'])
         data = {}
         message_type = task_json['type']
+        provision = Provision.objects.get(id=task_json['id'])
         if task_json['type'] == 'provision':
             data = {
                 'id': task_json['id'],
@@ -29,15 +30,13 @@ def monitor():
             }
             if task_json['log'] is not None:
                 data['log'] = task_json['log']
-                log.log = data['log']
             log = Log(**data)
             data['id'] = task_json['id']
+            provision.logs.append(log)
+            provision.save()
         else:
             continue
 
-        provision = Provision.objects.get(id=data['id'])
-        provision.logs.append(log)
-        provision.save()
         current_app.socketio.emit(
             message_type,
             data,
