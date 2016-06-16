@@ -1,4 +1,4 @@
-rom mongoengine.fields import EmbeddedDocument
+from mongoengine.fields import EmbeddedDocument
 from mongoengine.fields import EmbeddedDocumentListField
 from mongoengine.fields import StringField
 import digitalocean
@@ -22,7 +22,7 @@ class ProviderDO(Provider):
 
     # Hard coded for now
     token = "Put_Your_Digital_Ocean_Api_Key_Here"
-    anager = digitalocean.Manager(token=token)
+    manager = digitalocean.Manager(token=token)
     name = 'pythonApi'
     region = 'ams2'
     image = 'debian-8-x64'
