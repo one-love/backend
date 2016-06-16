@@ -2,7 +2,6 @@ from mongoengine.fields import EmbeddedDocument
 from mongoengine.fields import EmbeddedDocumentListField
 from mongoengine.fields import StringField
 import digitalocean
-import time
 
 from ..models import Provider
 from ..plugin import Plugin
@@ -43,18 +42,14 @@ class ProviderDO(Provider):
         droplet.create()
 
         # Wait droplet to start
-        status = 'in-progress'
-        while status != 'completed':
-            time.sleep(2)
-            actions = droplet.get_actions()
-            for action in actions:
-                action.load()
-                status = action.status
-
-        # Wait for droplet IP address
-        while droplet.ip_address is None:
-            time.sleep(2)
-            droplet = self.manager.get_droplet(droplet.id)
+        action = digitalocean.Action(
+            id=droplet.action_ids[0],
+            token=droplet.token,
+            droplet_id=droplet.id
+        )
+        action.load()
+        action.wait(2)
+        droplet = self.manager.get_droplet(droplet.id)
 
         host = HostDO(ip=droplet.ip_address, hostname=droplet.name)
         self.hosts.append(host)
