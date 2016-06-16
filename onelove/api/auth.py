@@ -5,6 +5,7 @@ from .namespaces import ns_auth
 from .fields.auth import fields, token_response
 from ..models import User
 from ..email import send_email
+from mongoengine.errors import ValidationError
 import uuid
 
 
@@ -47,9 +48,12 @@ class AuthUser(Resource):
     def get(self):
         """Forgot password"""
         args = parser.parse_args()
-        email = args.get('email')
-        user = User.objects.get(email=email)
-        user.register_uuid = uuid.uuid4()
-        user.save()
+        try:
+            email = args.get('email')
+            user = User.objects.get(email=email)
+            user.register_uuid = uuid.uuid4()
+            user.save()
+        except (ValidationError):
+            abort(422, message='ValidationError')
         send_email(email, 'Retrive Account', 'mail/retrive', user=user)
         return user, 201
