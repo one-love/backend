@@ -12,3 +12,4 @@ gunicorn
 mongoengine
 pyzmq
 setproctitle
+python-digitalocean
