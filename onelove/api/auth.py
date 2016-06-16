@@ -4,7 +4,7 @@ from flask_jwt import _jwt, JWTError
 from .namespaces import ns_auth
 from .fields.auth import fields, token_response
 from ..models import User
-from ..email import send_mail
+from ..email import send_email
 import uuid
 
 
