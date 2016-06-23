@@ -45,6 +45,7 @@ class AuthAPI(Resource):
 
 @ns_auth.route('/forgot-password', endpoint='auth.forgot-password')
 class AuthUser(Resource):
+    @ns_auth.response(422, 'ValidationError')
     def get(self):
         """Forgot password"""
         args = parser.parse_args()
@@ -53,7 +54,7 @@ class AuthUser(Resource):
             user = User.objects.get(email=email)
             user.register_uuid = uuid.uuid4()
             user.save()
-        except (ValidationError):
-            abort(422, message='ValidationError')
+        except (User.DoesNotExist):
+            abort(404, message='User does not exist')
         send_email(email, 'Retrive Account', 'mail/retrive', user=user)
         return user, 201
