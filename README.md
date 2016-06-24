@@ -27,5 +27,5 @@ In the same way you can get other resorces/endpoints.
 
 
 ### Swagger
-To use swagger open [Swagger UI](http://onelove.vagrant:5000/api/v0/doc/)
+To use swagger open [Swagger UI](http://localhost:5000/api/v0/doc/)
 
