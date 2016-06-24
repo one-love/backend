@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+""" Some comment """
 import os
 
 from flask import redirect, url_for, request

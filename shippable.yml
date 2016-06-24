@@ -14,6 +14,7 @@ before_script:
   - mkdir -p shippable/codecoverage
 
 script:
+  - pep8 **/*.py
   - nosetests --with-coverage --cover-branches --cover-erase --cover-xml --cover-xml-file=shippable/codecoverage/coverage.xml --cover-package onelove --with-xunit --xunit-file=shippable/testresults/nosetests.xml
 
 install:

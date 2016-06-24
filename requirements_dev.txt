@@ -6,3 +6,4 @@ flask-debug-api
 flask-debugtoolbar
 ipdb
 nose
+pep8
