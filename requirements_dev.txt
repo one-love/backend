@@ -6,4 +6,4 @@ flask-debug-api
 flask-debugtoolbar
 ipdb
 nose
-pylint
+pep8

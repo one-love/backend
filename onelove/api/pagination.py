@@ -2,8 +2,20 @@ from . import api
 from flask import request
 
 parser = api.parser()
-parser.add_argument('page', type=int, required=False, default=1, help='Page number')
-parser.add_argument('per_page', type=int, required=False, default=10, help='Items per page')
+parser.add_argument(
+    'page',
+    type=int,
+    required=False,
+    default=1,
+    help='Page number',
+)
+parser.add_argument(
+    'per_page',
+    type=int,
+    required=False,
+    default=10,
+    help='Items per page',
+)
 
 
 class Pagination(object):
@@ -36,12 +48,33 @@ class Pagination(object):
 
     @property
     def headers(self):
-        first_link = '<%s?page=%d&per_page=%d>; rel="first"' % (request.base_url, 1, self.per_page)
-        prev_link = '<%s?page=%d&per_page=%d>; rel="prev"' % (request.base_url, self.prev_page, self.per_page)
-        next_link = '<%s?page=%d&per_page=%d>; rel="next"' % (request.base_url, self.next_page, self.per_page)
-        last_link = '<%s?page=%d&per_page=%d>; rel="last"' % (request.base_url, self.last_page, self.per_page)
+        first_link = '<%s?page=%d&per_page=%d>; rel="first"' % (
+            request.base_url,
+            1,
+            self.per_page,
+        )
+        prev_link = '<%s?page=%d&per_page=%d>; rel="prev"' % (
+            request.base_url,
+            self.prev_page,
+            self.per_page,
+        )
+        next_link = '<%s?page=%d&per_page=%d>; rel="next"' % (
+            request.base_url,
+            self.next_page,
+            self.per_page,
+        )
+        last_link = '<%s?page=%d&per_page=%d>; rel="last"' % (
+            request.base_url,
+            self.last_page,
+            self.per_page,
+        )
 
-        links = "{0}, {1}, {2}, {3}".format(first_link, prev_link, next_link, last_link)
+        links = "{0}, {1}, {2}, {3}".format(
+            first_link,
+            prev_link,
+            next_link,
+            last_link,
+        )
 
         headers = {'X-Total-Count': self.total,
                    'Link': links
