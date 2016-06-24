@@ -4,6 +4,9 @@ from flask_jwt import _jwt, JWTError
 from .namespaces import ns_auth
 from .fields.auth import fields, token_response
 from ..models import User
+from ..email import send_email
+from mongoengine.errors import ValidationError
+import uuid
 
 
 parser = ns_auth.parser()
@@ -39,3 +42,19 @@ class AuthAPI(Resource):
             return token
         else:
             raise JWTError('Bad Request', 'Invalid credentials')
+
+@ns_auth.route('/forgot-password', endpoint='auth.forgot-password')
+class AuthUser(Resource):
+    @ns_auth.response(422, 'ValidationError')
+    def get(self):
+        """Forgot password"""
+        args = parser.parse_args()
+        try:
+            email = args.get('email')
+            user = User.objects.get(email=email)
+            user.register_uuid = uuid.uuid4()
+            user.save()
+        except (User.DoesNotExist):
+            abort(404, message='User does not exist')
+        send_email(email, 'Retrive Account', 'mail/retrive', user=user)
+        return user, 201

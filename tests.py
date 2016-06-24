@@ -341,7 +341,7 @@ class TestAPI(TestCase):
         user.save()
 
         # Get details
-        url_detail = 'api/v0/users/{pk}'.format(pk=str(user.id))
+        url_detail = 'api/v0/users/{pk}'.format(pk=user.id)
         response = self.get(url=url_detail)
 
         self.assertEqual(response['first_name'],str(user.first_name))
