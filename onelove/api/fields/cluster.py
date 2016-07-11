@@ -13,10 +13,10 @@ fields = api.model(
     }
 )
 
-get_fields = api.clone(
-    'Get Clusters',
-    fields,
-    {
+get_fields = api.model(
+    'Get Clusters', {
+        'name': String(required=True),
+        'username': String(required=True),
         'providers': Nested(provider_fields),
         'id': String(),
         'roles': Nested(role_fields),
