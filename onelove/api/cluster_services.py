@@ -1,4 +1,5 @@
 from flask_restplus import abort
+from mongoengine.errors import ValidationError
 
 from ..models import Service
 from .fields.cluster_service import post_fields
@@ -45,6 +46,8 @@ class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
             service = Service.objects.get(id=service_id)
         except Service.DoesNotExist:
             abort(404, 'No such service')
+        except ValidationError as e:
+            abort(409, e.message)
 
         cluster.services.append(service)
         cluster.save()
