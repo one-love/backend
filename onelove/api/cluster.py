@@ -24,9 +24,7 @@ class ClusterListAPI(ProtectedResource):
     @ns_cluster.response(200, 'Status OK ')
     def get(self):
         """List clusters"""
-        args = pagination.parser.parse_args()
-        page = args.get('page')
-        per_page = args.get('per_page')
+        page, per_page = pagination.pages()
 
         clusters = Cluster.objects(
             roles__in=current_identity.roles
