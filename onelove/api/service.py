@@ -23,9 +23,8 @@ class ServiceListAPI(ProtectedResource):
     @ns_service.doc(parser=pagination.parser)
     def get(self):
         """List services"""
-        args = pagination.parser.parse_args()
-        page = args.get('page')
-        per_page = args.get('per_page')
+        page, per_page = pagination.pages()
+
         services = Service.objects().paginate(page, per_page)
         paging = pagination.Pagination(services)
         return services.items, 200, paging.headers
