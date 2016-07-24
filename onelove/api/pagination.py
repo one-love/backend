@@ -1,82 +1,49 @@
 from . import api
 from flask import request
 
+def_per_page = 10
+
 parser = api.parser()
 parser.add_argument(
-    'page',
+    'X-Page',
     type=int,
     required=False,
     default=1,
     help='Page number',
+    location='headers'
 )
 parser.add_argument(
-    'per_page',
+    'X-Per-Page',
     type=int,
     required=False,
-    default=10,
+    default=def_per_page,
     help='Items per page',
+    location='headers'
 )
+
+def pages():
+    args = parser.parse_args()
+    page = args.get('X-Page')
+    per_page = args.get('X-Per-Page')
+    return(page, per_page)
 
 
 class Pagination(object):
     def __init__(self, list):
         self.list = list
         self.page = list.page if list.page is not None else 1
-        self.per_page = list.per_page if list.per_page is not None else 10
+        self.per_page = list.per_page if list.per_page is not None else def_per_page
         self.total = list.total
 
     @property
-    def prev_page(self):
-        if self.page == 1:
-            prev_page = 1
-        else:
-            prev_page = self.page - 1
-        return prev_page
-
-    @property
-    def next_page(self):
-        if self.total < self.page * self.per_page:
-            next_page = self.page
-        else:
-            next_page = self.page + 1
-        return next_page
-
-    @property
     def last_page(self):
-        last_page = (self.total / float(self.per_page))
+        last_page = ((self.total - 1) / self.per_page) + 1
         return last_page
 
     @property
     def headers(self):
-        first_link = '<%s?page=%d&per_page=%d>; rel="first"' % (
-            request.base_url,
-            1,
-            self.per_page,
-        )
-        prev_link = '<%s?page=%d&per_page=%d>; rel="prev"' % (
-            request.base_url,
-            self.prev_page,
-            self.per_page,
-        )
-        next_link = '<%s?page=%d&per_page=%d>; rel="next"' % (
-            request.base_url,
-            self.next_page,
-            self.per_page,
-        )
-        last_link = '<%s?page=%d&per_page=%d>; rel="last"' % (
-            request.base_url,
-            self.last_page,
-            self.per_page,
-        )
-
-        links = "{0}, {1}, {2}, {3}".format(
-            first_link,
-            prev_link,
-            next_link,
-            last_link,
-        )
-
         headers = {'X-Total-Count': self.total,
-                   'Link': links
+                   'X-First-Page': '1',
+                   'X-Last-Page': self.last_page
                    }
         return headers
