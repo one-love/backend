@@ -6,4 +6,7 @@ export FLASK_CONFIG="dev"
 find "${PROJECT_ROOT}" -name '*.pyc' -delete
 pip install -U -r "${PROJECT_ROOT}/requirements_dev.txt"
 
-python "${PROJECT_ROOT}/worker.py"
+while true; do
+    sleep 5
+    python "${PROJECT_ROOT}/worker.py"
+done
