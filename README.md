@@ -1,7 +1,7 @@
 One Love REST API
 =================
 
-[![Run Status](https://api.shippable.com/projects/5478a4b2d46935d5fbbee379/badge?branch=master)](https://app.shippable.com/projects/5478a4b2d46935d5fbbee379)
+[![CircleCI](https://circleci.com/gh/one-love/backend.svg?style=svg)](https://circleci.com/gh/one-love/backend)
 [![Stories in Ready](https://badge.waffle.io/one-love/backend.png?label=ready&title=Ready)](https://waffle.io/one-love/backend)
 
 This is the API part of [One Love](https://one-love.github.io) based on Python Flask.
