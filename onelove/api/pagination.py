@@ -21,6 +21,7 @@ parser.add_argument(
     location='headers'
 )
 
+
 def pages():
     args = parser.parse_args()
     page = args.get('X-Page')
@@ -31,8 +32,8 @@ def pages():
 class Pagination(object):
     def __init__(self, list):
         self.list = list
-        self.page = list.page if list.page is not None else 1
-        self.per_page = list.per_page if list.per_page is not None else def_per_page
+        self.page = list.page if list.page else 1
+        self.per_page = list.per_page if list.per_page else def_per_page
         self.total = list.total
 
     @property

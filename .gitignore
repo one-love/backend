@@ -1,10 +1,9 @@
-*.pyc
-*.sqlite3
-.coverage
-media/
+*.py[co]
 .idea/
 .ropeproject
 /static/
 vendor/
 local_config.py
-shippable/
+.coverage
+coverage.xml
+nosetests.xml
