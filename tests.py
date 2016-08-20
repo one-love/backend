@@ -27,7 +27,7 @@ class TestAPI(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.onelove.db.connection.drop_database('test')
+        cls.onelove.db.connection.drop_collection('test')
 
     @classmethod
     def login(cls, email, password):
@@ -336,7 +336,7 @@ class TestAPI(TestCase):
     def test_user(self):
         from onelove import factories
 
-        # Prepare   
+        # Prepare
         user = factories.UserFactory.create()
         user.save()
 
