@@ -1,8 +1,7 @@
-One Love REST API
+One Love REST API [![CircleCI](https://circleci.com/gh/one-love/backend.svg?style=svg)](https://circleci.com/gh/one-love/backend) [![Stories in Ready](https://badge.waffle.io/one-love/backend.png?label=ready&title=Ready)](https://waffle.io/one-love/backend)
 =================
 
-[![CircleCI](https://circleci.com/gh/one-love/backend.svg?style=svg)](https://circleci.com/gh/one-love/backend)
-[![Stories in Ready](https://badge.waffle.io/one-love/backend.png?label=ready&title=Ready)](https://waffle.io/one-love/backend)
+
 
 This is the API part of [One Love](https://one-love.github.io) based on Python Flask.
 
