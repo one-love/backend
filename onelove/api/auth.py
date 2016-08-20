@@ -43,6 +43,7 @@ class AuthAPI(Resource):
         else:
             raise JWTError('Bad Request', 'Invalid credentials')
 
+
 @ns_auth.route('/forgot-password', endpoint='auth.forgot-password')
 class AuthUser(Resource):
     @ns_auth.response(422, 'ValidationError')
