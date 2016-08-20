@@ -5,33 +5,30 @@ import json
 
 
 class TestAPI(TestCase):
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         from onelove import OneLove
         from onelove.utils import create_app
         app = create_app(config_name='testing')
-        cls.onelove = OneLove(app)
-        cls.onelove.app.test_request_context().push()
-        cls.app = cls.onelove.app.test_client()
+        self.onelove = OneLove(app)
+        self.onelove.app.test_request_context().push()
+        self.app = self.onelove.app.test_client()
 
         from onelove import factories
-        cls.me = factories.UserFactory.create()
-        cls.me.save()
+        self.me = factories.UserFactory.create()
+        self.me.save()
 
-        admin_role = cls.onelove.user_datastore.find_or_create_role(
+        admin_role = self.onelove.user_datastore.find_or_create_role(
             name="admin",
             description="Administrator"
         )
-        cls.onelove.user_datastore.add_role_to_user(cls.me, admin_role)
-        cls.token = cls.login(cls.me.email, 'Sekrit')
+        self.onelove.user_datastore.add_role_to_user(self.me, admin_role)
+        self.token = self.login(self.me.email, 'Sekrit')
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.onelove.db.connection.drop_collection('test')
+    def tearDown(self):
+        self.onelove.db.connection.drop_collection('test')
 
-    @classmethod
-    def login(cls, email, password):
-        response = cls.app.post(
+    def login(self, email, password):
+        response = self.app.post(
             '/api/v0/auth/tokens',
             data=json.dumps({'email': email, 'password': password}),
             content_type='application/json',
@@ -166,16 +163,6 @@ class TestAPI(TestCase):
         self.assertEqual(data['name'], response['name'])
         self.assertEqual(data['username'], response['username'])
 
-        # Cleanup
-        for item in roles:
-            role = Role.objects(name=item['name'])
-            role.delete()
-
-        for service in cluster.services:
-            service.delete()
-
-        cluster.delete
-
     def test_cluster_service(self):
         from onelove import factories
 
@@ -204,9 +191,6 @@ class TestAPI(TestCase):
         )
         response = self.delete(url=url_detail)
         self.assertEqual(data['service_id'], response['id'])
-
-        cluster.delete()
-        service.delete()
 
     def test_me(self):
         from onelove.models import User
@@ -331,8 +315,6 @@ class TestAPI(TestCase):
         self.assertEqual(data['galaxy_role'], response['galaxy_role'])
         self.assertEqual(data['name'], response['name'])
 
-        service.delete()
-
     def test_user(self):
         from onelove import factories
 
@@ -420,10 +402,3 @@ class TestAPI(TestCase):
         self.assertEqual(response['last_name'],data['last_name'])
         self.assertEqual(response['email'],data['email'])
         self.assertEqual(response['username'],data['username'])
-
-    def test_provision(self):
-        url_list = '/api/v0/provisions'
-
-        # Get empty list
-        response = self.get(url=url_list)
-        self.assertEqual(response, [])

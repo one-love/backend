@@ -1,0 +1,14 @@
+machine:
+  python:
+    version: 2.7.11
+  environment:
+    FLASK_CONFIG: testing
+
+dependencies:
+  override:
+    - pip install -r requirements_dev.txt
+
+test:
+  override:
+    - pep8 **/*.py
+    - nosetests --with-coverage --cover-branches --cover-erase --cover-xml --cover-xml-file=coverage.xml --cover-package onelove --with-xunit --xunit-file=nosetests.xml
