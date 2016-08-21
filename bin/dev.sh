@@ -4,7 +4,7 @@ export PROJECT_ROOT=$(readlink -f "$(dirname $0)/..")
 export FLASK_CONFIG="dev"
 
 if [ -z "${TMUX}" ]; then
-    "${PROJECT_ROOT}/setup.sh"
+    "${PROJECT_ROOT}/bin/setup.sh"
 fi
 
 while true; do
