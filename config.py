@@ -12,6 +12,7 @@ try:
 except ImportError:
     class BaseConfig(object):
         SECRET_KEY = 'top-secret'
+        MONGODB_HOST = 'mongodb'
 
 
 class Config(BaseConfig):
