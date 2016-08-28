@@ -90,7 +90,7 @@ class OneLove(object):
             self.toolbar = DebugToolbarExtension(self.app)
             self.toolbar = DebugAPIExtension(self.app)
 
-        self.socketio = SocketIO(self.app, logger=True)
+        self.socketio = SocketIO(self.app, logger=True, async_mode='gevent')
         self.app.onelove = self
 
     @jwt.authentication_handler
