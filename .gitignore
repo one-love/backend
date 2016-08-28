@@ -1,7 +1,7 @@
 *.py[co]
 .idea/
 .ropeproject
-/static/
+onelove/static/
 vendor/
 local_config.py
 .coverage
