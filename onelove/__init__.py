@@ -25,6 +25,7 @@ class OneLove(object):
                 setattr(self, k, v)
 
     api = None
+    api_extension = None
     app = None
     blueprint = None
     collect = Collect()
@@ -88,7 +89,7 @@ class OneLove(object):
             from flask_debugtoolbar import DebugToolbarExtension
             from flask_debug_api import DebugAPIExtension
             self.toolbar = DebugToolbarExtension(self.app)
-            self.toolbar = DebugAPIExtension(self.app)
+            self.api_extension = DebugAPIExtension(self.app)
 
         self.socketio = SocketIO(self.app, logger=True, async_mode='gevent')
         self.app.onelove = self
