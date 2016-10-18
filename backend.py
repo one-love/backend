@@ -27,7 +27,11 @@ def runserver():
         use_reloader=True,
     )
 
-onelove.collect.init_script(manager)
+# onelove.collect.init_script(manager)
+@manager.command
+def collect():
+    """Collect static from blueprints."""
+    return app.extensions['collect'].collect()
 
 
 @app.route('/')
