@@ -1,4 +1,0 @@
-class BaseConfig(object):
-    {{ range service "mongo" }}MONGODB_HOST = '{{.Address}}'
-    MONGODB_PORT = {{.Port}}
-    SECRET_KEY = '{{ key "onelove/secret_key" }}'
