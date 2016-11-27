@@ -1,7 +1,8 @@
 from . import api
-from flask import request
+
 
 def_per_page = 10
+
 
 parser = api.parser()
 parser.add_argument(
