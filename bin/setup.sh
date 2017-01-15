@@ -1,10 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-export PROJECT_ROOT=$(readlink -f "$(dirname $0)/..")
+BIN_DIR=`dirname $0`
+PROJECT_ROOT=`readlink -f "${BIN_DIR}/.."`
 
-if [ -x /usr/local/bin/cbsd ]; then
-    cbsd jstart mongodb
-fi
 find "${PROJECT_ROOT}" -name '*.pyc' -delete
 pip install -U -r "${PROJECT_ROOT}/requirements_dev.txt"
 cp "${PROJECT_ROOT}/local_config.dev.py" "${PROJECT_ROOT}/local_config.py"
