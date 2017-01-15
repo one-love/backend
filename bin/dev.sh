@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-export PROJECT_ROOT=$(readlink -f "$(dirname $0)/..")
 export FLASK_CONFIG="dev"
+BIN_DIR=`dirname $0`
+PROJECT_ROOT=`readlink -f "${BIN_DIR}/.."`
 
 if [ -z "${TMUX}" ]; then
     "${PROJECT_ROOT}/bin/setup.sh"
