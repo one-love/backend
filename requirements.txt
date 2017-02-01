@@ -10,6 +10,6 @@ flask-socketio
 gevent-websocket
 gunicorn
 mongoengine
+python-digitalocean
 pyzmq
 setproctitle
-python-digitalocean
