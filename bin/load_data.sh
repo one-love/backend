@@ -3,10 +3,10 @@
 export PROJECT_ROOT=$(readlink -f "$(dirname $0)/..")
 
 if [ "$(whoami)" = "devel" ]; then
-    if [ ! -d ~/.virtualenvs/imaginevr ]; then
-        vex --make imaginevr pip install -U pip
+    if [ ! -d ~/.virtualenvs/one-love ]; then
+        vex --make one-love pip install -U pip
     fi
-    . ~/.virtualenvs/imaginevr/bin/activate
+    . ~/.virtualenvs/one-love/bin/activate
 fi
 
 cd "${PROJECT_ROOT}"
