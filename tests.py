@@ -25,7 +25,8 @@ class TestAPI(TestCase):
         self.token = self.login(self.me.email, 'Sekrit')
 
     def tearDown(self):
-        self.onelove.db.connection.drop_collection('test')
+        db = self.onelove.db.connection.get_database('test')
+        db.drop_collection('test')
 
     def login(self, email, password):
         response = self.app.post(
