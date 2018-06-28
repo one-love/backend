@@ -10,7 +10,7 @@ parser = ns_cluster.parser()
 parser.add_argument('name', type=str, required=True, location='json')
 
 
-@ns_cluster.route('/<cluster_id>/providers', endpoint='clusters.providers')
+@ns_cluster.route('/<cluster_id>/providers', endpoint='clusters_providers')
 class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)
     def get(self, cluster_id):
@@ -45,7 +45,7 @@ class ClusterProviderListAPI(ProtectedResource, ClusterMixin):
 
 @ns_cluster.route(
     '/<cluster_id>/providers/<provider_name>',
-    endpoint='clusters.provider',
+    endpoint='clusters_provider',
 )
 @ns_cluster.response(404, 'No such provider')
 class ClusterProviderAPI(ProtectedResource, ClusterMixin):

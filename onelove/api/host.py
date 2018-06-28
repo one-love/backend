@@ -13,7 +13,7 @@ parser.add_argument('ip', type=str, required=True, location='json')
 
 @ns_cluster.route(
     '/<cluster_id>/providers/<provider_name>/hosts',
-    endpoint='cluster.provider.hosts',
+    endpoint='cluster_provider_hosts',
 )
 class ClusterProviderHostListAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)
@@ -52,7 +52,7 @@ class ClusterProviderHostListAPI(ProtectedResource, ClusterMixin):
 
 @ns_cluster.route(
     '/<cluster_id>/providers/<provider_name>/hosts/<hostname>',
-    endpoint='cluster.provider.host',
+    endpoint='cluster_provider_host',
 )
 class ClusterProviderHostAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)

@@ -45,7 +45,7 @@ class ServiceListAPI(ProtectedResource):
         return service, 201
 
 
-@ns_service.route('/<id>', endpoint='services.service')
+@ns_service.route('/<id>', endpoint='services_service')
 @ns_service.response(404, 'Service not found')
 class ServiceAPI(ProtectedResource, ServiceMixin):
     @ns_service.marshal_with(get_fields)
