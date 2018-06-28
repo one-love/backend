@@ -71,7 +71,7 @@ class UserAPI(ProtectedResource):
         return user
 
 
-@ns_user.route('/confirm/<uuid>', endpoint='user.confirm')
+@ns_user.route('/confirm/<uuid>', endpoint='user_confirm')
 class UserConfirmAPI(Resource):
     @ns_user.marshal_with(response_fields)
     def get(self, uuid):
@@ -87,7 +87,7 @@ class UserConfirmAPI(Resource):
         return user
 
 
-@ns_user.route('/register', endpoint='user.register')
+@ns_user.route('/register', endpoint='user_register')
 class UserRegisterAPI(Resource):
     @ns_user.doc(
         model=response_fields,

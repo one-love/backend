@@ -12,7 +12,7 @@ from ..models import Cluster, Service, Provision, User
 
 @ns_cluster.route(
     '/<cluster_id>/services/<service_id>/provision',
-    endpoint='cluster.service.provision',
+    endpoint='cluster_service_provision',
 )
 class ClusterServiceProvisionAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(fields)

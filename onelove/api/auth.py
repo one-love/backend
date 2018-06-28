@@ -14,7 +14,7 @@ parser.add_argument('email', type=str, required=True, location='json')
 parser.add_argument('password', type=str, required=False, location='json')
 
 
-@ns_auth.route('/tokens', endpoint='auth.token')
+@ns_auth.route('/tokens', endpoint='auth_token')
 class AuthAPI(Resource):
     @ns_auth.response(401, 'Invalid credentials')
     @ns_auth.doc(body=fields, security=None)
@@ -44,7 +44,7 @@ class AuthAPI(Resource):
             raise JWTError('Bad Request', 'Invalid credentials')
 
 
-@ns_auth.route('/forgot-password', endpoint='auth.forgot-password')
+@ns_auth.route('/forgot-password', endpoint='auth_forgot-password')
 class AuthUser(Resource):
     @ns_auth.response(422, 'ValidationError')
     def get(self):

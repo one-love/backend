@@ -15,7 +15,7 @@ parser.add_argument('service_id', type=str, required=True, location='json')
 
 @ns_cluster.route(
     '/<cluster_id>/services',
-    endpoint='clusters.cluster.services',
+    endpoint='clusters_cluster_services',
 )
 class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(get_fields)
@@ -56,7 +56,7 @@ class ClusterServiceListAPI(ProtectedResource, ClusterMixin):
 
 @ns_cluster.route(
     '/<cluster_id>/services/<service_id>',
-    endpoint='clusters.cluster.service',
+    endpoint='clusters_cluster_service',
 )
 class ClusterServiceAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(get_fields)
