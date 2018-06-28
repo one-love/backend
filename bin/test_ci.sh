@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
-export PROJECT_ROOT=$(readlink -f "$(dirname $0)/..")
+export PROJECT_DIR=`dirname $0`
+export PROJECT_ROOT=`readlink -f "${PROJECT_DIR}/.."`
 export FLASK_CONFIG="testing"
 cd "${PROJECT_ROOT}"
 cp local_config.ci.py local_config.py

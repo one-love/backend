@@ -69,7 +69,7 @@ class ClusterListAPI(ProtectedResource):
         return cluster
 
 
-@ns_cluster.route('/<id>', endpoint='clusters.cluster')
+@ns_cluster.route('/<id>', endpoint='clusters_cluster')
 @ns_cluster.response(404, 'Cluster not found')
 class ClusterAPI(ProtectedResource, ClusterMixin):
     @ns_cluster.marshal_with(get_fields)

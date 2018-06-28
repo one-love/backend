@@ -16,7 +16,7 @@ parser.add_argument('name', type=str, required=True, location='json')
 
 @ns_service.route(
     '/<service_id>/applications',
-    endpoint='services.applications'
+    endpoint='services_applications'
 )
 class ServiceApplicationListAPI(ProtectedResource, ServiceMixin):
     @ns_service.marshal_with(fields)
@@ -48,7 +48,7 @@ class ServiceApplicationListAPI(ProtectedResource, ServiceMixin):
 
 @ns_service.route(
     '/<service_id>/applications/<application_name>',
-    endpoint='services.application'
+    endpoint='services_application'
 )
 @ns_service.response(404, 'No such application')
 class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
