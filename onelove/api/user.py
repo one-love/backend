@@ -90,7 +90,6 @@ class UserConfirmAPI(Resource):
 @ns_user.route('/register', endpoint='user_register')
 class UserRegisterAPI(Resource):
     @ns_user.doc(
-        model=response_fields,
         body=body_fields,
         responses={
             409: 'User with that email exists',
