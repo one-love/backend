@@ -64,8 +64,8 @@ class ProdConfig(Config):
 
 
 configs = {
-    'dev': DevConfig,
+    'development': DevConfig,
     'testing': TestConfig,
-    'prod': ProdConfig,
+    'production': ProdConfig,
     'default': ProdConfig
 }

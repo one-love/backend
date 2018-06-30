@@ -14,9 +14,9 @@ fi
 
 . ~/.virtualenvs/${VIRTUALENV}/bin/activate
 cd ${PROJECT_ROOT}
-pip install -U -r requirements.txt
-flask migration run
+pip install -U -r requirements_dev.txt
+cp "${PROJECT_ROOT}/local_config.dev.py" "${PROJECT_ROOT}/local_config.py"
 echo "Backend"
 echo "==============="
 echo " * API_ROOT: ${API_ROOT}"
-flask run -h 0.0.0.0 -p ${FLASK_PORT}
+flask runserver -p ${FLASK_PORT}

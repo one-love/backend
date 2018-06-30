@@ -1,11 +1,9 @@
 import zmq.green as zmq
+from flask import current_app
 from .models import Log, Provision
 
 
 def monitor():
-    from . import current_app
-    from .models import Provision
-
     context = zmq.Context()
     socket = context.socket(zmq.REP)
     socket.bind('tcp://*:5500')

@@ -1,11 +1,16 @@
-from flask import Blueprint, Flask
+import os
+from flask import Blueprint, Flask, request
 from flask_collect import Collect
 from flask_jwt import JWT
+from flask_mail import Mail
 from flask_mongoengine import MongoEngine
 from flask_security import Security, MongoEngineUserDatastore
 from flask_security.utils import verify_password
+from flask_socketio import SocketIO
+from gevent import Greenlet
 from .models import User, Role
 from .api import create_api
+from .monitor import monitor
 
 
 def create_app(config_class, app=None):
@@ -26,10 +31,77 @@ def create_app(config_class, app=None):
         template_folder='templates',
         static_folder='static',
     )
+    app.db = MongoEngine(app)
+    app.user_datastore = MongoEngineUserDatastore(
+        app.db,
+        User,
+        Role,
+    )
+    app.security = Security(
+        app,
+        app.user_datastore,
+    )
+    app.socketio = SocketIO(
+        app,
+        logger=True,
+        async_mode='gevent',
+    )
+
+    def authenticate(username, password):
+        try:
+            user = User.objects.get(email=username)
+        except User.DoesNotExist:
+            return None
+        result = Result(
+            id=str(user.id),
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+        )
+        if verify_password(password, user.password):
+            return result
+
+    def identity(payload):
+        try:
+            user = User.objects.get(id=payload['identity'])
+        except User.DoesNotExist:
+            user = None
+        return user
+    app.jwt = JWT(app, authenticate, identity)
     app.register_blueprint(app.blueprint, url_prefix='/auth/api/v0')
     app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
     create_api(app)
+    mail = Mail(app)
 
+    @app.socketio.on('connect')
+    def on_connect():
+        token = request.args.get('token', None)
+        request.namespace = '/onelove'
+        if token is None:
+            disconnect()
+            return
+
+        current_identity = None
+        try:
+            current_identity = app.jwt.jwt_decode_callback(token)
+        except:
+            disconnect()
+
+        if current_identity is None:
+            disconnect()
+            return
+        user = User.objects.get(id=current_identity['identity'])
+        join_room(str(user.id))
+
+
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        Greenlet.spawn(monitor)
+
+    if app.config.get('DEBUG_TB_PANELS', False):
+        from flask_debugtoolbar import DebugToolbarExtension
+        from flask_debug_api import DebugAPIExtension
+        app.toolbar = DebugToolbarExtension(app)
+        app.api_extension = DebugAPIExtension(app)
     return app
 
 
