@@ -5,5 +5,5 @@
 - name: SERVICE provisioning
   hosts: SERVICE
   roles:
-    - onelove_roles.freebsd-common
+    - onelove-roles.freebsd-common
     - devel

@@ -9,6 +9,7 @@ flask-security
 flask-socketio
 gevent-websocket
 gunicorn
+marshmallow
 mongoengine
 python-digitalocean
 pyzmq
