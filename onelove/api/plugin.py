@@ -1,4 +1,4 @@
-from resources import ProtectedResource
+from .resources import ProtectedResource
 from .namespaces import ns_plugin
 from .fields.plugin import provider_fields
 from flask import current_app as app

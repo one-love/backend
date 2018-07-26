@@ -1,8 +1,7 @@
-import pagination
-
 from flask_jwt import current_identity
 from flask_restplus import abort
 from mongoengine.queryset import NotUniqueError
+from onelove.api import pagination
 
 from .fields.service import fields, get_fields
 from .mixins import ServiceMixin

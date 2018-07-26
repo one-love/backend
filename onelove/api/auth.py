@@ -1,12 +1,13 @@
-from flask_restplus import Resource
+import uuid
 from flask import request
 from flask_jwt import _jwt, JWTError
+from flask_restplus import Resource, abort
+from mongoengine.errors import ValidationError
+
 from .namespaces import ns_auth
 from .fields.auth import fields, token_response
 from ..models import User
 from ..email import send_email
-from mongoengine.errors import ValidationError
-import uuid
 
 
 parser = ns_auth.parser()
@@ -41,7 +42,7 @@ class AuthAPI(Resource):
             }
             return token
         else:
-            raise JWTError('Bad Request', 'Invalid credentials')
+            abort(401, 'Wrong credentials provided')
 
 
 @ns_auth.route('/forgot-password', endpoint='auth_forgot-password')

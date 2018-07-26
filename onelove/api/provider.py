@@ -1,5 +1,5 @@
 from flask_restplus import abort
-from resources import ProtectedResource
+from .resources import ProtectedResource
 from .fields.provider import fields, patch_fields
 from .mixins import ClusterMixin
 from .namespaces import ns_cluster

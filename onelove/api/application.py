@@ -1,5 +1,5 @@
 from flask_restplus import abort
-from resources import ProtectedResource
+from .resources import ProtectedResource
 
 from .fields.application import fields
 from .mixins import ServiceMixin

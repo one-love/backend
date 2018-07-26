@@ -1,4 +1,4 @@
-import pagination
+from . import pagination
 from base64 import b64decode
 from flask import current_app
 from flask_jwt import current_identity
