@@ -1,5 +1,5 @@
 SERVICE = backend
-REGGAE_PATH := /usr/local/share/reggae
+REGGAE_PATH :=/usr/local/share/reggae
 
 .if exists(provisioners.mk)
 .include <provisioners.mk>

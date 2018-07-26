@@ -1,9 +1,0 @@
-- name: {{ cluster }} provisioning
-  hosts: all
-{% if pre_tasks %}
-  pre_tasks:
-    {% for pre_task in pre_tasks %}- include: {{ pre_task }}{% endfor %}
-{% endif %}
-  roles:
-    {% for role in roles %}- {{ role }}
-{% endfor %}
