@@ -9,7 +9,7 @@ PROJECT_ROOT=`readlink -f "${BIN_DIR}/.."`
 VIRTUALENV=${VIRTUALENV:="backend"}
 
 if [ ! -d ~/.virtualenvs/${VIRTUALENV} ]; then
-    python3.6 -m venv ~/.virtualenvs/${VIRTUALENV}
+  python3.6 -m venv ~/.virtualenvs/${VIRTUALENV}
 fi
 
 . ~/.virtualenvs/${VIRTUALENV}/bin/activate
