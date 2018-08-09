@@ -57,8 +57,6 @@ class UserSchema(BaseSchema):
     email = fields.Email(required=True, description='Email')
     password = fields.Str(required=True, description='Password', load_only=True)
     active = fields.Boolean(default=True)
-    admin = fields.Boolean(default=False)
-    confirmed_at = fields.DateTime()
 
     class Meta:
         model = User
