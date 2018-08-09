@@ -2,13 +2,21 @@
 
 export FLASK_ENV=development
 export FLASK_PORT=${FLASK_PORT:=5000}
-API_ROOT="http://`hostname`:${FLASK_PORT}/api/v0/doc/"
+export PY=${PY:="python3.6"}
+RUNNING_HOST=""
+if [ -e "/.dockerenv" ]; then
+	RUNNING_HOST="localhost"
+else
+	RUNNING_HOST=`hostname`
+fi
+API_PATH="api/v0/doc/"
+API_ROOT="http://${RUNNING_HOST}:${FLASK_PORT}/${API_PATH}"
 BIN_DIR=`dirname $0`
 PROJECT_ROOT=`readlink -f "${BIN_DIR}/.."`
 VIRTUALENV=${VIRTUALENV:="backend"}
 
 if [ ! -d ~/.virtualenvs/${VIRTUALENV} ]; then
-    python3.6 -m venv ~/.virtualenvs/${VIRTUALENV}
+    ${PY} -m venv ~/.virtualenvs/${VIRTUALENV}
 fi
 . ~/.virtualenvs/${VIRTUALENV}/bin/activate
 
