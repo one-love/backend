@@ -7,7 +7,7 @@ from ..models.auth import User
 from ..schemas import TokenSchema
 
 
-@ns_auth.route('/tokens', endpoint='auth.token')
+@ns_auth.route('/tokens', endpoint='auth_token')
 class AuthAPI(Resource):
     @ns_auth.response(401, 'Invalid credentials')
     @ns_auth.expect(TokenSchema.fields())

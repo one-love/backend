@@ -61,6 +61,6 @@ def create_app(config, app=None):
 
     app.jwt = JWT(app, authenticate, identity)
 
-    from .api import auth, user
+    from .api import auth, user, me
 
     return app
