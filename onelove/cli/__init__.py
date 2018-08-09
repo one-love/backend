@@ -1,6 +1,6 @@
 import click
 from flask_security.utils import encrypt_password
-from onelove.models import User
+from onelove.models.auth import User
 
 
 def register(app):
@@ -10,7 +10,7 @@ def register(app):
         """Run development server with SocketIO"""
         app.socketio.run(
             app,
-            host="0.0.0.0",
+            host='0.0.0.0',
             debug=True,
             use_reloader=True,
             port=port

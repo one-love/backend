@@ -1,9 +1,8 @@
-from gevent import monkey
-monkey.patch_all()
-
 import os
-from config import configs
+
+from flask import Flask, render_template
 from onelove import create_app, cli
+from config import configs
 
 
 config_name = os.getenv('FLASK_ENV') or 'default'

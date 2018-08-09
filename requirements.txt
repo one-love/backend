@@ -1,16 +1,8 @@
-ansible
+bcrypt
 flask-collect
 flask-cors
 flask-jwt
 flask-mongoengine
 flask-restplus
-flask-script
 flask-security
-flask-socketio
-gevent-websocket
-gunicorn
 marshmallow
-mongoengine
-python-digitalocean
-pyzmq
-setproctitle

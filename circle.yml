@@ -1,7 +1,0 @@
-dependencies:
-  override:
-    - pip install -r requirements_dev.txt
-
-test:
-  override:
-    - bin/test_ci.sh

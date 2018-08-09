@@ -1,9 +1,2 @@
 -r requirements.txt
-coverage
-docker-compose
-factory-boy
-flask-debug-api
-flask-debugtoolbar
 ipdb
-nose
-pep8
