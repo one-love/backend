@@ -9,7 +9,6 @@ from flask import request, current_app
 
 from ..schemas import ServiceSchema
 
-
 from .mixins import ServiceMixin
 from .namespaces import ns_service
 from .resources import ProtectedResource
@@ -27,11 +26,9 @@ class ServiceListAPI(ProtectedResource):
     def get(self):
         """List services"""
         services = Service.objects.all()
-        print(services)
 
         schema = ServiceSchema(many=True)
         response, errors = schema.dump(services)
-        print(response)
 
         if errors:
            abort(409, errors)
@@ -42,7 +39,6 @@ class ServiceListAPI(ProtectedResource):
     @ns_service.expect(ServiceSchema.fields())
     def post(self):
         """Create service"""
-        print("pppppppppppppppppppppppppppppppppp")
 
         schema = ServiceSchema()
         data, errors = schema.load(current_app.api.payload)
@@ -50,7 +46,6 @@ class ServiceListAPI(ProtectedResource):
             return errors, 409
 
         service = Service(name=data.name, user=current_identity.pk)
-        print(service)
 
 
         try:
@@ -63,29 +58,35 @@ class ServiceListAPI(ProtectedResource):
         return response, 201
 
 
-# @ns_service.route('/<id>', endpoint='services_service')
-# @ns_service.response(404, 'Service not found')
-# class ServiceAPI(ProtectedResource, ServiceMixin):
-#     @ns_service.marshal_with(get_fields)
-#     def get(self, id):
-#         """Show service details"""
-#         service = self._find_service(id)
-#         return service
-#
-#     @ns_service.expect(fields)
-#     @ns_service.marshal_with(get_fields)
-#     def patch(self, id):
-#         """Update service"""
-#         service = self._find_service(id)
-#         patch_parser = all_fields_optional(parser)
-#         args = patch_parser.parse_args()
-#         service.name = args.get('name') or service.name
-#         service.save()
-#         return service
-#
-#     @ns_service.marshal_with(get_fields)
-#     def delete(self, id):
-#         """Delete the service."""
-#         service = self._find_service(id)
-#         service.delete()
-#         return service
+@ns_service.route('/<id>', endpoint='services_service')
+@ns_service.response(404, 'Service not found')
+class ServiceAPI(ProtectedResource, ServiceMixin):
+    @ns_service.marshal_with(ServiceSchema.fields())
+    def get(self, id):
+        """Show service details"""
+        service = self._find_service(id)
+        return service
+
+    @ns_service.expect(ServiceSchema.fields())
+    def patch(self, id):
+        """Update service"""
+        service = self._find_service(id)
+        schema = ServiceSchema()
+        data, errors = schema.load(current_app.api.payload)
+        if errors:
+            return errors, 409
+        service.name = data.name or service.name
+        service.save()
+
+        response = schema.dump(service)
+
+        return response
+
+    @ns_service.marshal_with(ServiceSchema.fields())
+    def delete(self, id):
+        """Delete the service."""
+        service = self._find_service(id)
+
+        service.delete()
+
+        return service

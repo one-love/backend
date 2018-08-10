@@ -47,8 +47,8 @@ class BaseSchema(Schema):
 
 
 class TokenSchema(BaseSchema):
-    email = fields.Email(required=True, description='Email')
-    password = fields.Str(required=True, description='Password')
+    email = fields.Email(required=True, description='Email', default='admin@example.com')
+    password = fields.Str(required=True, description='Password', default='Sekrit')
 
     class Meta:
         model = TokenModel
@@ -57,9 +57,12 @@ class TokenSchema(BaseSchema):
 
 class UserSchema(BaseSchema):
     id = fields.String(description='ID', dump_only=True)
-    email = fields.Email(required=True, description='Email', default='admin@example.com')
+    email = fields.Email(required=True, description='Email')
     password = fields.Str(required=True, description='Password', load_only=True)
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(default=True, description='User status')
+    first_name = fields.String(description="First Name")
+    last_name = fields.String(description="Last name")
+    username = fields.String(description='Username', required=True)
 
     class Meta:
         model = User
@@ -68,7 +71,7 @@ class UserSchema(BaseSchema):
 class ServiceSchema(BaseSchema):
     id = fields.String(description='ID', dump_only=True)
     name = fields.String(required=True, description='Service name')
-    # applications = fields.Email(required=True, description='Email')
+    # applications = fields.Nested(required=True, description='Applications')
     user = fields.Nested(UserSchema, dump_only=True)
 
     class Meta:

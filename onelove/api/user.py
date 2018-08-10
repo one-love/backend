@@ -31,10 +31,11 @@ class UserListAPI(ProtectedResource):
 @ns_user.route('/<id>', endpoint='user')
 @ns_user.response(404, 'User not found')
 class UserAPI(ProtectedResource):
+    @ns_user.marshal_with(UserSchema.fields())
     def get(self, id):
         """Get user details"""
         try:
-            user = User.objects(id=id)
+            user = User.objects.get(id=id)
         except User.DoesNotExist:
             abort(404, 'User not found')
         schema = UserSchema()
