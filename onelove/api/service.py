@@ -13,7 +13,7 @@ from .mixins import ServiceMixin
 from .namespaces import ns_service
 from .resources import ProtectedResource
 
-from ..models.all import Service
+from ..models.service import Service
 # from ..utils import check_fields, all_fields_optional
 
 

@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, pre_load, post_load, post_dump
 from flask_restplus import fields as rest_fields
 from .models.auth import User
-from .models.all import Service
+from .models.service import Service
 from .models.parsing import TokenModel
 from .api import api
 

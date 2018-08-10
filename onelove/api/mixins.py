@@ -4,7 +4,7 @@ from flask_restplus import abort
 from mongoengine.errors import ValidationError
 
 # from ..models import Cluster
-from ..models.all import Service
+from ..models.service import Service
 from ..models.auth import Role
 from ..models.auth import User
 
