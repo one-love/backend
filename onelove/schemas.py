@@ -1,6 +1,7 @@
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, fields, pre_load, post_load, post_dump
 from flask_restplus import fields as rest_fields
 from .models.auth import User
+from .models.all import Service
 from .models.parsing import TokenModel
 from .api import api
 
@@ -14,11 +15,34 @@ def marshmallowToField(field):
         return rest_fields.Integer
     if type(field) == fields.DateTime:
         return rest_fields.DateTime
+    if type(field) == fields.Nested:
+        return rest_fields.Nested
     else:
         raise ValueError('Unknown field of type {}'.format(type(field)))
 
 
 class BaseSchema(Schema):
+
+    __envelope__ = {
+        'single': None,
+        'many': None,
+    }
+
+    def get_envelope_key(self, many):
+        """Helper to get the envelope key."""
+        key = self.__envelope__['many'] if many else self.__envelope__['single']
+        assert key is not None, "Envelope key undefined"
+        return key
+
+    @pre_load(pass_many=True)
+    def unwrap_envelope(self, data, many):
+        key = self.get_envelope_key(many)
+        return data[key]
+
+    @post_dump(pass_many=True)
+    def wrap_with_envelope(self, data, many):
+        key = self.get_envelope_key(many)
+        return {key: data}
     @post_load
     def make_object(self, data):
         return self.Meta.model(**data)
@@ -44,6 +68,10 @@ class BaseSchema(Schema):
 
 
 class TokenSchema(BaseSchema):
+    __envelope__ = {
+        'single': 'token',
+        'many': 'tokens',
+    }
     email = fields.Email(required=True, description='Email')
     password = fields.Str(required=True, description='Password')
 
@@ -53,11 +81,29 @@ class TokenSchema(BaseSchema):
 
 
 class UserSchema(BaseSchema):
+    __envelope__ = {
+        'single': 'user',
+        'many': 'users',
+    }
     id = fields.String(description='ID', dump_only=True)
-    email = fields.Email(required=True, description='Email')
+    email = fields.Email(required=True, description='Email', default='admin@example.com')
     password = fields.Str(required=True, description='Password', load_only=True)
     active = fields.Boolean(default=True)
 
     class Meta:
         model = User
         name = 'User'
+
+class ServiceSchema(BaseSchema):
+    __envelope__ = {
+        'single': 'service',
+        'many': 'services',
+    }
+    id = fields.String(description='ID', dump_only=True)
+    name = fields.String(required=True, description='Service name')
+    # applications = fields.Email(required=True, description='Email')
+    # user = fields.Nested(UserSchema)
+
+    class Meta:
+        model = Service
+        name = 'Service'
