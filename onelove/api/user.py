@@ -34,7 +34,7 @@ class UserAPI(ProtectedResource):
     def get(self, id):
         """Get user details"""
         try:
-            user = User.get(id=id)
+            user = User.objects(id=id)
         except User.DoesNotExist:
             abort(404, 'User not found')
         schema = UserSchema()

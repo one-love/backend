@@ -22,27 +22,6 @@ def marshmallowToField(field):
 
 
 class BaseSchema(Schema):
-
-    __envelope__ = {
-        'single': None,
-        'many': None,
-    }
-
-    def get_envelope_key(self, many):
-        """Helper to get the envelope key."""
-        key = self.__envelope__['many'] if many else self.__envelope__['single']
-        assert key is not None, "Envelope key undefined"
-        return key
-
-    @pre_load(pass_many=True)
-    def unwrap_envelope(self, data, many):
-        key = self.get_envelope_key(many)
-        return data[key]
-
-    @post_dump(pass_many=True)
-    def wrap_with_envelope(self, data, many):
-        key = self.get_envelope_key(many)
-        return {key: data}
     @post_load
     def make_object(self, data):
         return self.Meta.model(**data)
@@ -68,10 +47,6 @@ class BaseSchema(Schema):
 
 
 class TokenSchema(BaseSchema):
-    __envelope__ = {
-        'single': 'token',
-        'many': 'tokens',
-    }
     email = fields.Email(required=True, description='Email')
     password = fields.Str(required=True, description='Password')
 
@@ -81,10 +56,6 @@ class TokenSchema(BaseSchema):
 
 
 class UserSchema(BaseSchema):
-    __envelope__ = {
-        'single': 'user',
-        'many': 'users',
-    }
     id = fields.String(description='ID', dump_only=True)
     email = fields.Email(required=True, description='Email', default='admin@example.com')
     password = fields.Str(required=True, description='Password', load_only=True)
@@ -95,14 +66,10 @@ class UserSchema(BaseSchema):
         name = 'User'
 
 class ServiceSchema(BaseSchema):
-    __envelope__ = {
-        'single': 'service',
-        'many': 'services',
-    }
     id = fields.String(description='ID', dump_only=True)
     name = fields.String(required=True, description='Service name')
     # applications = fields.Email(required=True, description='Email')
-    # user = fields.Nested(UserSchema)
+    user = fields.Nested(UserSchema, dump_only=True)
 
     class Meta:
         model = Service

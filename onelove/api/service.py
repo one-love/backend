@@ -26,15 +26,12 @@ parser.add_argument('name', type=str, required=True, location='json')
 class ServiceListAPI(ProtectedResource):
     def get(self):
         """List services"""
-        services = Service.objects()
+        services = Service.objects.all()
         print(services)
 
-
-        schema = ServiceSchema()
-        response, errors = schema.dump(services, many=True)
+        schema = ServiceSchema(many=True)
+        response, errors = schema.dump(services)
         print(response)
-
-
 
         if errors:
            abort(409, errors)
@@ -45,18 +42,23 @@ class ServiceListAPI(ProtectedResource):
     @ns_service.expect(ServiceSchema.fields())
     def post(self):
         """Create service"""
+        print("pppppppppppppppppppppppppppppppppp")
+
         schema = ServiceSchema()
         data, errors = schema.load(current_app.api.payload)
         if errors:
             return errors, 409
 
         service = Service(name=data.name, user=current_identity.pk)
+        print(service)
+
 
         try:
             service.save()
         except NotUniqueError:
             abort(409, error='Service with that name already exists')
         response = schema.dump(service)
+
 
         return response, 201
 
