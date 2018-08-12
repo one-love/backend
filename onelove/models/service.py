@@ -1,16 +1,13 @@
 from flask_mongoengine import Document
 from .auth import User
 from mongoengine.fields import (
-    BooleanField,
-    EmailField,
     EmbeddedDocument,
     EmbeddedDocumentField,
-    EmbeddedDocumentListField,
     ListField,
     ReferenceField,
     StringField,
-    UUIDField,
 )
+
 
 class Application(EmbeddedDocument):
     name = StringField(max_length=512)
@@ -22,6 +19,7 @@ class Application(EmbeddedDocument):
     # Required for administrative interface
     def __unicode__(self):
         return self.__repr__()
+
 
 class Service(Document):
     user = ReferenceField(User)

@@ -3,22 +3,11 @@ from flask_restplus import abort
 from mongoengine.queryset import NotUniqueError
 from onelove.api import pagination
 from flask import request, current_app
-
-
-# from .fields.service import fields, get_fields
-
 from ..schemas import ServiceSchema
-
 from .mixins import ServiceMixin
 from .namespaces import ns_service
 from .resources import ProtectedResource
-
 from ..models.service import Service
-# from ..utils import check_fields, all_fields_optional
-
-
-parser = ns_service.parser()
-parser.add_argument('name', type=str, required=True, location='json')
 
 
 @ns_service.route('', endpoint='services')
@@ -53,7 +42,6 @@ class ServiceListAPI(ProtectedResource):
         except NotUniqueError:
             abort(409, error='Service with that name already exists')
         response = schema.dump(service)
-
 
         return response, 201
 

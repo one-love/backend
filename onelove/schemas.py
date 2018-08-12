@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, pre_load, post_load, post_dump
 from flask_restplus import fields as rest_fields
 from .models.auth import User
-from .models.service import Service
+from .models.service import Service, Application
 from .models.parsing import TokenModel
 from .api import api
 
@@ -68,10 +68,20 @@ class UserSchema(BaseSchema):
         model = User
         name = 'User'
 
+
+class ApplicationSchema(BaseSchema):
+    name = fields.String(description='Application name', required=True)
+    galaxy_role = fields.String(description='Galaxy role', required=True)
+
+    class Meta:
+        model = Application
+        name = 'Application'
+
+
 class ServiceSchema(BaseSchema):
     id = fields.String(description='ID', dump_only=True)
     name = fields.String(required=True, description='Service name')
-    # applications = fields.Nested(required=True, description='Applications')
+    applications = fields.Nested(ApplicationSchema, dump_only=True, many=True)
     user = fields.Nested(UserSchema, dump_only=True)
 
     class Meta:
