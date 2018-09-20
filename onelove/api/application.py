@@ -1,12 +1,11 @@
+from flask import current_app, request
 from flask_restplus import abort
-from .resources import ProtectedResource
-from flask import request, current_app
 
+from ..models.service import Application, Service
 from .mixins import ServiceMixin
 from .namespaces import ns_service
-from ..schemas import ApplicationSchema
-
-from ..models.service import Service, Application
+from .resources import ProtectedResource
+from .schemas import ApplicationSchema
 
 
 @ns_service.route(

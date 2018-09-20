@@ -1,7 +1,7 @@
 bcrypt
 flask-collect
 flask-cors
-flask-jwt
+flask-jwt-extended
 flask-mongoengine
 flask-restplus
 flask-security

@@ -1,6 +1,8 @@
-from . import api
+from flask_restplus.namespace import Namespace
 
-ns_auth = api.namespace('auth', description='Auth operations')
-ns_user = api.namespace('users', description='User operations')
-ns_me = api.namespace('me', description='Me operations')
-ns_service = api.namespace('service', description="Service operations")
+ns_auth = Namespace('auth', description='Auth operations')
+ns_me = Namespace('me', description='Me operations')
+ns_user = Namespace('users', description='User operations')
+ns_service = Namespace('service', description='Service operations')
+
+namespaces = [ns_auth, ns_me, ns_user, ns_service]

@@ -1,6 +1,4 @@
 import click
-from flask_security.utils import encrypt_password
-from onelove.models.auth import User
 
 
 def register(app):

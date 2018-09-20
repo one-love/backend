@@ -1,13 +1,14 @@
-from flask_jwt import current_identity
+from flask import current_app
+from flask_jwt_extended import get_jwt_identity
 from flask_restplus import abort
 from mongoengine.queryset import NotUniqueError
-from onelove.api import pagination
-from flask import request, current_app
-from ..schemas import ServiceSchema
+
+from ..models.auth import User
+from ..models.service import Service
 from .mixins import ServiceMixin
 from .namespaces import ns_service
 from .resources import ProtectedResource
-from ..models.service import Service
+from .schemas import ServiceSchema
 
 
 @ns_service.route('', endpoint='services')
@@ -20,7 +21,7 @@ class ServiceListAPI(ProtectedResource):
         response, errors = schema.dump(services)
 
         if errors:
-           abort(409, errors)
+            abort(409, errors)
 
         return response, 200
 
@@ -28,15 +29,13 @@ class ServiceListAPI(ProtectedResource):
     @ns_service.expect(ServiceSchema.fields())
     def post(self):
         """Create service"""
-
+        email = get_jwt_identity()
+        user = User.objects.get(email=email)
         schema = ServiceSchema()
         data, errors = schema.load(current_app.api.payload)
         if errors:
             return errors, 409
-
-        service = Service(name=data.name, user=current_identity.pk)
-
-
+        service = Service(name=data.name, user=user.pk)
         try:
             service.save()
         except NotUniqueError:

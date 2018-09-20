@@ -1,13 +1,8 @@
-from flask import current_app
-from flask_jwt import current_identity
 from flask_restplus import abort
 from mongoengine.errors import ValidationError
 
 # from ..models import Cluster
 from ..models.service import Service
-from ..models.auth import Role
-from ..models.auth import User
-
 
 # class ClusterMixin(object):
 #     def _find_cluster(self, cluster_id):
