@@ -1,16 +1,17 @@
 import factory
-from flask_security.utils import encrypt_password
-import models
+from flask_security.utils import hash_password
+from onelove.models.auth import Role, User
 
 
 class UserFactory(factory.Factory):
     class Meta:
-        model = models.auth.User
+        model = User
 
+    active = True
+    email = factory.Faker('email')
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
-    email = factory.Faker('email')
-    password = encrypt_password('Sekrit')
+    password = factory.LazyAttribute(lambda a: hash_password('Sekrit'))
     username = factory.Faker('name')
 
 
@@ -20,7 +21,7 @@ class AdminFactory(UserFactory):
 
 class RoleFactory(factory.Factory):
     class Meta:
-        model = models.auth.Role
+        model = Role
 
     name = factory.Faker('first_name')
     admin = False

@@ -14,8 +14,7 @@ class CommonConfig:
     JWT_COOKIE_SECURE = True
     #  JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=1)
     #  JWT_REFRESH_TOKEN_EXPIRES = timedelta(seconds=10)
-    DATABASE = 'sqlite:///database.db'
-    MONGODB_HOST = 'mongodb',
+    MONGODB_HOST = 'mongodb'
 
     @staticmethod
     def init_app(app):

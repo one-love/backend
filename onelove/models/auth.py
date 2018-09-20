@@ -1,15 +1,12 @@
 from flask_mongoengine import Document
-from flask_security import UserMixin, RoleMixin
+from flask_security import RoleMixin, UserMixin
 from mongoengine.fields import (
     BooleanField,
     EmailField,
-    EmbeddedDocument,
-    EmbeddedDocumentField,
-    EmbeddedDocumentListField,
     ListField,
     ReferenceField,
     StringField,
-    UUIDField,
+    UUIDField
 )
 
 
