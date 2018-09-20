@@ -1,34 +1,19 @@
-from datetime import timedelta
-import os
-
-
 try:
-    from local_config import BaseConfig
-except ImportError:
-    class BaseConfig(object):
-        SECRET_KEY = 'top-secret'
-        MONGODB_HOST = 'mongodb',
-
-
-class Config(BaseConfig):
-    DEBUG = False
-    SECURITY_PASSWORD_SALT = 'tilda'
-    SECRET_KEY = 'iQfPvB6sZaNHqVFI5CJa9rM1xOEVHKIM0LwifT04yLsPlZhSSvaDuZXOgJFSpJVq'
-    SECURITY_TRACKABLE = False
-    JWT_EXPIRATION_DELTA = timedelta(days=7)
-
-    @staticmethod
-    def init_app(app):
-        pass
+    from local_config import Config
+except ModuleNotFoundError:
+    from common_config import CommonConfig as Config
 
 
 class DevConfig(Config):
     DEBUG = True
+    JWT_COOKIE_SECURE = False
     SECURITY_SEND_REGISTER_EMAIL = False
 
 
 class TestConfig(Config):
     TESTING = True
+    JWT_COOKIE_SECURE = False
+    DATABASE = 'sqlite:///test.db'
 
 
 class ProdConfig(Config):
