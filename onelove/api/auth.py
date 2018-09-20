@@ -26,8 +26,11 @@ class AuthLoginAPI(Resource):
         data, errors = schema.load(current_app.api.payload)
         if errors:
             return errors, 400
-        user = User.objects.get(email=data.email)
-        if not user or not user.active:
+        try:
+            user = User.objects.get(email=data.email)
+        except User.DoesNotExist:
+            abort(403, 'No such user, or wrong password')
+        if not user.active:
             abort(403, 'No such user, or wrong password')
         if not verify_password(data.password, user.password):
             abort(403, 'No such user, or wrong password')

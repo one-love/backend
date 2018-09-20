@@ -13,8 +13,11 @@ class MeAPI(ProtectedResource):
     def get(self):
         """Get my details"""
         email = get_jwt_identity()
-        user = User.objects.get(email=email)
-        if not user or not user.active:
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            abort(403, 'No such user, or wrong password')
+        if not user.active:
             abort(403, 'No such user, or wrong password')
         schema = UserSchema()
         response, errors = schema.dump(user)
