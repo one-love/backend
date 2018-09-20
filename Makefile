@@ -1,4 +1,4 @@
-SERVICE = backend
+SERVICE = oneloveback
 REGGAE_PATH :=/usr/local/share/reggae
 
 .if exists(provisioners.mk)

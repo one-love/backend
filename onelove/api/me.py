@@ -5,7 +5,7 @@ from ..schemas import UserSchema
 
 
 @ns_me.route('', endpoint='me')
-class UserListAPI(ProtectedResource):
+class MeAPI(ProtectedResource):
     def get(self):
         """Logged in user details"""
         schema = UserSchema()
