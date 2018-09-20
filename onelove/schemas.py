@@ -1,6 +1,7 @@
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, fields, pre_load, post_load, post_dump
 from flask_restplus import fields as rest_fields
 from .models.auth import User
+from .models.service import Service, Application
 from .models.parsing import TokenModel
 from .api import api
 
@@ -14,6 +15,8 @@ def marshmallowToField(field):
         return rest_fields.Integer
     if type(field) == fields.DateTime:
         return rest_fields.DateTime
+    if type(field) == fields.Nested:
+        return rest_fields.Nested
     else:
         raise ValueError('Unknown field of type {}'.format(type(field)))
 
@@ -44,8 +47,8 @@ class BaseSchema(Schema):
 
 
 class TokenSchema(BaseSchema):
-    email = fields.Email(required=True, description='Email')
-    password = fields.Str(required=True, description='Password')
+    email = fields.Email(required=True, description='Email', default='admin@example.com')
+    password = fields.Str(required=True, description='Password', default='Sekrit')
 
     class Meta:
         model = TokenModel
@@ -56,8 +59,31 @@ class UserSchema(BaseSchema):
     id = fields.String(description='ID', dump_only=True)
     email = fields.Email(required=True, description='Email')
     password = fields.Str(required=True, description='Password', load_only=True)
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(default=True, description='User status')
+    first_name = fields.String(description="First Name")
+    last_name = fields.String(description="Last name")
+    username = fields.String(description='Username', required=True)
 
     class Meta:
         model = User
         name = 'User'
+
+
+class ApplicationSchema(BaseSchema):
+    name = fields.String(description='Application name', required=True)
+    galaxy_role = fields.String(description='Galaxy role', required=True)
+
+    class Meta:
+        model = Application
+        name = 'Application'
+
+
+class ServiceSchema(BaseSchema):
+    id = fields.String(description='ID', dump_only=True)
+    name = fields.String(required=True, description='Service name')
+    applications = fields.Nested(ApplicationSchema, dump_only=True, many=True)
+    user = fields.Nested(UserSchema, dump_only=True)
+
+    class Meta:
+        model = Service
+        name = 'Service'
