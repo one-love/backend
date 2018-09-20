@@ -1,2 +1,6 @@
 -r requirements.txt
+factory-boy
+flake8
 ipdb
+pytest-factoryboy
+pytest-flask

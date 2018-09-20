@@ -1,4 +1,4 @@
-from flask import current_app, request
+from flask import current_app
 from flask_restplus import abort
 
 from ..models.service import Application, Service

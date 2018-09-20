@@ -13,7 +13,10 @@ class DevConfig(Config):
 class TestConfig(Config):
     TESTING = True
     JWT_COOKIE_SECURE = False
-    DATABASE = 'sqlite:///test.db'
+
+
+class TestConfigCI(TestConfig):
+    MONGODB_HOST = '127.0.0.1'
 
 
 class ProdConfig(Config):
@@ -23,6 +26,7 @@ class ProdConfig(Config):
 configs = {
     'development': DevConfig,
     'testing': TestConfig,
+    'testingci': TestConfigCI,
     'production': ProdConfig,
     'default': ProdConfig,
 }

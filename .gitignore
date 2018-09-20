@@ -1,3 +1,5 @@
+__pycache__
+.pytest_cache
 .provisioned
 build
 cbsd.conf
@@ -9,5 +11,3 @@ ansible/roles/*
 ansible/site.yml
 vars.mk
 site.retry
-__pycache__
-database.db

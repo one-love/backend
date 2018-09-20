@@ -1,8 +1,6 @@
 from . import api
 
-
 def_per_page = 10
-
 
 parser = api.parser()
 parser.add_argument(
@@ -27,7 +25,7 @@ def pages():
     args = parser.parse_args()
     page = args.get('X-Page')
     per_page = args.get('X-Per-Page')
-    return(page, per_page)
+    return (page, per_page)
 
 
 class Pagination(object):
@@ -44,8 +42,9 @@ class Pagination(object):
 
     @property
     def headers(self):
-        headers = {'X-Total-Count': self.total,
-                   'X-First-Page': '1',
-                   'X-Last-Page': self.last_page
-                   }
+        headers = {
+            'X-Total-Count': self.total,
+            'X-First-Page': '1',
+            'X-Last-Page': self.last_page
+        }
         return headers
