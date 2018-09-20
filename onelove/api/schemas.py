@@ -1,8 +1,10 @@
-from marshmallow import Schema, fields, post_load
 from flask_restplus import fields as rest_fields
 from flask_restplus.model import Model
+from marshmallow import Schema, fields, post_load
+
 from ..models.auth import User
 from ..models.parsing import TokenModel
+from ..models.service import Application, Service
 
 
 def marshmallowToField(field, required=None):
@@ -37,7 +39,7 @@ def marshmallowToField(field, required=None):
     return field_type(
         subtype,
         description=description,
-        required=required,
+        required=field_required,
     )
 
 
@@ -69,7 +71,11 @@ class TokenSchema(BaseSchema):
 class UserSchema(BaseSchema):
     id = fields.String(description='ID', dump_only=True)
     email = fields.Email(required=True, description='Email')
-    password = fields.Str(required=True, description='Password', load_only=True)
+    password = fields.Str(
+        required=True,
+        description='Password',
+        load_only=True
+    )
     active = fields.Boolean(default=True)
 
     class Meta:
@@ -77,4 +83,24 @@ class UserSchema(BaseSchema):
         name = 'User'
 
 
-schemas = [TokenSchema, UserSchema]
+class ApplicationSchema(BaseSchema):
+    name = fields.String(description='Application name', required=True)
+    galaxy_role = fields.String(description='Galaxy role', required=True)
+
+    class Meta:
+        model = Application
+        name = 'Application'
+
+
+class ServiceSchema(BaseSchema):
+    id = fields.String(description='ID', dump_only=True)
+    name = fields.String(required=True, description='Service name')
+    applications = fields.Nested(ApplicationSchema, dump_only=True, many=True)
+    user = fields.Nested(UserSchema, dump_only=True)
+
+    class Meta:
+        model = Service
+        name = 'Service'
+
+
+schemas = [TokenSchema, UserSchema, ApplicationSchema, ServiceSchema]

@@ -1,11 +1,9 @@
 from flask import Blueprint, render_template
-from flask_restplus import Api, apidoc
-from flask_jwt_extended.exceptions import (
-    CSRFError,
-    NoAuthorizationError,
-)
-from jwt import ExpiredSignatureError
 from flask_jwt_extended import JWTManager
+from flask_jwt_extended.exceptions import CSRFError, NoAuthorizationError
+from flask_restplus import Api, apidoc
+from jwt import ExpiredSignatureError
+
 from .namespaces import namespaces
 from .schemas import schemas
 
@@ -13,9 +11,9 @@ from .schemas import schemas
 class ErrorFriendlyApi(Api):
     def error_router(self, original_handler, e):
         if type(e) in [
-            CSRFError,
-            ExpiredSignatureError,
-            NoAuthorizationError,
+                CSRFError,
+                ExpiredSignatureError,
+                NoAuthorizationError,
         ]:
             return original_handler(e)
         else:
@@ -30,8 +28,7 @@ def create_api(app):
         return render_template(
             'flask-restplus/swagger-ui.html',
             title=app.api.title,
-            specs_url=app.api.specs_url
-        )
+            specs_url=app.api.specs_url)
 
     app.jwt = JWTManager(app)
     api_v0 = Blueprint('api_v0', __name__, url_prefix='/api/v0')
@@ -53,3 +50,4 @@ def create_api(app):
             app.api.add_namespace(ns)
     app.register_blueprint(api_v0)
     app.register_blueprint(apidoc.apidoc)
+    from . import auth, me, user, service, application  # noqa

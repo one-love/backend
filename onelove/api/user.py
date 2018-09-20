@@ -1,11 +1,10 @@
-import os
-import re
 from flask import current_app
 from flask_restplus import abort
-from .resources import ProtectedResource
-from .namespaces import ns_user
+
 from ..models.auth import User
-from ..schemas import UserSchema
+from .namespaces import ns_user
+from .resources import ProtectedResource
+from .schemas import UserSchema
 
 
 @ns_user.route('', endpoint='users')
@@ -34,10 +33,10 @@ class UserAPI(ProtectedResource):
     def get(self, id):
         """Get user details"""
         try:
-            user = User.get(id=id)
+            user = User.objects.get(id=id)
         except User.DoesNotExist:
             abort(404, 'User not found')
-        schema = UserSchema()
+        schema = UserSchema(exclude=('password'))
         response, errors = schema.dump(user)
         if errors:
             abort(409, errors)

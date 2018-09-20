@@ -1,10 +1,9 @@
-from flask import Flask, Blueprint
+from flask import Flask
 from flask_collect import Collect
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
-from flask_restplus import apidoc
-from flask_security import Security, MongoEngineUserDatastore
-from flask_security.utils import verify_password
+from flask_security import MongoEngineUserDatastore, Security
+
 from .api import create_api
 
 
@@ -32,5 +31,4 @@ def create_app(config, app=None):
     )
     app.security = Security(app, app.user_datastore)
     create_api(app)
-
     return app
