@@ -12,4 +12,4 @@ setup
 rm -rf `find . -name __pycache__`
 rm -rf .pytest_cache
 flake8 .
-py.test
+py.test --cov=onelove --cov-report=xml
