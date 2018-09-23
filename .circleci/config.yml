@@ -3,6 +3,11 @@ jobs:
   build:
     docker:
       - image: python:3.6
+    steps:
+      - checkout
+  test:
+    docker:
+      - image: python:3.6
         environment:
           FLASK_ENV: testingci
       - image: mongo:latest
@@ -11,3 +16,28 @@ jobs:
       - run:
           name: Run tests
           command: bin/test.sh
+  coverage:
+    docker:
+      - image: python:3.6
+    steps:
+      - run:
+          name: Publish code coverage
+          command: |
+            pip install coveralls
+            set
+            coveralls
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - coverage:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
