@@ -1,8 +1,10 @@
 __pycache__
+.coverage
 .pytest_cache
 .provisioned
 build
 cbsd.conf
+coverage.xml
 ansible/group_vars/all
 ansible/inventory/inventory
 ansible/roles/*
