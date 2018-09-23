@@ -1,4 +1,4 @@
-One Love REST API [![CircleCI](https://circleci.com/gh/one-love/backend.svg?style=svg)](https://circleci.com/gh/one-love/backend) [![Stories in Ready](https://badge.waffle.io/one-love/backend.png?label=ready&title=Ready)](https://waffle.io/one-love/backend) [![Coverage Status](https://coveralls.io/repos/github/one-love/backend/badge.svg?branch=master)](https://coveralls.io/github/one-love/backend?branch=master)
+One Love REST API [![CircleCI](https://circleci.com/gh/one-love/backend.svg?style=svg)](https://circleci.com/gh/one-love/backend)  [![Coverage Status](https://coveralls.io/repos/github/one-love/backend/badge.svg?branch=master)](https://coveralls.io/github/one-love/backend?branch=master)
 =================
 
 
