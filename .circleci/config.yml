@@ -17,7 +17,7 @@ jobs:
           name: Run tests
           command: bin/test.sh
       - store_artifacts:
-          path: coverage.xml
+          path: .coverage
   coverage:
     docker:
       - image: python:3.6
