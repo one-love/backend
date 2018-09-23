@@ -16,15 +16,28 @@ jobs:
       - run:
           name: Run tests
           command: bin/test.sh
+      - store_artifacts:
+          path: coverage.xml
   coverage:
     docker:
       - image: python:3.6
     steps:
       - run:
+          name: Download artifacts
+          command: |
+            curl https://circleci.com/api/v1.1/project/github/one-love/backend/$CIRCLE_PREVIOUS_BUILD_NUM/artifacts?circle-token=$CIRCLE_TOKEN | grep -o 'https://[^"]*' > artifacts.txt
+            <artifacts.txt xargs -P1 -I % wget %?circle-token=$CIRCLE_TOKEN
+            mv coverage.xml* coverage.xml
+            pwd
+            ls -al
+      - run:
           name: Publish code coverage
           command: |
             pip install coveralls
             set
+            pwd
+            ls -al
+            cat coverage.xml
             coveralls
 workflows:
   version: 2
