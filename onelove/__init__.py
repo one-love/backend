@@ -1,10 +1,14 @@
+import os
+
 from flask import Flask
 from flask_collect import Collect
-from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 from flask_security import MongoEngineUserDatastore, Security
+from flask_socketio import SocketIO
 
 from .api import create_api
+from .socket import SocketThread
+from .tasks.celery import make_celery
 
 
 def create_app(config, app=None):
@@ -17,11 +21,8 @@ def create_app(config, app=None):
         app = Flask(__name__)
         app.config.from_object(config)
 
-    debug = app.config.get('DEBUG', False)
-    if debug:
-        CORS(app)
     app.collect = Collect(app)
-
+    app.celery = make_celery(app)
     from .models.auth import User, Role
     app.db = MongoEngine(app)
     app.user_datastore = MongoEngineUserDatastore(
@@ -31,4 +32,12 @@ def create_app(config, app=None):
     )
     app.security = Security(app, app.user_datastore)
     create_api(app)
+    app.socketio = SocketIO(app, logger=True)
+
+    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+        app.socket_thread = SocketThread(
+            app.socketio,
+            app.config['REDIS_HOST']
+        )
+        app.socket_thread.start()
     return app
