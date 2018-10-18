@@ -1,7 +1,11 @@
-import os
+import eventlet
+eventlet.monkey_patch()
 
-from config import configs
-from onelove import cli, create_app
+import os  # noqa: E402
+
+from config import configs  # noqa: E402
+from onelove import cli, create_app  # noqa: E402
+
 
 config_name = os.getenv('FLASK_ENV') or 'default'
 app = create_app(configs[config_name])

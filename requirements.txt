@@ -1,8 +1,14 @@
+ansible
 bcrypt
+celery[redis]
+eventlet
 flask-collect
 flask-cors
 flask-jwt-extended
 flask-mongoengine
 flask-restplus
 flask-security
+flask-socketio
+gunicorn
 marshmallow
+pynacl<1.3
