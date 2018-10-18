@@ -1,4 +1,6 @@
-from flask import current_app, jsonify
+from datetime import datetime
+
+from flask import current_app, jsonify, request
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -47,6 +49,17 @@ class AuthLoginAPI(Resource):
         )
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
+        refresh_path = current_app.config['JWT_REFRESH_COOKIE_PATH']
+        refresh_secure = current_app.config['JWT_COOKIE_SECURE']
+        refresh_expire_date = datetime.now() + refresh_expire
+        resp.set_cookie(
+            'refresh_expire',
+            value=str(refresh_expire_date),
+            expires=refresh_expire_date,
+            path=refresh_path,
+            httponly=True,
+            secure=refresh_secure,
+        )
         return resp
 
 
@@ -69,12 +82,18 @@ class AuthRefreshAPI(Resource):
         if not user or not user.active:
             abort(403, 'No such user, or wrong password')
         access_expire = current_app.config['JWT_ACCESS_TOKEN_EXPIRES']
+        access_token = create_access_token(identity=user.email)
+        refresh_expire_date = datetime.strptime(
+            request.cookies['refresh_expire'],
+            '%Y-%m-%d %H:%M:%S.%f'
+        )
+        refresh_delta = refresh_expire_date - datetime.now()
         resp = jsonify(
             {
-                'refresh': True,
-                'access_expire': int(access_expire.total_seconds()),
+                'access': access_token,
+                'accessExpire': int(access_expire.total_seconds()),
+                'refreshExpire': int(refresh_delta.total_seconds()),
             }
         )
-        access_token = create_access_token(identity=user.email)
         set_access_cookies(resp, access_token)
         return resp

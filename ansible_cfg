@@ -1,0 +1,4 @@
+[defaults]
+callback_plugins = PROJECT_ROOT/callbacks
+callback_whitelist = onelove
+

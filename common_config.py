@@ -2,7 +2,7 @@ SECRET_KEY = 'iQfPvB6sZaNHqVFI5CJa9rM1xOEVHKIM0LwifT04yLsPlZhSSvaDuZXOgJFSpJVq'
 REDIS_HOST = 'redis'
 
 
-class CommonConfig:
+class Config:
     DEBUG = False
     SECURITY_PASSWORD_SALT = 'tilda'
     SECRET_KEY = SECRET_KEY
@@ -27,3 +27,18 @@ class CommonConfig:
     @staticmethod
     def init_app(app):
         pass
+
+
+class DevConfig(Config):
+    DEBUG = True
+    JWT_COOKIE_SECURE = False
+    SECURITY_SEND_REGISTER_EMAIL = False
+
+
+class TestConfig(Config):
+    TESTING = True
+    JWT_COOKIE_SECURE = False
+
+
+class ProdConfig(Config):
+    pass
