@@ -12,7 +12,7 @@ class ProvisionListAPI(ProtectedResource):
     @ns_provision.expect(parser)
     def get(self):
         """List provisions"""
-        return paginate(Provision.select(), ProvisionSchema())
+        return paginate(Provision.objects(), ProvisionSchema())
 
 
 @ns_provision.route('/<provision_id>', endpoint='provision')

@@ -3,6 +3,7 @@ from flask_restplus.model import Model
 from marshmallow import Schema, fields, post_load
 
 from ..models.auth import User
+from ..models.cluster import Cluster
 from ..models.parsing import TokenModel
 from ..models.provision import Provision
 from ..models.service import Application, Service
@@ -111,6 +112,15 @@ class ProvisionSchema(BaseSchema):
     class Meta:
         model = Provision
         name = 'Provision'
+
+
+class ClusterSchema(BaseSchema):
+    id = fields.String(description='ID', dump_only=True)
+    name = fields.String(required=True, description='name')
+
+    class Meta:
+        model = Cluster
+        name = 'Cluster'
 
 
 schemas = [
