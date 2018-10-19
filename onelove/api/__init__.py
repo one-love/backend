@@ -37,8 +37,8 @@ def create_api(app):
     app.api = ErrorFriendlyApi(
         api_v0,
         version='0',
-        title='StartKit API',
-        description='StartKit operations',
+        title='One Love API',
+        description='One Love operations',
         doc='/doc/',
         catch_all_404s=True,
         default='auth',
