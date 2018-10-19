@@ -16,25 +16,20 @@ class ServiceApplicationListAPI(ProtectedResource, ServiceMixin):
     def get(self, service_id):
         """Get list of a aplications for the service"""
         service = self._find_service(service_id)
-
         schema = ApplicationSchema(many=True)
         response, errors = schema.dump(service.applications)
-
         if errors:
             abort(409, errors)
-
         return response
 
     @ns_service.expect(ApplicationSchema.fields())
     def post(self, service_id):
         """Create aplication for the service"""
         service = self._find_service(service_id)
-
         schema = ApplicationSchema()
         data, errors = schema.load(current_app.api.payload)
         if errors:
             return errors, 409
-
         galaxy_role = data.galaxy_role
         name = data.name
         for app in service.applications:
@@ -44,9 +39,7 @@ class ServiceApplicationListAPI(ProtectedResource, ServiceMixin):
             galaxy_role=galaxy_role,
             name=name,
         )
-
         response = schema.dump(app)
-
         service.applications.append(app)
         service.save()
         return response
@@ -74,7 +67,6 @@ class ServiceApplicationAPI(ProtectedResource, ServiceMixin):
         data, errors = schema.load(current_app.api.payload)
         if errors:
             return errors, 409
-
         service = Service.objects.get(id=service_id)
         for app in service.applications:
             if app.name == application_name:

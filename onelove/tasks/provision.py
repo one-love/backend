@@ -25,32 +25,29 @@ def playbook(self, provision_id, *args):
     playbook_args.append(
         '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
     )
-    #  provision = Provision.get(id=provision_id)
-    #  provision.status = 'RUNNING'
-    #  provision.start = datetime.utcnow()
-    #  provision.save()
-    #  redis_host = current_app.config['REDIS_HOST']
-    #  redis = StrictRedis(host=redis_host)
-    #  data = {
-    #  'provision_id': provision_id,
-    #  'status': provision.status,
-    #  'type': 'log',
-    #  'timestamp': datetime.utcnow().strftime(datetime_format),
-    #  }
-    #  redis.publish('ansible', dumps(data))
-    #  for task in provision.tasks:
-    #  result = subprocess.run(playbook_args)
-    #  if result.returncode != 0:
-    #  provision.status = 'FAILURE'
-    #  provision.end = datetime.utcnow()
-    #  provision.save()
-    #  data['status'] = provision.status
-    #  data['timestamp'] = provision.end.strftime(datetime_format)
-    #  redis.publish('ansible', dumps(data))
-    #  provision.status = 'SUCCESS'
-    #  provision.end = datetime.utcnow()
-    #  provision.save()
-    #  data['status'] = provision.status
-    #  data['timestamp'] = provision.end.strftime(datetime_format)
-    #  redis.publish('ansible', dumps(data))
+    provision = Provision.objects.get(id=provision_id)
+    provision.status = 'RUNNING'
+    provision.save()
+    redis_host = current_app.config['REDIS_HOST']
+    redis = StrictRedis(host=redis_host)
+    data = {
+        'provision_id': provision_id,
+        'status': provision.status,
+        'type': 'log',
+        'timestamp': datetime.utcnow().strftime(datetime_format),
+    }
+    redis.publish('ansible', dumps(data))
+    result = subprocess.run(playbook_args)
+    if result.returncode != 0:
+        provision.status = 'FAILURE'
+        provision.save()
+        data['status'] = provision.status
+        data['timestamp'] = provision.end.strftime(datetime_format)
+        redis.publish('ansible', dumps(data))
+        return provision.status
+    provision.status = 'SUCCESS'
+    provision.save()
+    data['status'] = provision.status
+    data['timestamp'] = provision.end.strftime(datetime_format)
+    redis.publish('ansible', dumps(data))
     return provision.status

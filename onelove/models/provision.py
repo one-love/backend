@@ -21,8 +21,8 @@ class Log(EmbeddedDocument):
 
 
 class Provision(Document):
-    status = StringField(max_length=63, default='PENDING')
     cluster = ReferenceField(Cluster)
-    service = ReferenceField(Service)
-    user = ReferenceField(User)
     logs = ListField(EmbeddedDocumentField(Log), default=[])
+    service = ReferenceField(Service)
+    status = StringField(max_length=63, default='PENDING')
+    user = ReferenceField(User)

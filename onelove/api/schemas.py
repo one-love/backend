@@ -4,6 +4,7 @@ from marshmallow import Schema, fields, post_load
 
 from ..models.auth import User
 from ..models.parsing import TokenModel
+from ..models.provision import Provision
 from ..models.service import Application, Service
 
 
@@ -103,4 +104,19 @@ class ServiceSchema(BaseSchema):
         name = 'Service'
 
 
-schemas = [TokenSchema, UserSchema, ApplicationSchema, ServiceSchema]
+class ProvisionSchema(BaseSchema):
+    id = fields.String(description='ID', dump_only=True)
+    status = fields.String(required=True, description='status')
+
+    class Meta:
+        model = Provision
+        name = 'Provision'
+
+
+schemas = [
+    ApplicationSchema,
+    ProvisionSchema,
+    ServiceSchema,
+    TokenSchema,
+    UserSchema,
+]

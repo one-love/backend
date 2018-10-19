@@ -1,0 +1,8 @@
+---
+- name: example provisioning
+  hosts: all
+  tasks:
+    - name: create file
+      file:
+        path: /tmp/onelove
+        state: touch
