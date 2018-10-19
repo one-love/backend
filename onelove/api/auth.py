@@ -78,8 +78,11 @@ class AuthRefreshAPI(Resource):
     def post(self):
         """Refresh access token"""
         email = get_jwt_identity()
-        user = User.objects.get(email=email)
-        if not user or not user.active:
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            abort(403, 'No such user, or wrong password')
+        if not user.active:
             abort(403, 'No such user, or wrong password')
         access_expire = current_app.config['JWT_ACCESS_TOKEN_EXPIRES']
         access_token = create_access_token(identity=user.email)

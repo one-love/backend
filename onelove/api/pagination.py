@@ -1,50 +1,45 @@
-from . import api
+from math import ceil
+
+from flask_restplus import abort
+from flask_restplus.reqparse import RequestParser
 
 def_per_page = 10
 
-parser = api.parser()
+parser = RequestParser()
 parser.add_argument(
     'X-Page',
-    type=int,
-    required=False,
-    default=1,
+    default=0,
     help='Page number',
-    location='headers'
+    location='headers',
+    required=False,
+    type=int,
 )
 parser.add_argument(
     'X-Per-Page',
-    type=int,
-    required=False,
     default=def_per_page,
     help='Items per page',
-    location='headers'
+    location='headers',
+    required=False,
+    type=int,
 )
 
 
-def pages():
+def paginate(query, schema):
     args = parser.parse_args()
     page = args.get('X-Page')
     per_page = args.get('X-Per-Page')
-    return (page, per_page)
-
-
-class Pagination(object):
-    def __init__(self, list):
-        self.list = list
-        self.page = list.page if list.page else 1
-        self.per_page = list.per_page if list.per_page else def_per_page
-        self.total = list.total
-
-    @property
-    def last_page(self):
-        last_page = ((self.total - 1) / self.per_page) + 1
-        return last_page
-
-    @property
-    def headers(self):
-        headers = {
-            'X-Total-Count': self.total,
-            'X-First-Page': '1',
-            'X-Last-Page': self.last_page
-        }
-        return headers
+    start = page * per_page
+    total = query.count()
+    if start > total:
+        abort(409, 'Requested range out of boundaries')
+    end = start + per_page
+    totalPages = ceil(total / float(per_page))
+    paginated_query = query[start:end]
+    data, errors = schema.dump(paginated_query, many=True)
+    if errors:
+        abort(409, errors)
+    return {
+        'data': data,
+        'pages': totalPages,
+        'total': total,
+    }
