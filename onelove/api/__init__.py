@@ -57,6 +57,7 @@ def create_api(app):
         auth,
         cluster,
         me,
+        provider,
         provision,
         service,
         user,

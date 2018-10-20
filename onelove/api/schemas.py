@@ -5,6 +5,7 @@ from marshmallow import Schema, fields, post_load
 from ..models.auth import User
 from ..models.cluster import Cluster
 from ..models.parsing import TokenModel
+from ..models.provider import Provider
 from ..models.provision import Provision
 from ..models.service import Application, Service
 
@@ -123,8 +124,20 @@ class ClusterSchema(BaseSchema):
         name = 'Cluster'
 
 
+class ProviderSchema(BaseSchema):
+    id = fields.String(description='ID', dump_only=True)
+    name = fields.String(required=True, description='name')
+    type = fields.String(required=True, description='name')
+
+    class Meta:
+        model = Provider
+        name = 'Provider'
+
+
 schemas = [
     ApplicationSchema,
+    ClusterSchema,
+    ProviderSchema,
     ProvisionSchema,
     ServiceSchema,
     TokenSchema,
