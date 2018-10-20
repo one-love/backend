@@ -6,7 +6,7 @@ from ..models.auth import User
 from ..models.cluster import Cluster
 from ..models.parsing import TokenModel
 from ..models.provider import HostSSH, Provider
-from ..models.provision import Provision
+from ..models.provision import Option, Provision, ProvisionOptions
 from ..models.service import Application, Service
 
 
@@ -143,13 +143,32 @@ class ProviderSchema(BaseSchema):
         name = 'Provider'
 
 
+class OptionSchema(BaseSchema):
+    key = fields.Str()
+    value = fields.Str()
+
+    class Meta:
+        model = Option
+        name = 'Option'
+
+
+class ProvisionOptionsSchema(BaseSchema):
+    options = fields.List(fields.Nested(OptionSchema))
+
+    class Meta:
+        model = ProvisionOptions
+        name = 'ProvisionOptions'
+
+
 schemas = [
     ApplicationSchema,
     ClusterSchema,
+    HostSSHSchema,
+    OptionSchema,
     ProviderSchema,
+    ProvisionOptionsSchema,
     ProvisionSchema,
     ServiceSchema,
     TokenSchema,
     UserSchema,
-    HostSSHSchema,
 ]

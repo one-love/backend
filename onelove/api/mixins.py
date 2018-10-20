@@ -1,32 +1,17 @@
 from flask_restplus import abort
 from mongoengine.errors import ValidationError
 
-from ..models.auth import Role, User
 from ..models.cluster import Cluster
 from ..models.provider import Provider
 from ..models.service import Service
 
 
 class ClusterMixin(object):
-    def find_cluster(self, cluster_id, email):
-        permission = False
+    def find_cluster(self, cluster_id):
         try:
-            cluster = Cluster.objects.get(id=cluster_id)
-            user = User.objects.get(email=email)
-            permission = user.has_role('admin')
-
-            if not permission:
-                for role in cluster.roles:
-                    if user.has_role(role):
-                        permission = True
-
-            if permission:
-                return cluster
-            abort(403)
+            return Cluster.objects.get(id=cluster_id)
         except (Cluster.DoesNotExist, ValidationError):
             abort(404, error='Cluster does not exist')
-        except (Role.DoesNotExist):
-            abort(401, error='You do not have valid permissions.')
 
 
 class ProviderMixin(object):

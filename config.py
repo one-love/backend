@@ -9,11 +9,6 @@ except ImportError:
     from common_config import TestConfig
 
 try:
-    from local_config import TestCIConfig
-except ImportError:
-    from common_config import TestCIConfig
-
-try:
     from local_config import ProdConfig
 except ImportError:
     from common_config import ProdConfig
@@ -23,5 +18,4 @@ configs = {
     'development': DevConfig,
     'production': ProdConfig,
     'testing': TestConfig,
-    'testingci': TestCIConfig,
 }
