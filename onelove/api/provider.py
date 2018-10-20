@@ -12,7 +12,7 @@ from .schemas import ProviderSchema
 class ProviderListAPI(ProtectedResource):
     @ns_provider.expect(parser)
     def get(self):
-        """Get list of a providers"""
+        """Get list of providers"""
         return paginate(Provider.objects(), ProviderSchema())
 
     @ns_provider.expect(ProviderSchema.fields())
@@ -32,7 +32,7 @@ class ProviderListAPI(ProtectedResource):
 @ns_provider.route('/<provider_id>', endpoint='provider')
 class ProviderAPI(ProtectedResource):
     def get(self, provider_id):
-        """Get providr details"""
+        """Get provider details"""
         try:
             provider = Provider.objects().get(id=provider_id)
         except Provider.DoesNotExist:

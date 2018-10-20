@@ -7,6 +7,15 @@ from mongoengine.fields import (
     StringField
 )
 
+field_types = {
+    'BooleanField': 'boolean',
+    'DateTimeField': 'date_time',
+    'EmailField': 'email',
+    'ReferenceField': 'reference',
+    'StringField': 'string',
+    'UUIDField': 'uuid',
+}
+
 
 class Provider(EmbeddedDocument):
     name = StringField(max_length=512)

@@ -36,6 +36,7 @@ class DevConfig(Config):
 
 
 class TestConfig(Config):
+    DEBUG = True
     TESTING = True
     JWT_COOKIE_SECURE = False
 

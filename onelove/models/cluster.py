@@ -10,15 +10,6 @@ from .auth import Role
 from .provider import Provider
 from .service import Service
 
-field_types = {
-    'BooleanField': 'boolean',
-    'DateTimeField': 'date_time',
-    'EmailField': 'email',
-    'ReferenceField': 'reference',
-    'StringField': 'string',
-    'UUIDField': 'uuid',
-}
-
 
 class Cluster(Document):
     name = StringField(max_length=512, blank=False)
