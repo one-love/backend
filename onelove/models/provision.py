@@ -26,3 +26,20 @@ class Provision(Document):
     service = ReferenceField(Service)
     status = StringField(max_length=63, default='PENDING')
     user = ReferenceField(User)
+
+
+class Option(object):
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+    def __repr__(self):
+        return '<{self.key}: {self.value}>'.format(self=self)
+
+    def option(self):
+        return '{self.key}={self.value}'.format(self=self)
+
+
+class ProvisionOptions(object):
+    def __init__(self, options=[]):
+        self.options = options

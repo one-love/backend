@@ -42,12 +42,10 @@ def playbook(self, provision_id, *args):
         provision.status = 'FAILURE'
         provision.save()
         data['status'] = provision.status
-        data['timestamp'] = provision.end.strftime(datetime_format)
         redis.publish('ansible', dumps(data))
         return provision.status
     provision.status = 'SUCCESS'
     provision.save()
     data['status'] = provision.status
-    data['timestamp'] = provision.end.strftime(datetime_format)
     redis.publish('ansible', dumps(data))
     return provision.status

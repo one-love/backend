@@ -9,7 +9,8 @@ jobs:
     docker:
       - image: python:3.6
         environment:
-          FLASK_ENV: testingci
+          FLASK_ENV: testing
+          MONGODB_HOST: localhost
       - image: mongo:latest
     steps:
       - checkout
