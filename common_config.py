@@ -36,9 +36,12 @@ class DevConfig(Config):
 
 
 class TestConfig(Config):
-    DEBUG = True
     TESTING = True
     JWT_COOKIE_SECURE = False
+
+
+class TestCIConfig(TestConfig):
+    MONGODB_HOST = 'localhost'
 
 
 class ProdConfig(Config):
