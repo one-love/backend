@@ -18,7 +18,7 @@ class ClusterListAPI(ProtectedResource, ClusterMixin):
 
     @ns_cluster.expect(ClusterSchema.fields())
     def post(self):
-        """Create aplication for the service"""
+        """Create cluster"""
         schema = ClusterSchema()
         cluster, errors = schema.load(current_app.api.payload)
         if errors:
