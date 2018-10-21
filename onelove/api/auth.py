@@ -42,9 +42,8 @@ class AuthLoginAPI(Resource):
         refresh_expire = current_app.config['JWT_REFRESH_TOKEN_EXPIRES']
         resp = jsonify(
             {
-                'login': True,
-                'access_expire': int(access_expire.total_seconds()),
-                'refresh_expire': int(refresh_expire.total_seconds()),
+                'accessExpire': int(access_expire.total_seconds()),
+                'refreshExpire': int(refresh_expire.total_seconds()),
             }
         )
         set_access_cookies(resp, access_token)
@@ -53,7 +52,7 @@ class AuthLoginAPI(Resource):
         refresh_secure = current_app.config['JWT_COOKIE_SECURE']
         refresh_expire_date = datetime.now() + refresh_expire
         resp.set_cookie(
-            'refresh_expire',
+            'refreshExpire',
             value=str(refresh_expire_date),
             expires=refresh_expire_date,
             path=refresh_path,
@@ -87,7 +86,7 @@ class AuthRefreshAPI(Resource):
         access_expire = current_app.config['JWT_ACCESS_TOKEN_EXPIRES']
         access_token = create_access_token(identity=user.email)
         refresh_expire_date = datetime.strptime(
-            request.cookies['refresh_expire'],
+            request.cookies['refreshExpire'],
             '%Y-%m-%d %H:%M:%S.%f'
         )
         refresh_delta = refresh_expire_date - datetime.now()
