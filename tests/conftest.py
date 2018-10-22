@@ -16,5 +16,4 @@ register(RoleFactory)
 def app():
     config_name = os.getenv('FLASK_ENV') or 'testing'
     flask_app = create_app(configs[config_name])
-    print(flask_app.config['MONGODB_HOST'])
     yield flask_app
