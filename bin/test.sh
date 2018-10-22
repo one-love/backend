@@ -5,6 +5,7 @@ set -e
 
 
 BIN_DIR=`dirname $0`
+export FLASK_ENV="testing"
 . ${BIN_DIR}/common.sh
 setup
 
