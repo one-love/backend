@@ -17,8 +17,6 @@ datetime_format = '%Y-%m-%dT%H:%M:%S:%f'
 
 @celery.task(bind=True)
 def playbook(self, provision_id, *args):
-    os.environ['PROVISION_ID'] = str(provision_id)
-    os.environ['REDIS_HOST'] = current_app.config['REDIS_HOST']
     playbook_args = list(args)
     playbook_args.insert(0, 'ansible-playbook')
     playbook_args.append('--ssh-common-args')
@@ -29,6 +27,10 @@ def playbook(self, provision_id, *args):
     provision.status = 'RUNNING'
     provision.save()
     redis_host = current_app.config['REDIS_HOST']
+    os.environ['PROVISION_ID'] = str(provision_id)
+    os.environ['REDIS_HOST'] = current_app.config['REDIS_HOST']
+    mongodb_settings = dumps(current_app.config['MONGODB_SETTINGS'])
+    os.environ['MONGODB_SETTINGS'] = mongodb_settings
     redis = StrictRedis(host=redis_host)
     data = {
         'provision_id': provision_id,
