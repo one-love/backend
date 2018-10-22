@@ -1,5 +1,4 @@
 import os
-from json import dumps
 
 from flask import current_app
 from flask_restplus import abort
