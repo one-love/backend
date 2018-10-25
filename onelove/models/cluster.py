@@ -18,6 +18,13 @@ class Cluster(Document):
     providers = ListField(EmbeddedDocumentField(Provider), default=[])
     roles = ListField(ReferenceField(Role), default=[])
     services = ListField(ReferenceField(Service), default=[])
+    tags = ListField(StringField(), default=[])
 
     def __repr__(self):
-        return '<Cluster %r>' % self.n
+        return '<Cluster %r>' % self.name
+
+    def hosts(self):
+        result = []
+        for provider in self.providers:
+            result.extend(provider.host_by_tag(self.tags))
+        return result
