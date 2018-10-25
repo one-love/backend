@@ -34,6 +34,9 @@ class Provider(EmbeddedDocument):
     def destroy(self, id):
         pass
 
+    def hosts_by_tag(self, tags=[]):
+        return []
+
     @classmethod
     def _check_field(cls, field):
         if isinstance(field, BaseField):
@@ -78,9 +81,16 @@ class Provider(EmbeddedDocument):
 class HostSSH(EmbeddedDocument):
     ip = StringField(max_length=256)
     hostname = StringField(max_length=256)
+    tags = ListField(StringField(), default=[])
 
     def __repr__(self):
         return '<Host %r>' % self.hostname
+
+    def has_tags(self, tags):
+        for tag in tags:
+            if tag in self.tags:
+                return True
+        return False
 
 
 class ProviderSSH(Provider):
@@ -111,3 +121,6 @@ class ProviderSSH(Provider):
                 self.hosts.save()
                 return host
         return None
+
+    def hosts_by_tag(self, tags=[]):
+        return list(filter(lambda host: host.have_tags(tags)), self.hosts)
