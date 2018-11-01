@@ -7,6 +7,7 @@ from flask_security import MongoEngineUserDatastore, Security
 from flask_socketio import SocketIO
 
 from .api import create_api
+from .models.auth import Role, User
 from .socket import SocketThread
 from .tasks.celery import make_celery
 
@@ -23,7 +24,6 @@ def create_app(config, app=None):
 
     app.collect = Collect(app)
     app.celery = make_celery(app)
-    from .models.auth import User, Role
     app.db = MongoEngine(app)
     app.user_datastore = MongoEngineUserDatastore(
         app.db,
@@ -34,7 +34,8 @@ def create_app(config, app=None):
     create_api(app)
     app.socketio = SocketIO(app, logger=True)
 
-    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    werkzeug = os.environ.get('WERKZEUG_RUN_MAIN', 'true')
+    if werkzeug == 'true':
         app.socket_thread = SocketThread(
             app.socketio,
             app.config['REDIS_HOST']

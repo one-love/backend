@@ -8,4 +8,3 @@
   template:
     src: login_conf.j2
     dest: /usr/home/devel/.login_conf
-  removes: /usr/home/devel

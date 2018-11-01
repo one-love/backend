@@ -1,10 +1,5 @@
 from flask_mongoengine import Document
-from mongoengine.fields import (
-    EmbeddedDocumentField,
-    ListField,
-    ReferenceField,
-    StringField
-)
+from mongoengine.fields import ListField, ReferenceField, StringField
 
 from .auth import Role
 from .provider import Provider
@@ -15,7 +10,7 @@ class Cluster(Document):
     name = StringField(max_length=512, blank=False)
     username = StringField(max_length=64)
     sshKey = StringField()
-    providers = ListField(EmbeddedDocumentField(Provider), default=[])
+    providers = ListField(ReferenceField(Provider), default=[])
     roles = ListField(ReferenceField(Role), default=[])
     services = ListField(ReferenceField(Service), default=[])
     tags = ListField(StringField(), default=[])

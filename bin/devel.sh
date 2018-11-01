@@ -12,4 +12,4 @@ setup no
 echo "Backend"
 echo "==============="
 echo " * API_ROOT: ${API_ROOT}"
-flask runserver
+flask run -p "${FLASK_PORT}" -h "0.0.0.0"
