@@ -1,5 +1,6 @@
 from mongoengine.fields import (
     BaseField,
+    Document,
     EmbeddedDocument,
     EmbeddedDocumentField,
     EmbeddedDocumentListField,
@@ -17,7 +18,7 @@ field_types = {
 }
 
 
-class Provider(EmbeddedDocument):
+class Provider(Document):
     name = StringField(max_length=512)
     type = 'BASE'
     meta = {'allow_inheritance': True}
