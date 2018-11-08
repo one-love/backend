@@ -5,10 +5,11 @@ from .namespaces import ns_provider
 from .pagination import paginate, parser
 from .resources import ProtectedResource
 from .schemas import HostSSHSchema
+from .mixins import ProviderMixin
 
 
 @ns_provider.route('/<provider_id>/hosts', endpoint='hosts')
-class HostListAPI(ProtectedResource):
+class HostListAPI(ProtectedResource, ProviderMixin):
     @ns_provider.expect(parser)
     def get(self, provider_id):
         """Get list of hosts"""
@@ -32,7 +33,7 @@ class HostListAPI(ProtectedResource):
 
 
 @ns_provider.route('/<provider_id>/hosts/<hostname>', endpoint='host')
-class HostAPI(ProtectedResource):
+class HostAPI(ProtectedResource, ProviderMixin):
     def get(self, provider_id, hostname):
         """Get provider details"""
         provider = self.find_provider(provider_id)
@@ -60,6 +61,7 @@ class HostAPI(ProtectedResource):
                 response, errors = schema.dump(host)
                 if errors:
                     return errors, 409
+                host.save()
                 return response
         abort(404, error='No such host')
 
