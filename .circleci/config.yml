@@ -12,6 +12,7 @@ jobs:
           FLASK_ENV: testing
           MONGODB_HOST: localhost
       - image: mongo:latest
+      - image: redis:latest
     steps:
       - checkout
       - run:
