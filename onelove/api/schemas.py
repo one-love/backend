@@ -126,7 +126,8 @@ class ClusterSchema(BaseSchema):
 
 class HostSSHSchema(BaseSchema):
     id = fields.String(description='ID', dump_only=True)
-    hostname = fields.String(required=True, description='name')
+    hostname = fields.String(required=True, description='hostname')
+    ip = fields.String(required=True, description='IP Address')
 
     class Meta:
         model = HostSSH
