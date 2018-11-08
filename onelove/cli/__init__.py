@@ -25,35 +25,6 @@ def register(app):
     @click.option('--host', help='Details about specified host')
     def hosts(list_hosts, host):
         """Return ansible hosts"""
-        """
-        List format:
-            {
-                "_meta": {
-                    "hostvars": {
-                        "oneloveback": {
-                            "ansible_connection": "jail",
-                            "ansible_python_interpreter": "/usr/bin/env python3.6",
-                        }
-                    }
-                },
-                "all": {
-                    "children": [
-                        "ungrouped"
-                    ]
-                },
-                "ungrouped": {
-                    "hosts": [
-                        "oneloveback"
-                    ]
-                }
-            }
-
-        Host format:
-            {
-                "ansible_connection": "jail",
-                "ansible_python_interpreter": "/usr/bin/env python3.6"
-            }
-        """
         if [list_hosts, host] == [False, None]:
             sys.stderr.write(
                 'At least one option should be passed: --list or --host\n'
@@ -64,13 +35,18 @@ def register(app):
             sys.stderr.write('PROVISION_ID env var must be set\n')
             exit(1)
 
+        from ..models.provision import Provision
+        try:
+            provision = Provision.objects.get(id=provision_id)
+        except Provision.DoesNotExist:
+            sys.stderr.write('No such provision\n')
+            exit(1)
+        hosts = []
+        for provider in provision.cluster.providers:
+            hosts.extend(provider.list())
         python_version = os.environ.get('PY_VERSION', '3.6')
         python_interpreter = '/usr/bin/env python{}'.format(python_version)
         if list_hosts:
-            from ..models.provider import Provider
-            hosts = []
-            for provider in Provider.objects():
-                hosts.extend(provider.hosts)
             data = {
                 '_meta': {
                     'hostvars': {},
@@ -85,16 +61,25 @@ def register(app):
                 },
             }
             for host in hosts:
-                data['_meta']['hostvars'][host.hostname] = {
-                    'ansible_host': host.ip,
+                data['_meta']['hostvars'][host.name] = {
                     'ansible_python_interpreter': python_interpreter,
                 }
+                if host.ip:
+                    device_data = data['_meta']['hostvars'][host.hostname]
+                    device_data['ansible_host'] = host.ip
+            print(dumps(data, indent=4))
         else:
-            data = {
-                'ansible_host': '127.0.0.1',
-                'ansible_python_interpreter': python_interpreter,
-            }
-        print(dumps(data, indent=4))
+            for host in hosts:
+                if host.hostname == host:
+                    data = {
+                        'ansible_python_interpreter': python_interpreter,
+                    }
+                    if host.ip:
+                        data['ansible_host'] = host.ip
+                    print(dumps(data, indent=4))
+                    return
+            sys.stderr.write('No such host\n')
+            exit(1)
 
     app.cli.add_command(ansible)
     app.cli.add_command(celery)
