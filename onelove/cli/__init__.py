@@ -61,7 +61,7 @@ def register(app):
                 },
             }
             for host in hosts:
-                data['_meta']['hostvars'][host.name] = {
+                data['_meta']['hostvars'][host.hostname] = {
                     'ansible_python_interpreter': python_interpreter,
                 }
                 if host.ip:
