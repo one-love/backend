@@ -5,7 +5,7 @@ from marshmallow import Schema, fields, post_load
 from ..models.auth import User
 from ..models.cluster import Cluster
 from ..models.parsing import TokenModel
-from ..models.provider import HostSSH, Provider
+from ..models.provider import HostSSH, Provider, ProviderSSH
 from ..models.provision import Option, Provision, ProvisionOptions
 from ..models.service import Application, Service
 
@@ -137,6 +137,14 @@ class ProviderSchema(BaseSchema):
     id = fields.String(description='ID', dump_only=True)
     name = fields.String(required=True, description='name')
     type = fields.String(required=True, description='type')
+
+    @post_load
+    def make_object(self, data):
+        real_data = dict(data)
+        del real_data['type']
+        if data['type'] == 'SSH':
+            return ProviderSSH(**real_data)
+        raise ValueError('No such provider type {}'.format(data['type']))
 
     class Meta:
         model = Provider
