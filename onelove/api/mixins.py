@@ -19,7 +19,7 @@ class ProviderMixin(object):
         try:
             return Provider.objects.get(id=provider_id)
         except (Provider.DoesNotExist, ValidationError):
-            abort(404, error='Service does not exist')
+            abort(404, error='Provider does not exist')
 
 
 class ServiceMixin(object):

@@ -1,5 +1,6 @@
 from flask import current_app
 from flask_restplus import abort
+from flask_restplus.reqparse import RequestParser
 
 from .namespaces import ns_provider
 from .pagination import paginate, parser
@@ -8,13 +9,35 @@ from .schemas import HostSSHSchema
 from .mixins import ProviderMixin
 
 
+host_parser = parser.copy()
+
+host_parser.add_argument(
+    'by_tags',
+    help='Tags',
+    location='args',
+    required=False,
+    type=str,
+    action='append',
+)
+
+
 @ns_provider.route('/<provider_id>/hosts', endpoint='hosts')
 class HostListAPI(ProtectedResource, ProviderMixin):
-    @ns_provider.expect(parser)
+    @ns_provider.expect(host_parser)
     def get(self, provider_id):
         """Get list of hosts"""
+        args = host_parser.parse_args()
+
         provider = self.find_provider(provider_id)
-        return paginate(provider.hosts, HostSSHSchema())
+
+        if args['by_tags']:
+            tags = (args['by_tags'])
+            hosts = provider.hosts_by_tag(tags)
+        else:
+            hosts = provider.hosts
+
+        return paginate(hosts, HostSSHSchema())
+        # return paginate(provider.hosts, HostSSHSchema())
 
     @ns_provider.expect(HostSSHSchema.fields())
     def post(self, provider_id):
@@ -26,7 +49,7 @@ class HostListAPI(ProtectedResource, ProviderMixin):
             return errors, 409
         provider.hosts.append(host)
         provider.save()
-        response, errors = schema.dump(provider)
+        response, errors = schema.dump(host)
         if errors:
             return errors, 409
         return response
