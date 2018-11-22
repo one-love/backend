@@ -1,6 +1,5 @@
 from flask import current_app
 from flask_restplus import abort
-from flask_restplus.reqparse import RequestParser
 
 from .namespaces import ns_provider
 from .pagination import paginate, parser
