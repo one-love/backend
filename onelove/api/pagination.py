@@ -29,7 +29,7 @@ def paginate(query, schema):
     page = args.get('X-Page')
     per_page = args.get('X-Per-Page')
     start = page * per_page
-    total = query.count()
+    total = len(query)
     if start > total:
         abort(409, 'Requested range out of boundaries')
     end = start + per_page

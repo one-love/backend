@@ -124,4 +124,4 @@ class ProviderSSH(Provider):
         return None
 
     def hosts_by_tag(self, tags=[]):
-        return list(filter(lambda host: host.have_tags(tags)), self.hosts)
+        return list(filter(lambda host: host.has_tags(tags), self.hosts))
