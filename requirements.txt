@@ -8,7 +8,7 @@ flask-jwt-extended
 flask-mongoengine
 flask-restplus
 flask-security
-flask-socketio
+flask-socketio==3.0.2
 gunicorn
 marshmallow
 pynacl<1.3
