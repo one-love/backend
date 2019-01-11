@@ -106,15 +106,6 @@ class ServiceSchema(BaseSchema):
         name = 'Service'
 
 
-class ProvisionSchema(BaseSchema):
-    id = fields.String(description='ID', dump_only=True)
-    status = fields.String(required=True, description='status')
-
-    class Meta:
-        model = Provision
-        name = 'Provision'
-
-
 class ClusterSchema(BaseSchema):
     id = fields.String(description='ID', dump_only=True)
     name = fields.String(required=True, description='name')
@@ -122,6 +113,15 @@ class ClusterSchema(BaseSchema):
     class Meta:
         model = Cluster
         name = 'Cluster'
+
+
+class ProvisionSchema(BaseSchema):
+    id = fields.String(description='ID', dump_only=True)
+    status = fields.String(required=True, description='status')
+
+    class Meta:
+        model = Provision
+        name = 'Provision'
 
 
 class HostSSHSchema(BaseSchema):
