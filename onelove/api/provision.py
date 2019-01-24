@@ -47,4 +47,3 @@ class ProvisionAPI(ProtectedResource):
         if errors:
             abort(409, errors)
         return data
-
