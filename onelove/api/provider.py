@@ -19,9 +19,12 @@ class ProviderListAPI(ProtectedResource):
     def post(self):
         """Create provider"""
         schema = ProviderSchema()
-        provider, errors = schema.load(current_app.api.payload)
-        if errors:
-            return errors, 409
+        try:
+            provider, errors = schema.load(current_app.api.payload)
+            if errors:
+                return errors, 409
+        except ValueError:
+            return {'message': 'Invalid provider type'}, 409
         provider.save()
         response, errors = schema.dump(provider)
         if errors:

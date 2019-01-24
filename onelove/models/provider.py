@@ -125,3 +125,8 @@ class ProviderSSH(Provider):
 
     def hosts_by_tag(self, tags=[]):
         return list(filter(lambda host: host.has_tags(tags), self.hosts))
+
+
+providers = {}
+for provider in [ProviderSSH]:
+    providers[provider.type] = provider
