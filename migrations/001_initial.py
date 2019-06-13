@@ -1,13 +1,12 @@
-# flake8: noqa
 """Peewee migrations -- 001_initial.py.
 
 Some examples (model - class or model name)::
 
-    > Model = migrator.orm['model_name']            # Return model in current state by name
+    > Model = migrator.orm['model_name']            # Return model by name
 
     > migrator.sql(sql)                             # Run custom SQL
     > migrator.python(func, *args, **kwargs)        # Run python code
-    > migrator.create_model(Model)                  # Create a model (could be used as decorator)
+    > migrator.create_model(Model)                  # Create a model
     > migrator.remove_model(model, cascade=True)    # Remove a model
     > migrator.add_fields(model, **fields)          # Add fields to a model
     > migrator.change_fields(model, **fields)       # Change fields
@@ -26,16 +25,23 @@ import datetime as dt
 
 import peewee as pw
 
-SQL = pw.SQL
-
 try:
     import playhouse.postgres_ext as pw_pext
 except ImportError:
     pass
 
+SQL = pw.SQL
+
 
 def migrate(migrator, database, fake=False, **kwargs):
     """Write your migrations here."""
+
+    @migrator.create_model
+    class BaseModel(pw.Model):
+        id = pw.AutoField()
+
+        class Meta:
+            table_name = "basemodel"
 
     @migrator.create_model
     class Role(pw.Model):
@@ -56,7 +62,7 @@ def migrate(migrator, database, fake=False, **kwargs):
         password = pw.TextField()
 
         class Meta:
-            table_name = "user"
+            table_name = "users"
 
     @migrator.create_model
     class UserRoles(pw.Model):
@@ -65,13 +71,13 @@ def migrate(migrator, database, fake=False, **kwargs):
             backref='users',
             column_name='role_id',
             field='id',
-            model=migrator.orm['role']
+            model=migrator.orm['role'],
         )
         user = pw.ForeignKeyField(
             backref='roles',
             column_name='user_id',
             field='id',
-            model=migrator.orm['user']
+            model=migrator.orm['users'],
         )
 
         class Meta:
@@ -83,6 +89,8 @@ def rollback(migrator, database, fake=False, **kwargs):
 
     migrator.remove_model('userroles')
 
-    migrator.remove_model('user')
+    migrator.remove_model('users')
 
     migrator.remove_model('role')
+
+    migrator.remove_model('basemodel')

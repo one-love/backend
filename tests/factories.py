@@ -8,9 +8,9 @@ class UserFactory(factory.Factory):
         model = User
 
     active = True
-    email = factory.Faker('email')
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
+    email = factory.Faker('email')
     password = factory.LazyAttribute(lambda a: hash_password('Sekrit'))
     username = factory.Faker('name')
 
@@ -24,4 +24,3 @@ class RoleFactory(factory.Factory):
         model = Role
 
     name = factory.Faker('first_name')
-    admin = False

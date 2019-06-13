@@ -15,7 +15,6 @@ class Role(Document, RoleMixin):
     Role
     """
     name = StringField(max_length=255)
-    admin = BooleanField()
     description = StringField(max_length=255)
 
     # Required for administrative interface
@@ -28,6 +27,7 @@ class User(Document, UserMixin):
     User
     """
     active = BooleanField(default=False)
+    admin = BooleanField()
     email = EmailField(unique=True)
     first_name = StringField(max_length=255)
     last_name = StringField(max_length=255)

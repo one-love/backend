@@ -1,88 +1,59 @@
-from flask import current_app
+from flask_rest_api import Blueprint, abort
 
 from ..models.cluster import Cluster
-from ..models.provision import Provision
-from .mixins import ClusterMixin, ServiceMixin
-from .namespaces import ns_cluster
-from .pagination import paginate, parser
-from .resources import ProtectedResource
-from .schemas import ClusterSchema, ProvisionOptionsSchema, ProvisionSchema
-from .utils import call_provision
+from ..schemas.cluster import ClusterSchema
+from ..schemas.paging import PagingSchema
+from .methodviews import ProtectedMethodView
+
+cluster = Blueprint('cluster', 'cluster')
 
 
-@ns_cluster.route('', endpoint='clusters')
-class ClusterListAPI(ProtectedResource):
-    @ns_cluster.expect(parser)
-    def get(self):
-        """Get list of a clusters"""
-        return paginate(Cluster.objects(), ClusterSchema())
+@cluster.route('/', endpoint='clusters')
+class ClusterListAPI(ProtectedMethodView):
+    @cluster.arguments(PagingSchema(), location='headers')
+    @cluster.response(ClusterSchema(many=True))
+    def get(self, pagination):
+        """List clusters"""
+        return Cluster.objects.all()
 
-    @ns_cluster.expect(ClusterSchema.fields())
-    def post(self):
+    @cluster.arguments(ClusterSchema())
+    @cluster.response(ClusterSchema())
+    def post(self, args):
         """Create cluster"""
-        schema = ClusterSchema()
-        cluster, errors = schema.load(current_app.api.payload)
-        if errors:
-            return errors, 409
+        cluster = Cluster(**args)
         cluster.save()
-        response, errors = schema.dump(cluster)
-        if errors:
-            return errors, 409
-        return response
+        return cluster
 
 
-@ns_cluster.route('/<cluster_id>', endpoint='cluster')
-class ClusterAPI(ProtectedResource, ClusterMixin):
+@cluster.route('/<cluster_id>', endpoint='cluster')
+class ClusterAPI(ProtectedMethodView):
+    @cluster.response(ClusterSchema())
     def get(self, cluster_id):
         """Get cluster details"""
-        cluster = self.find_cluster(cluster_id)
-        schema = ClusterSchema()
-        response, errors = schema.dump(cluster)
-        if errors:
-            return errors, 409
-        return response
+        try:
+            cluster = Cluster.objects.get(id=cluster_id)
+        except Cluster.DoesNotExist:
+            return {'message': 'Cluster not found'}, 404
+        return cluster
 
-    @ns_cluster.expect(ClusterSchema.fields(required=False))
-    def patch(self, cluster_id):
-        """Change cluster details"""
-        cluster = self.find_cluster(cluster_id)
-        schema = ClusterSchema()
-        data, errors = schema.load(current_app.api.payload)
-        if errors:
-            return errors, 409
-        cluster.name = data.name or cluster.name
-        response, errors = schema.dump(cluster)
-        if errors:
-            return errors, 409
+    @cluster.arguments(ClusterSchema(partial=True))
+    @cluster.response(ClusterSchema())
+    def patch(self, args, cluster_id):
+        """Edit cluster details"""
+        try:
+            cluster = Cluster.objects.get(id=cluster_id)
+        except Cluster.DoesNotExist:
+            return {'message': 'Cluster not found'}, 404
+        cluster.name = args.get('name', cluster.name)
         cluster.save()
-        return response
+        return cluster
 
+    @cluster.response(ClusterSchema())
     def delete(self, cluster_id):
-        """Delete the cluster"""
-        cluster = self.find_cluster(cluster_id)
-        schema = ClusterSchema()
-        response, errors = schema.dump(cluster)
-        if errors:
-            return errors, 409
+        """Delete cluster"""
+        try:
+            cluster = Cluster.objects.get(id=cluster_id)
+        except Cluster.DoesNotExist:
+            abort('Cluster not found', 404)
         cluster.delete()
-        return response
-
-
-@ns_cluster.route(
-    '/<cluster_id>/provision/<service_id>',
-    endpoint='cluster_provision',
-)
-class ClusterProvisionAPI(ProtectedResource, ClusterMixin, ServiceMixin):
-    @ns_cluster.expect(ProvisionOptionsSchema.fields())
-    def post(self, cluster_id, service_id):
-        """Get cluster details"""
-        cluster = self.find_cluster(cluster_id)
-        service = self.find_service(service_id)
-        provision = Provision(service=service.id, cluster=cluster.id)
-        provision.save()
-        schema = ProvisionSchema()
-        response, errors = schema.dump(provision)
-        if errors:
-            return errors, 409
-        call_provision(str(provision.id))
-        return response
+        return cluster

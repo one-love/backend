@@ -1,43 +1,41 @@
-from flask import current_app
-from flask_restplus import abort
+from flask_rest_api import Blueprint
 
 from ..models.auth import User
-from .namespaces import ns_user
-from .resources import ProtectedResource
-from .schemas import UserSchema
+from ..schemas.auth import UserSchema
+from ..schemas.paging import PagingSchema
+from .methodviews import ProtectedMethodView
+
+user = Blueprint('user', 'user')
 
 
-@ns_user.route('', endpoint='users')
-class UserListAPI(ProtectedResource):
-    def get(self):
+@user.route('/', endpoint='users')
+class UserListAPI(ProtectedMethodView):
+    @user.arguments(PagingSchema(), location='headers')
+    @user.response(UserSchema(many=True))
+    def get(self, pagination):
         """List users"""
-        schema = UserSchema(many=True)
-        response, errors = schema.dump(User.objects.all())
-        if errors:
-            abort(409, errors)
-        return response
+        return User.objects.all()
 
-    @ns_user.expect(UserSchema.fields())
-    def post(self):
+    @user.arguments(UserSchema)
+    @user.response(UserSchema)
+    def post(self, args):
+        """Create user"""
         schema = UserSchema()
-        user, errors = schema.load(current_app.api.payload)
+        data, errors = schema.load(args)
         if errors:
-            abort(409, errors)
-        user.save()
-        return schema.dump(user)
+            return errors, 409
+        account = User(**data)
+        account.save()
+        return account
 
 
-@ns_user.route('/<id>', endpoint='user')
-@ns_user.response(404, 'User not found')
-class UserAPI(ProtectedResource):
+@user.route('/<id>', endpoint='user')
+class UserAPI(ProtectedMethodView):
+    @user.response(UserSchema)
     def get(self, id):
         """Get user details"""
         try:
-            user = User.objects.get(id=id)
+            account = User.objects.get(id=id)
         except User.DoesNotExist:
-            abort(404, 'User not found')
-        schema = UserSchema(exclude=('password'))
-        response, errors = schema.dump(user)
-        if errors:
-            abort(409, errors)
-        return response
+            return {'message': 'User not found'}, 404
+        return account
