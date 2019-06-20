@@ -5,19 +5,19 @@ from ..schemas.cluster import ClusterSchema
 from ..schemas.paging import PagingSchema
 from .methodviews import ProtectedMethodView
 
-cluster = Blueprint('cluster', 'cluster')
+blueprint = Blueprint('cluster', 'cluster')
 
 
-@cluster.route('/', endpoint='clusters')
+@blueprint.route('/', endpoint='clusters')
 class ClusterListAPI(ProtectedMethodView):
-    @cluster.arguments(PagingSchema(), location='headers')
-    @cluster.response(ClusterSchema(many=True))
+    @blueprint.arguments(PagingSchema(), location='headers')
+    @blueprint.response(ClusterSchema(many=True))
     def get(self, pagination):
         """List clusters"""
         return Cluster.objects.all()
 
-    @cluster.arguments(ClusterSchema())
-    @cluster.response(ClusterSchema())
+    @blueprint.arguments(ClusterSchema())
+    @blueprint.response(ClusterSchema())
     def post(self, args):
         """Create cluster"""
         cluster = Cluster(**args)
@@ -25,9 +25,9 @@ class ClusterListAPI(ProtectedMethodView):
         return cluster
 
 
-@cluster.route('/<cluster_id>', endpoint='cluster')
+@blueprint.route('/<cluster_id>', endpoint='cluster')
 class ClusterAPI(ProtectedMethodView):
-    @cluster.response(ClusterSchema())
+    @blueprint.response(ClusterSchema())
     def get(self, cluster_id):
         """Get cluster details"""
         try:
@@ -36,8 +36,8 @@ class ClusterAPI(ProtectedMethodView):
             return {'message': 'Cluster not found'}, 404
         return cluster
 
-    @cluster.arguments(ClusterSchema(partial=True))
-    @cluster.response(ClusterSchema())
+    @blueprint.arguments(ClusterSchema(partial=True))
+    @blueprint.response(ClusterSchema())
     def patch(self, args, cluster_id):
         """Edit cluster details"""
         try:
@@ -48,7 +48,7 @@ class ClusterAPI(ProtectedMethodView):
         cluster.save()
         return cluster
 
-    @cluster.response(ClusterSchema())
+    @blueprint.response(ClusterSchema())
     def delete(self, cluster_id):
         """Delete cluster"""
         try:

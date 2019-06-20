@@ -5,19 +5,19 @@ from ..schemas.auth import UserSchema
 from ..schemas.paging import PagingSchema
 from .methodviews import ProtectedMethodView
 
-user = Blueprint('user', 'user')
+blueprint = Blueprint('user', 'user')
 
 
-@user.route('/', endpoint='users')
+@blueprint.route('/', endpoint='users')
 class UserListAPI(ProtectedMethodView):
-    @user.arguments(PagingSchema(), location='headers')
-    @user.response(UserSchema(many=True))
+    @blueprint.arguments(PagingSchema(), location='headers')
+    @blueprint.response(UserSchema(many=True))
     def get(self, pagination):
         """List users"""
         return User.objects.all()
 
-    @user.arguments(UserSchema)
-    @user.response(UserSchema)
+    @blueprint.arguments(UserSchema)
+    @blueprint.response(UserSchema)
     def post(self, args):
         """Create user"""
         schema = UserSchema()
@@ -29,9 +29,9 @@ class UserListAPI(ProtectedMethodView):
         return account
 
 
-@user.route('/<id>', endpoint='user')
+@blueprint.route('/<id>', endpoint='user')
 class UserAPI(ProtectedMethodView):
-    @user.response(UserSchema)
+    @blueprint.response(UserSchema)
     def get(self, id):
         """Get user details"""
         try:

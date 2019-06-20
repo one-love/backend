@@ -1,37 +1,39 @@
 from flask import render_template
 from flask_rest_api import Api
 
-from .auth import auth
-from .cluster import cluster
-from .user import user
-
 
 class MyApi(Api):
     def _openapi_swagger_ui(self):
         return render_template('swaggerui.html', title=self._app.name)
 
 
+def register_blueprints(app, prefix, blueprints):
+    for blueprint in blueprints:
+        app.api.register_blueprint(
+            blueprint,
+            url_prefix='{}/{}'.format(
+                prefix,
+                blueprint.name,
+            ),
+        )
+
+
 def create_api(app):
-    api = MyApi(app)
-    api_prefix = '/api/v0'
-    api.register_blueprint(
-        auth,
-        url_prefix='{}/{}'.format(
-            api_prefix,
-            auth.name,
-        ),
-    )
-    api.register_blueprint(
-        cluster,
-        url_prefix='{}/{}'.format(
-            api_prefix,
-            cluster.name,
-        ),
-    )
-    api.register_blueprint(
-        user,
-        url_prefix='{}/{}'.format(
-            api_prefix,
-            user.name,
-        ),
+    from .application import blueprint as application
+    from .auth import blueprint as auth
+    from .cluster import blueprint as cluster
+    from .service import blueprint as service
+    from .user import blueprint as user
+
+    app.api = MyApi(app)
+    register_blueprints(
+        app,
+        '/api/v0',
+        [
+            auth,
+            cluster,
+            service,
+            application,
+            user,
+        ],
     )
