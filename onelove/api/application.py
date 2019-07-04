@@ -16,7 +16,7 @@ class ApplicationListAPI(ProtectedMethodView):
         try:
             service = Service.objects.get(id=service_id)
         except Service.DoesNotExist:
-            abort(404, error='No such service')
+            abort(404, message='No such service')
         return service.applications
 
     @blueprint.arguments(ApplicationSchema())
@@ -26,7 +26,7 @@ class ApplicationListAPI(ProtectedMethodView):
         try:
             service = Service.objects.get(id=service_id)
         except Service.DoesNotExist:
-            abort(404, error='No such service')
+            abort(404, message='No such service')
         application = Application(**args)
         service.applications.append(application)
         service.save()
@@ -44,11 +44,11 @@ class ApplicationAPI(ProtectedMethodView):
         try:
             service = Service.objects.get(id=service_id)
         except Service.DoesNotExist:
-            abort(404, error='No such service')
+            abort(404, message='No such service')
         for app in service.applications:
             if app.name == application_name:
                 return app
-        abort(404, 'No such application')
+        abort(404, message='No such application')
 
     @blueprint.arguments(ApplicationSchema(partial=True))
     @blueprint.response(ApplicationSchema())
@@ -57,14 +57,14 @@ class ApplicationAPI(ProtectedMethodView):
         try:
             service = Service.objects.get(id=service_id)
         except Service.DoesNotExist:
-            abort(404, error='No such service')
+            abort(404, message='No such service')
         for app in service.applications:
             if app.name == application_name:
                 for arg in args:
                     setattr(app, arg, args[arg])
                 service.save()
                 return app
-        abort(404, 'No such application')
+        abort(404, message='No such application')
 
     @blueprint.response(ApplicationSchema())
     def delete(self, service_id, application_name):
@@ -72,10 +72,10 @@ class ApplicationAPI(ProtectedMethodView):
         try:
             service = Service.objects.get(id=service_id)
         except Service.DoesNotExist:
-            abort(404, error='No such service')
+            abort(404, message='No such service')
         for app in service.applications:
             if app.name == application_name:
                 service.applications.remove(app)
                 service.save()
                 return app
-        abort(404, 'No such application')
+        abort(404, message='No such application')

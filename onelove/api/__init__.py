@@ -19,10 +19,12 @@ def register_blueprints(app, prefix, blueprints):
 
 
 def create_api(app):
-    from .application import blueprint as application
     from .auth import blueprint as auth
+    from .application import blueprint as application
     from .cluster import blueprint as cluster
+    from .host import blueprint as host
     from .me import blueprint as me
+    from .provider import blueprint as provider
     from .service import blueprint as service
     from .user import blueprint as user
 
@@ -31,10 +33,10 @@ def create_api(app):
         app,
         '/api/v0',
         [
-            application,
             auth,
             cluster,
             me,
+            provider,
             service,
             user,
         ],
