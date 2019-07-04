@@ -1,11 +1,9 @@
 from flask_mongoengine import Document
-from .auth import User
 from mongoengine.fields import (
     EmbeddedDocument,
     EmbeddedDocumentField,
     ListField,
-    ReferenceField,
-    StringField,
+    StringField
 )
 
 
@@ -22,9 +20,8 @@ class Application(EmbeddedDocument):
 
 
 class Service(Document):
-    user = ReferenceField(User)
-    name = StringField(max_length=512, unique_with='user')
+    name = StringField(max_length=512, unique=True)
     applications = ListField(EmbeddedDocumentField(Application))
 
     def __repr__(self):
-        return '<Service %s/%s>' % (self.user.username, self.name)
+        return '<Service %s>' % self.name

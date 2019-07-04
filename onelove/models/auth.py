@@ -5,8 +5,7 @@ from mongoengine.fields import (
     EmailField,
     ListField,
     ReferenceField,
-    StringField,
-    UUIDField
+    StringField
 )
 
 
@@ -32,9 +31,7 @@ class User(Document, UserMixin):
     first_name = StringField(max_length=255)
     last_name = StringField(max_length=255)
     password = StringField(max_length=255)
-    register_uuid = UUIDField(binary=False)
     roles = ListField(ReferenceField(Role), default=[])
-    username = StringField(max_length=255, unique=True)
 
     def __repr__(self):
         return '<User %r>' % self.email
