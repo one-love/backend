@@ -7,8 +7,7 @@ NAME=onelove
 NUM_WORKERS=4
 WSGI_MODULE=wsgi
 PORT=${PORT:=9000}
-LOG_LEVEL=info
-WORKER_CLASS=eventlet
+LOG_LEVEL=debug
 
 . ${BIN_DIR}/common.sh
 setup
@@ -17,7 +16,6 @@ setup
 exec gunicorn ${WSGI_MODULE}:app \
   --name ${NAME} \
   --workers ${NUM_WORKERS} \
-  --worker-class ${WORKER_CLASS} \
   --bind=:${PORT} \
   --log-level=${LOG_LEVEL} \
   --log-file=- \

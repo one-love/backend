@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 from flask_collect import Collect
+from flask_jwt_extended import JWTManager
 from flask_mongoengine import MongoEngine
 from flask_security import MongoEngineUserDatastore, Security
 from flask_socketio import SocketIO
@@ -34,6 +35,7 @@ def create_app(config, app=None):
     create_api(app)
     app.socketio = SocketIO(app, logger=True)
 
+    app.jwt = JWTManager(app)
     werkzeug = os.environ.get('WERKZEUG_RUN_MAIN', 'true')
     if werkzeug == 'true':
         app.socket_thread = SocketThread(

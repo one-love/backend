@@ -1,78 +1,59 @@
-from flask import current_app
-from flask_jwt_extended import get_jwt_identity
-from flask_restplus import abort
-from mongoengine.queryset import NotUniqueError
+from flask_rest_api import Blueprint, abort
 
-from ..models.auth import User
 from ..models.service import Service
-from .mixins import ServiceMixin
-from .namespaces import ns_service
-from .pagination import paginate, parser
-from .resources import ProtectedResource
-from .schemas import ServiceSchema
+from ..schemas.paging import PageInSchema, PageOutSchema, paginate
+from ..schemas.service import ServiceSchema
+from .methodviews import ProtectedMethodView
+
+blueprint = Blueprint('service', 'service')
 
 
-@ns_service.route('', endpoint='services')
-class ServiceListAPI(ProtectedResource):
-    @ns_service.expect(parser)
-    def get(self):
+@blueprint.route('/', endpoint='services')
+class ServiceListAPI(ProtectedMethodView):
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(PageOutSchema(ServiceSchema))
+    def get(self, pagination):
         """List services"""
-        return paginate(Service.objects(), ServiceSchema())
+        return paginate(Service.objects.all(), pagination)
 
-    @ns_service.response(409, 'Service with that name already exists')
-    @ns_service.expect(ServiceSchema.fields())
-    def post(self):
+    @blueprint.arguments(ServiceSchema())
+    @blueprint.response(ServiceSchema())
+    def post(self, args):
         """Create service"""
-        email = get_jwt_identity()
-        user = User.objects.get(email=email)
-        schema = ServiceSchema()
-        service, errors = schema.load(current_app.api.payload)
-        if errors:
-            return errors, 409
-        service.user = user.pk
-        try:
-            service.save()
-        except NotUniqueError:
-            abort(409, error='Service with that name already exists')
-        response, errors = schema.dump(service)
-        if errors:
-            return errors, 409
-        return response
-
-
-@ns_service.route('/<id>', endpoint='services_service')
-@ns_service.response(404, 'Service not found')
-class ServiceAPI(ProtectedResource, ServiceMixin):
-    def get(self, id):
-        """Show service details"""
-        service = self.find_service(id)
-        schema = ServiceSchema()
-        response, errors = schema.dump(service)
-        if errors:
-            return errors, 409
-        return response
-
-    @ns_service.expect(ServiceSchema.fields())
-    def patch(self, id):
-        """Update service"""
-        service = self.find_service(id)
-        schema = ServiceSchema()
-        data, errors = schema.load(current_app.api.payload)
-        if errors:
-            return errors, 409
-        service.name = data.name or service.name
+        service = Service(**args)
         service.save()
-        response, errors = schema.dump(service)
-        if errors:
-            return errors, 409
-        return response
+        return service
 
-    def delete(self, id):
-        """Delete the service."""
-        service = self.find_service(id)
-        schema = ServiceSchema()
-        response, errors = schema.dump(service)
-        if errors:
-            return errors, 409
+
+@blueprint.route('/<service_id>', endpoint='service')
+class ServiceAPI(ProtectedMethodView):
+    @blueprint.response(ServiceSchema())
+    def get(self, service_id):
+        """Get service details"""
+        try:
+            service = Service.objects.get(id=service_id)
+        except Service.DoesNotExist:
+            return {'message': 'Service not found'}, 404
+        return service
+
+    @blueprint.arguments(ServiceSchema(partial=True))
+    @blueprint.response(ServiceSchema())
+    def patch(self, args, service_id):
+        """Edit service details"""
+        try:
+            service = Service.objects.get(id=service_id)
+        except Service.DoesNotExist:
+            return {'message': 'Service not found'}, 404
+        service.name = args.get('name', service.name)
+        service.save()
+        return service
+
+    @blueprint.response(ServiceSchema())
+    def delete(self, service_id):
+        """Delete service"""
+        try:
+            service = Service.objects.get(id=service_id)
+        except Service.DoesNotExist:
+            abort('Service not found', 404)
         service.delete()
-        return response
+        return service

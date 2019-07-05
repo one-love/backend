@@ -26,6 +26,11 @@ class Config:
     CELERY_TASK_SERIALIZER = 'json'
     CELERY_RESULT_SERIALIZER = 'json'
     CELERY_ACCEPT_CONTENT = ['json']
+    OPENAPI_URL_PREFIX = '/doc'
+    OPENAPI_REDOC_PATH = '/redoc'
+    OPENAPI_SWAGGER_UI_PATH = '/swaggerui'
+    OPENAPI_SWAGGER_UI_URL = '/static/swaggerui/'
+    OPENAPI_VERSION = '2.0.0'
 
     @staticmethod
     def init_app(app):

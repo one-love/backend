@@ -6,7 +6,7 @@ flask-collect
 flask-cors
 flask-jwt-extended
 flask-mongoengine
-flask-restplus
+flask-rest-api
 flask-security
 flask-socketio==3.0.2
 gunicorn

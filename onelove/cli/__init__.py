@@ -5,6 +5,8 @@ from json import dumps
 import click
 from celery.bin import worker as w
 from flask.cli import AppGroup
+from flask_security.cli import users
+from onelove.models.auth import User
 
 ansible = AppGroup('ansible', short_help='Ansible operations')
 celery = AppGroup('celery', short_help='Manage celery worker')
@@ -80,6 +82,28 @@ def register(app):
                     return
             sys.stderr.write('No such host\n')
             exit(1)
+
+    @users.command()
+    @click.argument('email')
+    def admin(email):
+        """Proclaim user an admin"""
+        try:
+            user = User.objects.get(email=email)
+            user.admin = True
+            user.save()
+        except User.DoesNotExist:
+            print('No such user')
+
+    @users.command()
+    @click.argument('email')
+    def deadmin(email):
+        """Remove admin priviledges from user"""
+        try:
+            user = User.objects.get(email=email)
+            user.admin = False
+            user.save()
+        except User.DoesNotExist:
+            print('No such user')
 
     app.cli.add_command(ansible)
     app.cli.add_command(celery)

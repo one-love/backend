@@ -1,43 +1,60 @@
-from flask import current_app
-from flask_restplus import abort
+from flask_rest_api import Blueprint
 
 from ..models.auth import User
-from .namespaces import ns_user
-from .resources import ProtectedResource
-from .schemas import UserSchema
+from ..schemas.auth import UserSchema
+from ..schemas.paging import PageInSchema, PageOutSchema, paginate
+from .methodviews import ProtectedMethodView
+
+blueprint = Blueprint('user', 'user')
 
 
-@ns_user.route('', endpoint='users')
-class UserListAPI(ProtectedResource):
-    def get(self):
+@blueprint.route('/', endpoint='users')
+class UserListAPI(ProtectedMethodView):
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(PageOutSchema(UserSchema))
+    def get(self, pagination):
         """List users"""
-        schema = UserSchema(many=True)
-        response, errors = schema.dump(User.objects.all())
-        if errors:
-            abort(409, errors)
-        return response
+        return paginate(User.objects.all(), pagination)
 
-    @ns_user.expect(UserSchema.fields())
-    def post(self):
-        schema = UserSchema()
-        user, errors = schema.load(current_app.api.payload)
-        if errors:
-            abort(409, errors)
+    @blueprint.arguments(UserSchema)
+    @blueprint.response(UserSchema)
+    def post(self, args):
+        """Create user"""
+        user = User(**args)
         user.save()
-        return schema.dump(user)
+        return user
 
 
-@ns_user.route('/<id>', endpoint='user')
-@ns_user.response(404, 'User not found')
-class UserAPI(ProtectedResource):
-    def get(self, id):
+@blueprint.route('/<user_id>', endpoint='user')
+class UserAPI(ProtectedMethodView):
+    @blueprint.response(UserSchema)
+    def get(self, user_id):
         """Get user details"""
         try:
-            user = User.objects.get(id=id)
+            user = User.objects.get(id=user_id)
         except User.DoesNotExist:
-            abort(404, 'User not found')
-        schema = UserSchema(exclude=('password'))
-        response, errors = schema.dump(user)
-        if errors:
-            abort(409, errors)
-        return response
+            return {'message': 'User not found'}, 404
+        return user
+
+    @blueprint.arguments(UserSchema(partial=True))
+    @blueprint.response(UserSchema)
+    def patch(self, args, user_id):
+        """Edit user"""
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return {'message': 'User not found'}, 404
+        for arg in args:
+            setattr(user, arg, args[arg])
+        user.save()
+        return user
+
+    @blueprint.response(UserSchema)
+    def delete(self, user_id):
+        """Delete user"""
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return {'message': 'User not found'}, 404
+        user.delete()
+        return user

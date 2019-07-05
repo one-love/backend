@@ -1,78 +1,66 @@
-from flask import current_app
-from flask_restplus import abort
+from flask_rest_api import Blueprint, abort
 
-from ..models.provider import Provider
-from .namespaces import ns_provider
-from .pagination import paginate, parser
-from .resources import ProtectedResource
-from .schemas import ProviderSchema
+from ..models.provider import Provider, providers
+from ..schemas.paging import PageInSchema, PageOutSchema, paginate
+from ..schemas.provider import ProviderSchema
+from .methodviews import ProtectedMethodView
+
+blueprint = Blueprint('provider', 'provider')
 
 
-@ns_provider.route('', endpoint='providers')
-class ProviderListAPI(ProtectedResource):
-    @ns_provider.expect(parser)
-    def get(self):
-        """Get list of providers"""
-        return paginate(Provider.objects(), ProviderSchema())
+@blueprint.route('/', endpoint='providers')
+class ProviderListAPI(ProtectedMethodView):
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(PageOutSchema(ProviderSchema))
+    def get(self, pagination):
+        """List providers"""
+        return paginate(Provider.objects.all(), pagination)
 
-    @ns_provider.expect(ProviderSchema.fields())
-    def post(self):
+    @blueprint.arguments(ProviderSchema())
+    @blueprint.response(ProviderSchema())
+    def post(self, args):
         """Create provider"""
-        schema = ProviderSchema()
-        try:
-            provider, errors = schema.load(current_app.api.payload)
-            if errors:
-                return errors, 409
-        except ValueError:
-            return {'message': 'Invalid provider type'}, 409
+        provider_type = args.get('type', None)
+        if provider_type is None:
+            abort(409, message='Type is required')
+        ProviderClass = providers.get(provider_type, None)
+        if ProviderClass is None:
+            abort(409, message='No such type')
+        del args['type']
+        provider = ProviderClass(**args)
         provider.save()
-        response, errors = schema.dump(provider)
-        if errors:
-            return errors, 409
-        return response
+        return provider
 
 
-@ns_provider.route('/<provider_id>', endpoint='provider')
-class ProviderAPI(ProtectedResource):
+@blueprint.route('/<provider_id>', endpoint='provider')
+class ProviderAPI(ProtectedMethodView):
+    @blueprint.response(ProviderSchema())
     def get(self, provider_id):
         """Get provider details"""
         try:
-            provider = Provider.objects().get(id=provider_id)
+            provider = Provider.objects.get(id=provider_id)
         except Provider.DoesNotExist:
-            abort(404, 'No such provider')
-        schema = ProviderSchema()
-        response, errors = schema.dump(provider)
-        if errors:
-            return errors, 409
-        return response
+            abort(404, message='No such provider')
+        return provider
 
-    @ns_provider.expect(ProviderSchema.fields(required=False))
-    def patch(self, provider_id):
-        """Change provider details"""
+    @blueprint.arguments(ProviderSchema(partial=True))
+    @blueprint.response(ProviderSchema())
+    def patch(self, args, provider_id):
+        """Edit provider details"""
         try:
-            provider = Provider.objects().get(id=provider_id)
+            provider = Provider.objects.get(id=provider_id)
         except Provider.DoesNotExist:
-            abort(404, 'No such provider')
-        schema = ProviderSchema()
-        data, errors = schema.load(current_app.api.payload)
-        if errors:
-            return errors, 409
-        provider.name = data.name or provider.name
-        response, errors = schema.dump(provider)
-        if errors:
-            return errors, 409
+            abort(404, message='No such provider')
+        provider.name = args.get('name', provider.name)
         provider.save()
-        return response
+        return provider
 
+    @blueprint.response(ProviderSchema())
     def delete(self, provider_id):
-        """Delete the provider"""
+        """Delete provider"""
         try:
-            provider = Provider.objects().get(id=provider_id)
+            provider = Provider.objects.get(id=provider_id)
         except Provider.DoesNotExist:
-            abort(404, 'No such provider')
-        schema = ProviderSchema()
-        response, errors = schema.dump(provider)
-        if errors:
-            return errors, 409
+            abort(404, message='No such provider')
         provider.delete()
-        return response
+        return provider
