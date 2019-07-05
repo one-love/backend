@@ -16,7 +16,7 @@ if [ "${CI}" = "ci" ]; then
 fi
 
 
+pip install -U -r requirements_dev.txt
 rm -rf `find . -name __pycache__`
 rm -rf .pytest_cache
-flake8 .
 py.test --cov=onelove --cov-report=xml

@@ -1,6 +1,6 @@
 factory-boy
-flake8
 ipdb
+pylint
 pytest-cov
 pytest-factoryboy
 pytest-flask
