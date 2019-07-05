@@ -1,7 +1,7 @@
 from flask_rest_api import Blueprint, abort
 
 from ..models.service import Service
-from ..schemas.paging import PagingSchema
+from ..schemas.paging import PageInSchema, PageOutSchema, paginate
 from ..schemas.service import ServiceSchema
 from .methodviews import ProtectedMethodView
 
@@ -10,11 +10,11 @@ blueprint = Blueprint('service', 'service')
 
 @blueprint.route('/', endpoint='services')
 class ServiceListAPI(ProtectedMethodView):
-    @blueprint.arguments(PagingSchema(), location='headers')
-    @blueprint.response(ServiceSchema(many=True))
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(PageOutSchema(ServiceSchema))
     def get(self, pagination):
         """List services"""
-        return Service.objects.all()
+        return paginate(Service.objects.all(), pagination)
 
     @blueprint.arguments(ServiceSchema())
     @blueprint.response(ServiceSchema())

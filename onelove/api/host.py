@@ -2,22 +2,22 @@ from flask_rest_api import abort
 
 from ..models.provider import HostSSH, Provider
 from ..schemas.host import HostSSHSchema
-from ..schemas.paging import PagingSchema
+from ..schemas.paging import PageInSchema, PageOutSchema, paginate
 from .methodviews import ProtectedMethodView
 from .provider import blueprint
 
 
 @blueprint.route('/<provider_id>/hosts', endpoint='hosts')
 class HostListAPI(ProtectedMethodView):
-    @blueprint.arguments(PagingSchema(), location='headers')
-    @blueprint.response(HostSSHSchema(many=True))
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(PageOutSchema(HostSSHSchema))
     def get(self, pagination, provider_id):
         """List hosts"""
         try:
             provider = Provider.objects.get(id=provider_id)
         except Provider.DoesNotExist:
             abort(404, message='No such provider')
-        return provider.hosts
+        return paginate(provider.hosts, pagination)
 
     @blueprint.arguments(HostSSHSchema())
     @blueprint.response(HostSSHSchema())

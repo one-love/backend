@@ -2,22 +2,22 @@ from flask_rest_api import abort
 
 from ..models.service import Application, Service
 from ..schemas.application import ApplicationSchema
-from ..schemas.paging import PagingSchema
+from ..schemas.paging import PageInSchema, PageOutSchema, paginate
 from .methodviews import ProtectedMethodView
 from .service import blueprint
 
 
 @blueprint.route('/<service_id>/applications', endpoint='applications')
 class ApplicationListAPI(ProtectedMethodView):
-    @blueprint.arguments(PagingSchema(), location='headers')
-    @blueprint.response(ApplicationSchema(many=True))
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(PageOutSchema(ApplicationSchema))
     def get(self, pagination, service_id):
         """List applications"""
         try:
             service = Service.objects.get(id=service_id)
         except Service.DoesNotExist:
             abort(404, message='No such service')
-        return service.applications
+        return paginate(service.applications, pagination)
 
     @blueprint.arguments(ApplicationSchema())
     @blueprint.response(ApplicationSchema())

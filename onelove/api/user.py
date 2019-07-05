@@ -2,7 +2,7 @@ from flask_rest_api import Blueprint
 
 from ..models.auth import User
 from ..schemas.auth import UserSchema
-from ..schemas.paging import PagingSchema
+from ..schemas.paging import PageInSchema, PageOutSchema, paginate
 from .methodviews import ProtectedMethodView
 
 blueprint = Blueprint('user', 'user')
@@ -10,11 +10,11 @@ blueprint = Blueprint('user', 'user')
 
 @blueprint.route('/', endpoint='users')
 class UserListAPI(ProtectedMethodView):
-    @blueprint.arguments(PagingSchema(), location='headers')
-    @blueprint.response(UserSchema(many=True))
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(PageOutSchema(UserSchema))
     def get(self, pagination):
         """List users"""
-        return User.objects.all()
+        return paginate(User.objects.all(), pagination)
 
     @blueprint.arguments(UserSchema)
     @blueprint.response(UserSchema)

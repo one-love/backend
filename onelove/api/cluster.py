@@ -2,7 +2,7 @@ from flask_rest_api import Blueprint, abort
 
 from ..models.cluster import Cluster
 from ..schemas.cluster import ClusterSchema
-from ..schemas.paging import PagingSchema
+from ..schemas.paging import PageInSchema, PageOutSchema, paginate
 from .methodviews import ProtectedMethodView
 
 blueprint = Blueprint('cluster', 'cluster')
@@ -10,11 +10,11 @@ blueprint = Blueprint('cluster', 'cluster')
 
 @blueprint.route('/', endpoint='clusters')
 class ClusterListAPI(ProtectedMethodView):
-    @blueprint.arguments(PagingSchema(), location='headers')
-    @blueprint.response(ClusterSchema(many=True))
+    @blueprint.arguments(PageInSchema(), location='headers')
+    @blueprint.response(PageOutSchema(ClusterSchema))
     def get(self, pagination):
         """List clusters"""
-        return Cluster.objects.all()
+        return paginate(Cluster.objects.all(), pagination)
 
     @blueprint.arguments(ClusterSchema())
     @blueprint.response(ClusterSchema())
